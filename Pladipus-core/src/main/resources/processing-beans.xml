@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd            http://cxf.apache.org/jaxws         http://cxf.apache.org/schemas/jaxws.xsd">   
+      
+    <!--Demonstration beans -->
+    <bean id="InitialisingStep" class="com.compomics.pladipus.search.processsteps.InitialisingStep" lazy-init="true"/>    
+
+    <bean id="SearchGUIStep" class="com.compomics.pladipus.search.processsteps.SearchGUIStep" lazy-init="true"/>  
+  
+    <bean id="PeptideShakerStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerStep" lazy-init="true"/>    
+                                                 
+    <bean id="TempCleaningStep" class="com.compomics.pladipus.search.processsteps.TempCleaningStep" lazy-init="true"/>            
+           
+    <!--DO NOT EDIT THESE STEPS -->
+    <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
+</beans>

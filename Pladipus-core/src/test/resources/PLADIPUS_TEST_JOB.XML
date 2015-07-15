@@ -1,0 +1,20 @@
+<job id="299" priority="7" run="PLADIPUS_TEST_RUN" user="PLADIPUS_TESTER">
+    <prerequisite>
+        <CORES>1</CORES>
+    </prerequisite>
+    <steps>
+        <step class="com.compomics.respin.simple.processsteps.TestingStep"/>
+        <step class="com.compomics.respin.simple.processsteps.TestingStep"/>
+        <step class="com.compomics.respin.simple.processsteps.TestingStep"/>
+        <step class="com.compomics.respin.simple.processsteps.TestingStep"/>
+    </steps>
+    <parameters>
+        <param name="assay" value="default"/>
+        <param name="peakfile" value="default"/>
+        <param name="fastafile" value="/mnt/pladipus/Pladipus/data/Fasta/Uniprot/UP000005640_9606_concatenated_target_decoy.fasta"/>
+        <param name="SearchGUI" value="/mnt/pladipus/Pladipus/external/SearchGUI/"/>
+        <param name="outputFolder" value="/mnt/pladipus/Pladipus/data/ReSpin/UniProt_Human_First_Pass_cRAP/"/>
+        <param name="PeptideShaker" value="/mnt/pladipus/Pladipus/external/PeptideShaker/"/>
+        <param name="parameterfile" value="default"/>
+    </parameters>
+</job>
