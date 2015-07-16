@@ -169,7 +169,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="pnlSteps" alignment="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="pnlSteps" alignment="0" max="32767" attributes="0"/>
                               <Component id="pnlParameters" alignment="0" max="32767" attributes="0"/>
                               <Component id="pnlRunName" max="32767" attributes="0"/>
                           </Group>
@@ -232,26 +232,26 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                              <Component id="lbPreSet" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="btnPreSetDbSearch" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="liSteps" min="-2" pref="391" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="liSteps" min="-2" pref="391" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="btnDown" linkSize="13" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="btnUp" linkSize="13" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="btnRemoveStep" linkSize="13" alignment="0" pref="41" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lbPreSet" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lbPreSet1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="cbSteps" pref="338" max="32767" attributes="0"/>
+                                  <Component id="cbPresets" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="cbSteps" min="-2" pref="391" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnAddStep" linkSize="13" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnDown" linkSize="13" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnUp" linkSize="13" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnRemoveStep" linkSize="13" alignment="0" pref="41" max="32767" attributes="0"/>
+                          <Component id="btnAddStep" linkSize="13" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnAddStep1" linkSize="13" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -260,25 +260,31 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lbPreSet" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnPreSetDbSearch" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lbPreSet" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="cbPresets" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnAddStep1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="cbSteps" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnAddStep" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbPreSet1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="btnRemoveStep" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="118" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="0" pref="136" max="32767" attributes="0"/>
                               <Component id="btnUp" linkSize="11" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnDown" linkSize="11" min="-2" pref="20" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="liSteps" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="liSteps" alignment="3" max="32767" attributes="0"/>
+                              <Component id="btnRemoveStep" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -310,6 +316,9 @@
                   </StringArray>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="cbStepsFocusLost"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnAddStep">
               <Properties>
@@ -331,25 +340,6 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Presets :"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnPreSetDbSearch">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="99" id="Text Highlight" palette="2" red="33" type="palette"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Database Search"/>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
-                </Property>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPreSetDbSearchActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnUp">
               <Properties>
@@ -373,6 +363,35 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDownActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lbPreSet1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Steps"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="cbPresets">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="5">
+                    <StringItem index="0" value="SearchGUI"/>
+                    <StringItem index="1" value="SearchGUI + PeptideShaker"/>
+                    <StringItem index="2" value="BlastP"/>
+                    <StringItem index="3" value="BlastN"/>
+                    <StringItem index="4" value="BlastX"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="cbPresetsFocusLost"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnAddStep1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Set"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddStep1ActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -438,15 +457,15 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblParameterRemark" min="-2" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="spnlParameters" min="-2" pref="389" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="btnRemoveParameter" linkSize="8" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnAddParameter" linkSize="8" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnAddParameter" max="32767" attributes="0"/>
+                                  <Component id="btnRemoveParameter" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="lblParameterRemark" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -462,7 +481,7 @@
                               <Component id="btnAddParameter" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnRemoveParameter" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="95" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="92" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -564,7 +583,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="spnlPreview" pref="511" max="32767" attributes="0"/>
+                      <Component id="spnlPreview" pref="501" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>

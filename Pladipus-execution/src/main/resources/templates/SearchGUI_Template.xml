@@ -1,0 +1,21 @@
+<template run='Example_SearchGUI' user='pladmin' priority='4'>
+ 	<steps>
+		<step class="com.compomics.pladipus.search.processsteps.InitialisingStep"/> 
+		<step class="com.compomics.pladipus.search.processsteps.SearchGUIStep"/> 
+		<step class="com.compomics.pladipus.search.processsteps.TempCleaningStep"/> 
+  	</steps> 
+ 	<parameters>
+ 		<run>
+ 			<param name='fastafile' value =''/>
+			<param name='outputFolder' value =''/>
+			<param name='SearchGUI' value=''/>
+			<param name='searchengines' value=''/>
+  		</run>
+   		<job>
+ 			<param name ='peakfile' default='default'/>
+			<param name ='parameterfile' default='default'/>
+			<param name ='assay' default ='default'/>
+ 		</job>
+ 	</parameters>
+ </template> 
+ 

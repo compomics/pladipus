@@ -1,0 +1,11 @@
+<template run='Example' user='pladmin' priority='4'>
+ 	<steps>
+  	</steps> 
+ 	<parameters>
+ 		<run>
+
+ 		</run>
+   		<job>
+ 		</job>
+ 	</parameters>
+ </template> 

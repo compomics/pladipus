@@ -298,9 +298,6 @@
           </Border>
         </Property>
       </Properties>
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="My Processes"/>
-      </AccessibilityProperties>
 
       <Layout>
         <DimensionLayout dim="0">

@@ -16,10 +16,14 @@ import com.compomics.pladipus.view.util.renderer.xmlEditorKit.XMLEditorKit;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -31,6 +35,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.ParserConfigurationException;
 import no.uib.jsparklines.extra.NimbusCheckBoxRenderer;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 /**
@@ -39,6 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class RunCreationDialog extends javax.swing.JDialog {
 
+    private static final Logger LOGGER = Logger.getLogger(RunCreationDialog.class);
     /**
      * the run owner
      */
@@ -68,6 +75,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
      * boolean indicating the run can be added to the database
      */
     private boolean confirmed;
+    /**
+     * the cached preset templates (XML format)
+     */
+    private LinkedHashMap<String, File> presets;
+    private XMLTemplateInterpreter interpeter;
 
     /**
      * Creates new form RunCreationDialog
@@ -166,7 +178,42 @@ public class RunCreationDialog extends javax.swing.JDialog {
         btnUp.repaint();
         btnDown.repaint();
         refreshPreview();
+        try {
+            loadPresets();
+        } catch (StepLoadingException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
+        }
 
+    }
+
+    private void setTemplateFromResource(String templateIdentifier, String templateFileName) throws IOException, ParserConfigurationException, StepLoadingException, SAXException {
+        File tempFile = File.createTempFile(templateIdentifier, ".temp");
+        tempFile.deleteOnExit();
+        try (OutputStream out = new FileOutputStream(tempFile);
+                InputStream in = getClass().getClassLoader().getResource("templates/" + templateFileName).openStream()) {
+            IOUtils.copy(in, out);
+            presets.put(templateIdentifier, tempFile);
+        }
+    }
+
+    private void loadPresets() throws IOException, ParserConfigurationException, StepLoadingException, SAXException {
+        LOGGER.debug("Loading presets...");
+        presets = new LinkedHashMap<>();
+        interpeter = XMLTemplateInterpreter.getInstance();
+        setTemplateFromResource("None", "Empty_Template.xml");
+        setTemplateFromResource("SearchGUI", "SearchGUI_Template.xml");
+        setTemplateFromResource("SearchGUI + PeptideShaker", "SearchGUI_PeptideShaker_Template.xml");
+        setTemplateFromResource("BLASTn", "BLAST_N_Template.xml");
+        setTemplateFromResource("BLASTp", "BLAST_P_Template.xml");
+        setTemplateFromResource("BLASTx", "BLAST_X_Template.xml");
+
+        DefaultComboBoxModel model = (DefaultComboBoxModel) cbPresets.getModel();
+        model.removeAllElements();
+        for (String aPreset : presets.keySet()) {
+            model.addElement(aPreset);
+        }
+        cbPresets.setModel(model);
+        LOGGER.debug("Done...");
     }
 
     public boolean isConfirmed() {
@@ -191,9 +238,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
         btnAddStep = new javax.swing.JButton();
         btnRemoveStep = new javax.swing.JButton();
         lbPreSet = new javax.swing.JLabel();
-        btnPreSetDbSearch = new javax.swing.JButton();
         btnUp = new javax.swing.JButton();
         btnDown = new javax.swing.JButton();
+        lbPreSet1 = new javax.swing.JLabel();
+        cbPresets = new javax.swing.JComboBox();
+        btnAddStep1 = new javax.swing.JButton();
         pnlRunName = new javax.swing.JPanel();
         tfRunName = new javax.swing.JTextField();
         pnlParameters = new javax.swing.JPanel();
@@ -241,6 +290,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
         liSteps.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         cbSteps.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbSteps.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbStepsFocusLost(evt);
+            }
+        });
 
         btnAddStep.setText("+");
         btnAddStep.addActionListener(new java.awt.event.ActionListener() {
@@ -257,18 +311,6 @@ public class RunCreationDialog extends javax.swing.JDialog {
         });
 
         lbPreSet.setText("Presets :");
-
-        btnPreSetDbSearch.setBackground(new java.awt.Color(255, 255, 255));
-        btnPreSetDbSearch.setForeground(java.awt.SystemColor.textHighlight);
-        btnPreSetDbSearch.setText("Database Search");
-        btnPreSetDbSearch.setBorder(null);
-        btnPreSetDbSearch.setBorderPainted(false);
-        btnPreSetDbSearch.setContentAreaFilled(false);
-        btnPreSetDbSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPreSetDbSearchActionPerformed(evt);
-            }
-        });
 
         btnUp.setBorder(null);
         btnUp.setBorderPainted(false);
@@ -288,6 +330,22 @@ public class RunCreationDialog extends javax.swing.JDialog {
             }
         });
 
+        lbPreSet1.setText("Steps");
+
+        cbPresets.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SearchGUI", "SearchGUI + PeptideShaker", "BlastP", "BlastN", "BlastX" }));
+        cbPresets.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbPresetsFocusLost(evt);
+            }
+        });
+
+        btnAddStep1.setText("Set");
+        btnAddStep1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddStep1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlStepsLayout = new javax.swing.GroupLayout(pnlSteps);
         pnlSteps.setLayout(pnlStepsLayout);
         pnlStepsLayout.setHorizontalGroup(
@@ -295,46 +353,50 @@ public class RunCreationDialog extends javax.swing.JDialog {
             .addGroup(pnlStepsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(liSteps, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlStepsLayout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(lbPreSet)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnPreSetDbSearch))
-                    .addGroup(pnlStepsLayout.createSequentialGroup()
-                        .addComponent(liSteps, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnDown, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRemoveStep, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)))
-                    .addGroup(pnlStepsLayout.createSequentialGroup()
-                        .addComponent(cbSteps, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddStep)))
+                        .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbPreSet)
+                            .addComponent(lbPreSet1))
+                        .addGap(10, 10, 10)
+                        .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbSteps, 0, 338, Short.MAX_VALUE)
+                            .addComponent(cbPresets, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRemoveStep, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(btnAddStep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAddStep1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlStepsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAddStep, btnDown, btnRemoveStep, btnUp});
+        pnlStepsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAddStep, btnAddStep1, btnDown, btnRemoveStep, btnUp});
 
         pnlStepsLayout.setVerticalGroup(
             pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createSequentialGroup()
-                .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbPreSet)
-                    .addComponent(btnPreSetDbSearch))
+                    .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cbPresets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddStep1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddStep))
+                    .addComponent(btnAddStep)
+                    .addComponent(lbPreSet1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlStepsLayout.createSequentialGroup()
-                        .addComponent(btnRemoveStep)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                        .addGap(0, 136, Short.MAX_VALUE)
                         .addComponent(btnUp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(liSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(liSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRemoveStep)))
                 .addContainerGap())
         );
 
@@ -416,18 +478,15 @@ public class RunCreationDialog extends javax.swing.JDialog {
             .addGroup(pnlParametersLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblParameterRemark)
                     .addGroup(pnlParametersLayout.createSequentialGroup()
                         .addComponent(spnlParameters, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnRemoveParameter)
-                            .addComponent(btnAddParameter)))
-                    .addComponent(lblParameterRemark))
+                            .addComponent(btnAddParameter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRemoveParameter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
-
-        pnlParametersLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAddParameter, btnRemoveParameter});
-
         pnlParametersLayout.setVerticalGroup(
             pnlParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlParametersLayout.createSequentialGroup()
@@ -438,7 +497,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                         .addComponent(btnAddParameter)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveParameter)
-                        .addGap(0, 95, Short.MAX_VALUE)))
+                        .addGap(0, 92, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblParameterRemark)
                 .addGap(9, 9, 9))
@@ -458,7 +517,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             pnlPreviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPreviewLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
+                .addComponent(spnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlPreviewLayout.setVerticalGroup(
@@ -490,7 +549,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(pnlSteps, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(pnlSteps, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pnlParameters, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pnlRunName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -634,6 +693,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshPreview() {
+        LOGGER.debug("Refreshing preview...");
         if (template != null) {
             //check the step order
             template.clearProcessSteps();
@@ -645,6 +705,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             epnlPreviewXML.setEditorKit(new XMLEditorKit());
             epnlPreviewXML.setText(template.toXML());
         }
+        LOGGER.debug("Done...");
     }
 
     private void btnCreateRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateRunActionPerformed
@@ -743,31 +804,6 @@ public class RunCreationDialog extends javax.swing.JDialog {
     private void tfRunNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRunNameActionPerformed
         refreshPreview();
     }//GEN-LAST:event_tfRunNameActionPerformed
-
-    private void btnPreSetDbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreSetDbSearchActionPerformed
-
-        DefaultListModel model = (DefaultListModel) liSteps.getModel();
-        model.removeAllElements();
-        String[] steps = new String[]{"InitialisingStep", "SearchGUIStep", "PeptideShakerStep", "TempCleaningStep"};
-        template = new PladipusProcessingTemplate(tfRunName.getText(), user, 4);
-
-        for (String aStep : steps) {
-            model.addElement(aStep);
-            template.addProcessingStep(installedProcessStepClasses.get(aStep));
-        }
-
-        DefaultTableModel tModel = (DefaultTableModel) tblParameters.getModel();
-        tModel.setRowCount(0);
-        tModel.addRow(new Object[]{"fastafile", "", true});
-        tModel.addRow(new Object[]{"searchGUI", "", true});
-        tModel.addRow(new Object[]{"peptideShaker", "", true});
-        tModel.addRow(new Object[]{"outputFolder", "", true});
-        tModel.addRow(new Object[]{"searchengines", "", true});
-        tModel.addRow(new Object[]{"peakfile", "", false});
-        tModel.addRow(new Object[]{"parameterfile", "", false});
-        tModel.addRow(new Object[]{"assay", "", false});
-
-    }//GEN-LAST:event_btnPreSetDbSearchActionPerformed
 
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         this.setVisible(false);
@@ -879,6 +915,59 @@ public class RunCreationDialog extends javax.swing.JDialog {
         refreshPreview();
     }//GEN-LAST:event_miClearPreferencesActionPerformed
 
+    private void reloadTemplate(PladipusProcessingTemplate presetTemplate) {
+        //check for unknown steps
+        LOGGER.debug("Refreshing template...");
+        ArrayList<String> unknownSteps = new ArrayList<>();
+        for (String aStep : presetTemplate.getProcessingSteps()) {
+            if (!installedProcessStepClasses.values().contains(aStep)) {
+                unknownSteps.add(aStep);
+            }
+        }
+
+        if (!unknownSteps.isEmpty()) {
+            StringBuilder unknownStepMessage = new StringBuilder("The following classes are not correctly installed : ").append(System.lineSeparator());
+            for (String anUnknownStep : unknownSteps) {
+                unknownStepMessage.append(anUnknownStep).append(System.lineSeparator());
+            }
+            JOptionPane.showMessageDialog(this,
+                    unknownStepMessage.toString(),
+                    "Your import seems corrupted...",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        synchronized (template) {
+            //set the lists and table and run name
+
+            DefaultListModel liModel = (DefaultListModel) liSteps.getModel();
+            DefaultTableModel tbModel = (DefaultTableModel) tblParameters.getModel();
+
+            tfRunName.setText(presetTemplate.getName());
+            liModel.removeAllElements();
+            for (String aStep : presetTemplate.getProcessingSteps()) {
+                liModel.addElement(aStep.substring(aStep.lastIndexOf(".") + 1));
+            }
+            tbModel.setRowCount(0);
+
+            TreeMap<String, ProcessingParameterTemplate> temp = new TreeMap<>();
+            temp.putAll(presetTemplate.getRunParameters());
+            for (ProcessingParameterTemplate aRunParamter : temp.values()) {
+                tbModel.addRow(new Object[]{aRunParamter.getName(), aRunParamter.getValue(), true});
+            }
+            temp.clear();
+            temp.putAll(presetTemplate.getJobParameters());
+            for (ProcessingParameterTemplate aJobParameter : temp.values()) {
+                tbModel.addRow(new Object[]{aJobParameter.getName(), aJobParameter.getValue(), false});
+            }
+            //also do the prerequisites
+            prerequisite = presetTemplate.getMachinePrerequisite();
+            refreshPrerequisites();
+            LOGGER.debug("Done...");
+        }
+        this.template = presetTemplate;
+    }
+
+
     private void miImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportActionPerformed
         fileChooser.setCurrentDirectory(lastSelectedFolder);
         fileChooser.setDialogTitle("Select template file to import...");
@@ -886,55 +975,8 @@ public class RunCreationDialog extends javax.swing.JDialog {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToOpen = fileChooser.getSelectedFile();
             try {
-
                 PladipusProcessingTemplate convertXMLtoTemplate = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(fileToOpen);
-                //check for unknown steps
-                ArrayList<String> unknownSteps = new ArrayList<>();
-                for (String aStep : convertXMLtoTemplate.getProcessingSteps()) {
-                    if (!installedProcessStepClasses.values().contains(aStep)) {
-                        unknownSteps.add(aStep);
-                    }
-                }
-
-                if (!unknownSteps.isEmpty()) {
-                    StringBuilder unknownStepMessage = new StringBuilder("The following classes are not correctly installed : ").append(System.lineSeparator());
-                    for (String anUnknownStep : unknownSteps) {
-                        unknownStepMessage.append(anUnknownStep).append(System.lineSeparator());
-                    }
-                    JOptionPane.showMessageDialog(this,
-                            unknownStepMessage.toString(),
-                            "Your import seems corrupted...",
-                            JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                synchronized (template) {
-                    //set the lists and table and run name
-                    template = convertXMLtoTemplate;
-                    DefaultListModel liModel = (DefaultListModel) liSteps.getModel();
-                    DefaultTableModel tbModel = (DefaultTableModel) tblParameters.getModel();
-
-                    tfRunName.setText(template.getName());
-                    liModel.removeAllElements();
-                    for (String aStep : template.getProcessingSteps()) {
-                        liModel.addElement(aStep.substring(aStep.lastIndexOf(".") + 1));
-                    }
-                    tbModel.setRowCount(0);
-
-                    TreeMap<String, ProcessingParameterTemplate> temp = new TreeMap<>();
-                    temp.putAll(template.getRunParameters());
-                    for (ProcessingParameterTemplate aRunParamter : temp.values()) {
-                        tbModel.addRow(new Object[]{aRunParamter.getName(), aRunParamter.getValue(), true});
-                    }
-                    temp.clear();
-                    temp.putAll(template.getJobParameters());
-                    for (ProcessingParameterTemplate aJobParameter : temp.values()) {
-                        tbModel.addRow(new Object[]{aJobParameter.getName(), aJobParameter.getValue(), false});
-                    }
-                    //also do the prerequisites
-
-                    prerequisite = template.getMachinePrerequisite();
-                    refreshPrerequisites();
-                }
+                reloadTemplate(convertXMLtoTemplate);
             } catch (IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
@@ -1027,21 +1069,40 @@ public class RunCreationDialog extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
 
+    private void cbStepsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbStepsFocusLost
+
+    }//GEN-LAST:event_cbStepsFocusLost
+
+    private void cbPresetsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbPresetsFocusLost
+
+    }//GEN-LAST:event_cbPresetsFocusLost
+
+    private void btnAddStep1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStep1ActionPerformed
+              try {
+            reloadTemplate(interpeter.convertXMLtoTemplate(presets.get(String.valueOf(cbPresets.getSelectedItem()))));
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
+            LOGGER.error(ex);
+        }
+        refreshPreview();
+    }//GEN-LAST:event_btnAddStep1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddParameter;
     private javax.swing.JButton btnAddStep;
+    private javax.swing.JButton btnAddStep1;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnCreateRun;
     private javax.swing.JButton btnDown;
     private javax.swing.ButtonGroup btnGroupOSArch;
-    private javax.swing.JButton btnPreSetDbSearch;
     private javax.swing.JButton btnRemoveParameter;
     private javax.swing.JButton btnRemoveStep;
     private javax.swing.JButton btnUp;
+    private javax.swing.JComboBox cbPresets;
     private javax.swing.JComboBox cbSteps;
     private javax.swing.JEditorPane epnlPreviewXML;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JLabel lbPreSet;
+    private javax.swing.JLabel lbPreSet1;
     private javax.swing.JLabel lblParameterRemark;
     private javax.swing.JList liSteps;
     private javax.swing.JMenuBar mbMain;
@@ -1073,4 +1134,5 @@ public class RunCreationDialog extends javax.swing.JDialog {
     public PladipusProcessingTemplate getProcessingTemplate() {
         return template;
     }
+
 }

@@ -425,6 +425,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     private void showCreateNewRunDialog() {
         try {
             RunCreationDialog dialog = new RunCreationDialog(null, userName, true);
+            dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
             PladipusProcessingTemplate processingTemplate = dialog.getProcessingTemplate();
             if (dialog.isConfirmed()) {

@@ -101,7 +101,7 @@ public class XMLReader {
 //        tag name
         if (node instanceof org.w3c.dom.Document && doc.getLength()==0) {
             org.w3c.dom.Document dd=(org.w3c.dom.Document)node;
-            String nodeStr="?xml version=\""+dd.getXmlVersion()+"\" encoding=\""+dd.getXmlEncoding()+"\"?";
+            String nodeStr="?xml version=\""+dd.getXmlVersion()+"\" encoding=\"UTF-8\"?";
 
             spec=new DefaultStyledDocument.ElementSpec(XMLDocument.TAGNAME_ATTRIBUTES,
                     DefaultStyledDocument.ElementSpec.ContentType,
