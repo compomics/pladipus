@@ -157,12 +157,14 @@ public class RunCreationDialog extends javax.swing.JDialog {
         //add icons to up and down buttons
         ImageIcon imageUp = new ImageIcon(
                 getClass().getResource(
-                        "/images/arrowUp.png"));
+                        "/images/icons/arrowUp.png"));
         btnUp.setIcon(imageUp);
         ImageIcon imageDown = new ImageIcon(
                 getClass().getResource(
-                        "/images/arrowDown.png"));
+                        "/images/icons/arrowDown.png"));
         btnDown.setIcon(imageDown);
+        btnUp.repaint();
+        btnDown.repaint();
         refreshPreview();
 
     }
@@ -258,7 +260,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
         btnPreSetDbSearch.setBackground(new java.awt.Color(255, 255, 255));
         btnPreSetDbSearch.setForeground(java.awt.SystemColor.textHighlight);
-        btnPreSetDbSearch.setText("database search");
+        btnPreSetDbSearch.setText("Database Search");
         btnPreSetDbSearch.setBorder(null);
         btnPreSetDbSearch.setBorderPainted(false);
         btnPreSetDbSearch.setContentAreaFilled(false);
@@ -268,14 +270,18 @@ public class RunCreationDialog extends javax.swing.JDialog {
             }
         });
 
-        btnUp.setText("^");
+        btnUp.setBorder(null);
+        btnUp.setBorderPainted(false);
+        btnUp.setOpaque(false);
         btnUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpActionPerformed(evt);
             }
         });
 
-        btnDown.setText("v");
+        btnDown.setBorder(null);
+        btnDown.setBorderPainted(false);
+        btnDown.setOpaque(false);
         btnDown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDownActionPerformed(evt);
@@ -289,24 +295,27 @@ public class RunCreationDialog extends javax.swing.JDialog {
             .addGroup(pnlStepsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(liSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbSteps, 0, 401, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnRemoveStep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddStep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnDown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnUp)))
-                .addContainerGap())
-            .addGroup(pnlStepsLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
-                .addComponent(lbPreSet)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnPreSetDbSearch)
+                    .addGroup(pnlStepsLayout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(lbPreSet)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnPreSetDbSearch))
+                    .addGroup(pnlStepsLayout.createSequentialGroup()
+                        .addComponent(liSteps, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnDown, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnUp, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRemoveStep, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)))
+                    .addGroup(pnlStepsLayout.createSequentialGroup()
+                        .addComponent(cbSteps, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddStep)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pnlStepsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAddStep, btnDown, btnRemoveStep, btnUp});
+
         pnlStepsLayout.setVerticalGroup(
             pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createSequentialGroup()
@@ -321,13 +330,15 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlStepsLayout.createSequentialGroup()
                         .addComponent(btnRemoveStep)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                         .addComponent(btnUp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDown))
-                    .addComponent(liSteps, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnDown, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(liSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
+
+        pnlStepsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnDown, btnUp});
 
         pnlRunName.setBackground(new java.awt.Color(255, 255, 255));
         pnlRunName.setBorder(javax.swing.BorderFactory.createTitledBorder("Run"));
@@ -406,14 +417,12 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(pnlParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlParametersLayout.createSequentialGroup()
-                        .addComponent(spnlParameters, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(spnlParameters, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlParametersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAddParameter, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnRemoveParameter, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(pnlParametersLayout.createSequentialGroup()
-                        .addComponent(lblParameterRemark)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(btnRemoveParameter)
+                            .addComponent(btnAddParameter)))
+                    .addComponent(lblParameterRemark))
                 .addContainerGap())
         );
 
@@ -429,7 +438,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                         .addComponent(btnAddParameter)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveParameter)
-                        .addGap(0, 121, Short.MAX_VALUE)))
+                        .addGap(0, 95, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblParameterRemark)
                 .addGap(9, 9, 9))
@@ -449,7 +458,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             pnlPreviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPreviewLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+                .addComponent(spnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlPreviewLayout.setVerticalGroup(
@@ -480,11 +489,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
                         .addComponent(btnCreateRun))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pnlRunName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pnlSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pnlParameters, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(pnlSteps, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(pnlParameters, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlRunName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );

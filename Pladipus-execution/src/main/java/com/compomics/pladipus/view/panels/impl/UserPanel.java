@@ -103,14 +103,14 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         setProgressColumn();
         setPageFieldListener();
     }
-
+    
     private void setPageFieldListener() {
         tfCurrentPage.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 checkCurrentPageChange();
             }
-
+            
             ;
             @Override
             public void focusLost(FocusEvent e) {
@@ -118,7 +118,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
         });
     }
-
+    
     private void setProgressColumn() {
         TableColumnModel rColumnModel = tblRunInfo.getColumnModel();
         TableColumn rColumn = rColumnModel.getColumn(rColumnModel.getColumnCount() - 1);
@@ -127,23 +127,23 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         TableColumn pColumn = pColumnModel.getColumn(pColumnModel.getColumnCount() - 1);
         pColumn.setCellRenderer(new ProgressCellRenderer());
     }
-
+    
     private void addTableListener() {
         tblRunInfo.getSelectionModel().addListSelectionListener(new UserTableListSelectionListener(this));
         tblProcessInfo.setComponentPopupMenu(new ProcessPopupMenu(this));
         tblRunInfo.setComponentPopupMenu(new RunPopupMenu(this));
     }
-
+    
     public void setUser(String userName) {
         this.userName = userName;
     }
-
+    
     @Override
     public void activate() {
         updateWorker = new UpdateWorker();
         updateWorker.execute();
     }
-
+    
     @Override
     public void deactivate() {
         if (updateWorker != null) {
@@ -165,15 +165,15 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         pnlRun = new javax.swing.JPanel();
         spnlRun = new javax.swing.JScrollPane();
         tblRunInfo = new javax.swing.JTable();
-        pnlProcess = new javax.swing.JPanel();
-        spnlProcess = new javax.swing.JScrollPane();
-        tblProcessInfo = new javax.swing.JTable();
         pnlPagination = new javax.swing.JPanel();
         pnlPaginationInput = new javax.swing.JPanel();
         tfCurrentPage = new javax.swing.JTextField();
         lbPages = new javax.swing.JLabel();
         btnNextPage = new javax.swing.JButton();
         btnPrevPage = new javax.swing.JButton();
+        pnlProcess = new javax.swing.JPanel();
+        spnlProcess = new javax.swing.JScrollPane();
+        tblProcessInfo = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -197,7 +197,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         pnlRun.setBorder(javax.swing.BorderFactory.createTitledBorder("My Runs"));
 
         spnlRun.setBackground(new java.awt.Color(255, 255, 255));
-        spnlRun.setBorder(null);
+        spnlRun.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         tblRunInfo.setAutoCreateRowSorter(true);
         tblRunInfo.setModel(new javax.swing.table.DefaultTableModel(
@@ -238,61 +238,17 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         pnlRun.setLayout(pnlRunLayout);
         pnlRunLayout.setHorizontalGroup(
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spnlRun, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
+            .addGroup(pnlRunLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+                .addContainerGap())
         );
         pnlRunLayout.setVerticalGroup(
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spnlRun, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-        );
-
-        pnlProcess.setBackground(new java.awt.Color(255, 255, 255));
-        pnlProcess.setBorder(javax.swing.BorderFactory.createTitledBorder("My Processes"));
-
-        spnlProcess.setBackground(new java.awt.Color(255, 255, 255));
-        spnlProcess.setBorder(null);
-        spnlProcess.setOpaque(false);
-
-        tblProcessInfo.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "", "P_ID", "State", "Progress"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, true, true, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblProcessInfo.setGridColor(new java.awt.Color(255, 255, 255));
-        tblProcessInfo.setOpaque(false);
-        tblProcessInfo.getTableHeader().setReorderingAllowed(false);
-        spnlProcess.setViewportView(tblProcessInfo);
-        if (tblProcessInfo.getColumnModel().getColumnCount() > 0) {
-            tblProcessInfo.getColumnModel().getColumn(0).setMinWidth(50);
-            tblProcessInfo.getColumnModel().getColumn(0).setPreferredWidth(50);
-            tblProcessInfo.getColumnModel().getColumn(0).setMaxWidth(50);
-            tblProcessInfo.getColumnModel().getColumn(1).setMinWidth(50);
-            tblProcessInfo.getColumnModel().getColumn(1).setPreferredWidth(50);
-            tblProcessInfo.getColumnModel().getColumn(1).setMaxWidth(50);
-            tblProcessInfo.getColumnModel().getColumn(3).setMinWidth(200);
-            tblProcessInfo.getColumnModel().getColumn(3).setPreferredWidth(200);
-            tblProcessInfo.getColumnModel().getColumn(3).setMaxWidth(200);
-        }
-
-        javax.swing.GroupLayout pnlProcessLayout = new javax.swing.GroupLayout(pnlProcess);
-        pnlProcess.setLayout(pnlProcessLayout);
-        pnlProcessLayout.setHorizontalGroup(
-            pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spnlProcess, javax.swing.GroupLayout.Alignment.TRAILING)
-        );
-        pnlProcessLayout.setVerticalGroup(
-            pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spnlProcess)
+            .addGroup(pnlRunLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spnlRun, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlPagination.setBackground(new java.awt.Color(255, 255, 255));
@@ -372,16 +328,73 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 .addContainerGap())
         );
 
+        pnlProcess.setBackground(new java.awt.Color(255, 255, 255));
+        pnlProcess.setBorder(javax.swing.BorderFactory.createTitledBorder("My Processes"));
+
+        spnlProcess.setBackground(new java.awt.Color(255, 255, 255));
+        spnlProcess.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        tblProcessInfo.setAutoCreateRowSorter(true);
+        tblProcessInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", "P_ID", "Name", "Progress"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, true, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblProcessInfo.setGridColor(new java.awt.Color(255, 255, 255));
+        tblProcessInfo.setOpaque(false);
+        tblProcessInfo.getTableHeader().setReorderingAllowed(false);
+        spnlProcess.setViewportView(tblProcessInfo);
+        tblProcessInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        if (tblProcessInfo.getColumnModel().getColumnCount() > 0) {
+            tblProcessInfo.getColumnModel().getColumn(0).setMinWidth(50);
+            tblProcessInfo.getColumnModel().getColumn(0).setPreferredWidth(50);
+            tblProcessInfo.getColumnModel().getColumn(0).setMaxWidth(50);
+            tblProcessInfo.getColumnModel().getColumn(1).setMinWidth(50);
+            tblProcessInfo.getColumnModel().getColumn(1).setPreferredWidth(50);
+            tblProcessInfo.getColumnModel().getColumn(1).setMaxWidth(50);
+            tblProcessInfo.getColumnModel().getColumn(3).setMinWidth(200);
+            tblProcessInfo.getColumnModel().getColumn(3).setPreferredWidth(200);
+            tblProcessInfo.getColumnModel().getColumn(3).setMaxWidth(200);
+        }
+
+        javax.swing.GroupLayout pnlProcessLayout = new javax.swing.GroupLayout(pnlProcess);
+        pnlProcess.setLayout(pnlProcessLayout);
+        pnlProcessLayout.setHorizontalGroup(
+            pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProcessLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlProcessLayout.setVerticalGroup(
+            pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProcessLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlPagination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlRun, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlProcess, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlPagination, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNewRun)
@@ -394,15 +407,19 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNewRun)
-                    .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                    .addComponent(pnlRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAddProcess)
-                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAddProcess)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlPagination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        pnlProcess.getAccessibleContext().setAccessibleName("My Processes");
     }// </editor-fold>//GEN-END:initComponents
 
     private void showCreateNewRunDialog() {
@@ -410,9 +427,9 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             RunCreationDialog dialog = new RunCreationDialog(null, userName, true);
             dialog.setVisible(true);
             PladipusProcessingTemplate processingTemplate = dialog.getProcessingTemplate();
-            if(dialog.isConfirmed()){
-            RunDAO rInstance = RunDAO.getInstance();
-            int runID = rInstance.createRun(processingTemplate);
+            if (dialog.isConfirmed()) {
+                RunDAO rInstance = RunDAO.getInstance();
+                int runID = rInstance.createRun(processingTemplate);
             }
             dialog.dispose();
         } catch (SQLException | ParserConfigurationException | IOException | SAXException ex) {
@@ -478,7 +495,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     private void tfCurrentPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfCurrentPageActionPerformed
         checkCurrentPageChange();
     }//GEN-LAST:event_tfCurrentPageActionPerformed
-
+    
     private void checkCurrentPageChange() {
         try {
             int parseInt = Integer.parseInt(tfCurrentPage.getText());
@@ -494,15 +511,15 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             LOGGER.error(ex);
         }
     }
-
+    
     private void promptErrorMessage() {
         JOptionPane.showMessageDialog(null,
                 "Error: Please enter number between 1 and " + pagesNeeded, "Error Massage",
                 JOptionPane.ERROR_MESSAGE);
     }
-
+    
     public void reloadPage() {
-
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -517,6 +534,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     private javax.swing.JPanel pnlRun;
     private javax.swing.JScrollPane spnlProcess;
     private javax.swing.JScrollPane spnlRun;
+    private javax.swing.JScrollPane spnlRun1;
     private javax.swing.JTable tblProcessInfo;
     private javax.swing.JTable tblRunInfo;
     private javax.swing.JTextField tfCurrentPage;
@@ -525,11 +543,11 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     public JTable getRunTable() {
         return tblRunInfo;
     }
-
+    
     public JTable getProcessTable() {
         return tblProcessInfo;
     }
-
+    
     public void updateRunTable() throws IOException, MalformedObjectNameException, Exception {
         JTable table = UserPanel.this.tblRunInfo;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -566,27 +584,27 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             model.setRowCount(totalRunTableRowCount);
         }
     }
-
+    
     public void updateProcessTable() throws Exception {
         if (runTemplate != null) {
+            DefaultTableModel tableModel = (DefaultTableModel) tblProcessInfo.getModel();
             int totalStepSize = runTemplate.getProcessingSteps().size();
             int[] selectedProcessRows = tblProcessInfo.getSelectedRows();
-            if (runSize > -1) {
+            if (runSize > 0) {
                 pagesNeeded = 0;
                 if (runSize % pageSize > 0) {
                     pagesNeeded++;
                 }
                 pagesNeeded += (runSize / pageSize);
-
+                
                 lbPages.setText("/ " + (pagesNeeded));
                 int lowerlimit = (currentPage - 1) * pageSize;
                 int index = lowerlimit;
-
-                DefaultTableModel tableModel = (DefaultTableModel) tblProcessInfo.getModel();
+                
                 LinkedList<Object[]> processInformation = pService.getProcessInformation(selected_run_id, lowerlimit, pageSize);
                 tableModel.setNumRows(processInformation.size());
                 int row = 0;
-
+                
                 for (Object[] anObjectArray : processInformation) {
                     index++;
                     long processId = (Long) anObjectArray[0];
@@ -609,11 +627,13 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                         tblProcessInfo.addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
                     }
                 }
-                tblProcessInfo.setModel(tableModel);
+            } else {
+                tableModel.setRowCount(0);
             }
+            tblProcessInfo.setModel(tableModel);
         }
     }
-
+    
     public void setSelectedRunId(int run_id) {
         this.selected_run_id = run_id;
         //   ((DefaultTableModel) tblProcessInfo.getModel()).setRowCount(100);
@@ -623,16 +643,16 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             lbPages.setText("/" + runSize);
             currentPage = 1;
             tfCurrentPage.setText(String.valueOf(currentPage));
-
+            
         } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
             //ignore for now?
         }
     }
-
+    
     private class UpdateWorker extends SwingWorker<Integer, Integer> {
-
+        
         private boolean isDone = false;
-
+        
         @Override
         protected Integer doInBackground() throws Exception {
             updateRunTable();
@@ -650,12 +670,12 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
             return 0;
         }
-
+        
         @Override
         protected void done() {
             isDone = true;
         }
-
+        
     }
-
+    
 }
