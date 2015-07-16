@@ -5,7 +5,6 @@
  */
 package com.compomics.pladipus.core.control.runtime.steploader.impl;
 
-import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoader;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
@@ -34,7 +33,7 @@ public class SpringProcessingStepLoader implements StepLoader {
     /**
      * The Logging instance
      */
-    private static final Logger LOGGER = Logger.getLogger(ProcessingEngine.class);
+    private static final Logger LOGGER = Logger.getLogger(SpringProcessingStepLoader.class);
     /**
      * The folder that has to be loaded into the classpath
      */
@@ -57,7 +56,7 @@ public class SpringProcessingStepLoader implements StepLoader {
      */
     public SpringProcessingStepLoader() throws IOException, StepLoadingException {
         LOGGER.debug("Refreshing spring context");
-        Logger.getRootLogger().setLevel(Level.OFF);
+        //Logger.getRootLogger().setLevel(Level.OFF);
         props = NetworkProperties.getInstance();
         //update classpath in case new jars were added
         reloadRepositoryPath();

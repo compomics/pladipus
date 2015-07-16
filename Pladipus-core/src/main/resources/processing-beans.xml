@@ -10,6 +10,18 @@
                                                  
     <bean id="TempCleaningStep" class="com.compomics.pladipus.search.processsteps.TempCleaningStep" lazy-init="true"/>            
            
+    <!--Blasting beans-->
+    
+    <bean id="BlastPrepareDbStep" class="com.compomics.pladipus.blast.BlastPrepareDbStep" lazy-init="true"/>    
+
+    <bean id="BlastSetupStep" class="com.compomics.pladipus.blast.BlastSetupStep" lazy-init="true"/>    
+  
+    <bean id="BlastNStep" class="com.compomics.pladipus.blast.BlastNStep" lazy-init="true"/>    
+
+    <bean id="BlastPStep" class="com.compomics.pladipus.blast.BlastPStep" lazy-init="true"/>    
+ 
+    <bean id="BlastXStep" class="com.compomics.pladipus.blast.BlastXStep" lazy-init="true"/>    
+    
     <!--DO NOT EDIT THESE STEPS -->
     <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
 </beans>
