@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.compomics</groupId>
         <artifactId>Pladipus</artifactId>
-        <version>0.2.1</version>
+        <version>0.3.0</version>
     </parent>
     <artifactId>Pladipus-installer</artifactId>
     <packaging>jar</packaging>
@@ -176,7 +176,7 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>Pladipus-execution</artifactId>
-            <version>0.2.1</version>
+            <version>0.3.0</version>
             <type>jar</type>
             <exclusions>
                 <exclusion> 
