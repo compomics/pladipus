@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pladipus.controller.util;
+package com.compomics.pladipus.core.control.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

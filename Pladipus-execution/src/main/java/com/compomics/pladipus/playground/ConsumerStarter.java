@@ -24,7 +24,7 @@ public class ConsumerStarter {
         try {
             while (true) {
                 Logger.getRootLogger().setLevel(Level.INFO);
-                ClientNameResolver.setTestingMode(false);
+                ClientNameResolver.setTestingMode(true);
                 trafficManager.pullFromPladipus();
                 Thread.sleep(5000);
             }

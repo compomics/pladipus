@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pladipus.search.processsteps;
+package com.compomics.pladipus.denovo.processsteps;
 
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
@@ -14,14 +14,14 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Kenneth Verheggen
  */
-public class InitialisingStep extends ProcessingStep {
+public class DenovoGUISetupStep extends ProcessingStep {
 
     /**
      * the temp folder for the entire processing
      */
     private final File tempResources;
 
-    public InitialisingStep() {
+    public DenovoGUISetupStep() {
         tempResources = new File(System.getProperty("user.home") + "/.compomics/temp");
     }
 
@@ -41,39 +41,36 @@ public class InitialisingStep extends ProcessingStep {
         } else {
             tempResources.mkdirs();
         }
-        copyToTempFolder();
+        InitialiseInputFiles();
         return true;
     }
 
-    private void copyToTempFolder() throws Exception {
+    private void InitialiseInputFiles() throws Exception {
         //original
-        String mgfPath = parameters.get("peakfile");
-        String paramPath = parameters.get("parameterfile");
-        String fastaPath = parameters.get("fastafile");
+        String mgfPath = parameters.get("input");
+
+        String paramPath = parameters.get("parameterFile");
+
+        File outputFolder = new File(parameters.get("outputFolder"));
+        outputFolder.mkdirs();
+        parameters.put("outputFolder", outputFolder.getAbsolutePath());
 
         if (mgfPath.toLowerCase().endsWith(".mgf")) {
-            parameters.put("tempPeakfile", PladipusFileDownloadingService.downloadFile(mgfPath, tempResources).getAbsolutePath());
+            parameters.put("tempInput", PladipusFileDownloadingService.downloadFile(mgfPath, tempResources).getAbsolutePath());
         } else {
-            parameters.put("tempPeakfile", PladipusFileDownloadingService.downloadFolder(mgfPath, tempResources).getAbsolutePath());
+            parameters.put("tempInput", PladipusFileDownloadingService.downloadFolder(mgfPath, tempResources).getAbsolutePath());
         }
-
         parameters.put("tempParameterFile", PladipusFileDownloadingService.downloadFile(paramPath, tempResources).getAbsolutePath());
 
-        parameters.put("tempFastaFile", PladipusFileDownloadingService.downloadFile(fastaPath, tempResources, "temp.fasta").getAbsolutePath());
-
         //output
-        File outputFolder = new File(parameters.get("outputFolder") + "/" + parameters.get("assay"));
-        outputFolder.mkdirs();
-        parameters.put("outputfolder", outputFolder.getAbsolutePath());
         parameters.put("temp", tempResources.getAbsolutePath());
         //load the tools here?
-
         System.out.println(parameters);
     }
 
     @Override
     public String getDescription() {
-        return "Initialisation of the search process";
+        return "Initialisation of the denovoGUI process";
     }
 
 }

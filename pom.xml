@@ -12,6 +12,8 @@
         <module>Pladipus-core</module>
         <module>Pladipus-search</module>
         <module>Pladipus-installer</module>
+        <module>Pladipus-blast</module>
+        <module>Pladipus-denovo</module>
     </modules>
     
     <properties>

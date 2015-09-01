@@ -5,7 +5,7 @@
  */
 package com.compomics.pladipus.controller.setup;
 
-import com.compomics.pladipus.controller.util.ZipUtils;
+import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
 import java.io.File;
 import java.io.FileOutputStream;

@@ -6,9 +6,15 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
+import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.processbuilder.PeptideShakerProcess;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -23,32 +29,72 @@ public class PeptideShakerStep extends ProcessingStep {
     @Override
     public boolean doAction() throws Exception, Exception {
         System.out.println("Running " + this.getClass().getName());
-
-        System.out.println("Closing and removing all current connections...");
-
         File peptideShakerJar = getJar();
-
-        File temp = new File(parameters.get("temp"));
+        
         File parameterFile = new File(parameters.get("tempParameterFile"));
-        PeptideShakerProcess process = new PeptideShakerProcess(parameters.get("assay"), temp, parameterFile, peptideShakerJar);
+        File input = new File(parameters.get("input"));
+        
+        
+        File temp = new File(parameters.get("temp"));
+      
+        PeptideShakerProcess process = new PeptideShakerProcess(parameters.get("assay"), input, parameterFile, peptideShakerJar);
         parameters.put("cps", process.getResultingCpsFile().getAbsolutePath());
         //TODO REPLACE THIS WITH THE ACTUAL OUTPUTFOLDER OR WAIT TILL THE VERY END IN THE CLEANING STEP?
         process.setOutputFolder(temp);
-        //place the modified temp usermod in the searchgui config folder...keep a backup as classpathresource
-        //before running...do a garbage collection to get rid of the derby connection?
-
         ProcessingEngine.startProcess(peptideShakerJar, process.generateCommand());
-        //run searchgui with the existing files
-
+        //run peptideShaker with the existing files
+        cleanupAndSave();
         return true;
     }
 
-    public File getJar() {
+    public File getJar() throws IOException {
         //check if this is possible in another way...
-        File peptideShakerFolder = new File(parameters.get("PeptideShaker"));
-        File jarParent = peptideShakerFolder.listFiles()[0];
+        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
+        toolFolder.mkdirs();
+        //check if searchGUI already exists?
+        File temp = new File(toolFolder,"PeptideShaker");
+        File denovoGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("PeptideShaker"), toolFolder);
+        if (denovoGUIFile.getName().endsWith(".zip")) {
+            ZipUtils.unzipArchive(denovoGUIFile, temp);
+        }
+        File jarParent = temp.listFiles()[0];
         String version = jarParent.getName();
+   //     version=version.substring(0,version.indexOf("-"));
         return new File(jarParent, version + ".jar");
+    }
+
+    public boolean aVersionExistsLocal() {
+        //TODO insert installer code here in case searchGUI was not included????
+        return true;
+    }
+
+    private void cleanupAndSave() throws IOException {
+
+        System.out.println("Running " + this.getClass().getName());
+        //clean all the file-extensions that are not in the list to be saved
+        File temp = new File(parameters.get("temp"));
+
+        File[] files = temp.listFiles(new FileFilter() {
+            private final FileNameExtensionFilter filter
+                    = new FileNameExtensionFilter("Result Files", "cps");
+
+            @Override
+            public boolean accept(File file) {
+                return (!file.isDirectory() && filter.accept(file));
+            }
+        });
+
+        File outputFolder = new File(parameters.get("outputFolder"));
+        outputFolder.mkdirs();
+        for (File aFile : files) {
+            File dest = new File(outputFolder, aFile.getName());
+            if (aFile.isDirectory()) {
+                FileUtils.copyDirectory(aFile, dest, true);
+            } else {
+                FileUtils.copyFile(aFile, dest, true);
+            }
+        }
+        FileUtils.deleteDirectory(temp);
     }
 
     @Override

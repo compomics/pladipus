@@ -103,14 +103,14 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         setProgressColumn();
         setPageFieldListener();
     }
-    
+
     private void setPageFieldListener() {
         tfCurrentPage.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 checkCurrentPageChange();
             }
-            
+
             ;
             @Override
             public void focusLost(FocusEvent e) {
@@ -118,7 +118,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
         });
     }
-    
+
     private void setProgressColumn() {
         TableColumnModel rColumnModel = tblRunInfo.getColumnModel();
         TableColumn rColumn = rColumnModel.getColumn(rColumnModel.getColumnCount() - 1);
@@ -127,23 +127,23 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         TableColumn pColumn = pColumnModel.getColumn(pColumnModel.getColumnCount() - 1);
         pColumn.setCellRenderer(new ProgressCellRenderer());
     }
-    
+
     private void addTableListener() {
         tblRunInfo.getSelectionModel().addListSelectionListener(new UserTableListSelectionListener(this));
         tblProcessInfo.setComponentPopupMenu(new ProcessPopupMenu(this));
         tblRunInfo.setComponentPopupMenu(new RunPopupMenu(this));
     }
-    
+
     public void setUser(String userName) {
         this.userName = userName;
     }
-    
+
     @Override
     public void activate() {
         updateWorker = new UpdateWorker();
         updateWorker.execute();
     }
-    
+
     @Override
     public void deactivate() {
         if (updateWorker != null) {
@@ -496,7 +496,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     private void tfCurrentPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfCurrentPageActionPerformed
         checkCurrentPageChange();
     }//GEN-LAST:event_tfCurrentPageActionPerformed
-    
+
     private void checkCurrentPageChange() {
         try {
             int parseInt = Integer.parseInt(tfCurrentPage.getText());
@@ -512,15 +512,15 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             LOGGER.error(ex);
         }
     }
-    
+
     private void promptErrorMessage() {
         JOptionPane.showMessageDialog(null,
                 "Error: Please enter number between 1 and " + pagesNeeded, "Error Massage",
                 JOptionPane.ERROR_MESSAGE);
     }
-    
+
     public void reloadPage() {
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -544,11 +544,11 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     public JTable getRunTable() {
         return tblRunInfo;
     }
-    
+
     public JTable getProcessTable() {
         return tblProcessInfo;
     }
-    
+
     public void updateRunTable() throws IOException, MalformedObjectNameException, Exception {
         JTable table = UserPanel.this.tblRunInfo;
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -585,9 +585,9 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             model.setRowCount(totalRunTableRowCount);
         }
     }
-    
+
     public void updateProcessTable() throws Exception {
-        if (runTemplate != null) {
+        if (runTemplate != null && tblRunInfo.getSelectedRowCount() == 1) {
             DefaultTableModel tableModel = (DefaultTableModel) tblProcessInfo.getModel();
             int totalStepSize = runTemplate.getProcessingSteps().size();
             int[] selectedProcessRows = tblProcessInfo.getSelectedRows();
@@ -597,15 +597,15 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                     pagesNeeded++;
                 }
                 pagesNeeded += (runSize / pageSize);
-                
+
                 lbPages.setText("/ " + (pagesNeeded));
                 int lowerlimit = (currentPage - 1) * pageSize;
                 int index = lowerlimit;
-                
+
                 LinkedList<Object[]> processInformation = pService.getProcessInformation(selected_run_id, lowerlimit, pageSize);
                 tableModel.setNumRows(processInformation.size());
                 int row = 0;
-                
+
                 for (Object[] anObjectArray : processInformation) {
                     index++;
                     long processId = (Long) anObjectArray[0];
@@ -634,7 +634,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             tblProcessInfo.setModel(tableModel);
         }
     }
-    
+
     public void setSelectedRunId(int run_id) {
         this.selected_run_id = run_id;
         //   ((DefaultTableModel) tblProcessInfo.getModel()).setRowCount(100);
@@ -644,16 +644,16 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             lbPages.setText("/" + runSize);
             currentPage = 1;
             tfCurrentPage.setText(String.valueOf(currentPage));
-            
+
         } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
             //ignore for now?
         }
     }
-    
+
     private class UpdateWorker extends SwingWorker<Integer, Integer> {
-        
+
         private boolean isDone = false;
-        
+
         @Override
         protected Integer doInBackground() throws Exception {
             updateRunTable();
@@ -671,12 +671,12 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
             return 0;
         }
-        
+
         @Override
         protected void done() {
             isDone = true;
         }
-        
+
     }
-    
+
 }

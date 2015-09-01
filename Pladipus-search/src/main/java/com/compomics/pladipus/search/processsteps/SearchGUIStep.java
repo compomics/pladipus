@@ -6,11 +6,14 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
+import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.processbuilder.SearchGuiProcess;
 import com.compomics.util.experiment.identification.SearchParameters;
 import com.compomics.util.preferences.ModificationProfile;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +33,7 @@ public class SearchGUIStep extends ProcessingStep {
         if (!aVersionExistsLocal()) {
             //  downloadSearchGUI();
         }
-        File peakFile = new File(parameters.get("tempPeakfile"));
+        File input = new File(parameters.get("tempInput"));
         File parameterFile = new File(parameters.get("tempParameterFile"));
         File fastaFile = new File(parameters.get("tempFastaFile"));
         //update the fasta
@@ -61,29 +64,38 @@ public class SearchGUIStep extends ProcessingStep {
         SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
 
         //get requested search engines
-        String searchEngines = parameters.get("searchengines");
+        String searchEngines = parameters.get("searchEngines");
         if (searchEngines == null) {
             searchEngines = "xtandem,tide";
         }
-        SearchGuiProcess process = new SearchGuiProcess(peakFile, parameterFile, getJar(), searchEngines.split(","));
-
+        SearchGuiProcess process = new SearchGuiProcess(input, parameterFile, getJar(), searchEngines.split(","));
         File temp = new File(parameters.get("temp"));
         process.setOutputFolder(temp);
         process.finalizeBuild();
         ProcessingEngine.startProcess(getJar(), process.generateCommand());
+        parameters.put("input",temp.getAbsolutePath());
         return true;
     }
 
-    public File getJar() {
+    
+    public File getJar() throws IOException {
         //check if this is possible in another way...
-        File searchGUIFolder = new File(parameters.get("SearchGUI"));
-        File jarParent = searchGUIFolder.listFiles()[0];
+        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
+        toolFolder.mkdirs();
+        //check if searchGUI already exists?
+        File temp = new File(toolFolder,"SearchGUI");
+        File denovoGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("SearchGUI"), toolFolder);
+        if (denovoGUIFile.getName().endsWith(".zip")) {
+            ZipUtils.unzipArchive(denovoGUIFile, temp);
+        }
+        File jarParent = temp.listFiles()[0];
         String version = jarParent.getName();
+   //     version=version.substring(0,version.indexOf("-"));
         return new File(jarParent, version + ".jar");
     }
 
     public boolean aVersionExistsLocal() {
-        //TODO insert installer code here ?
+        //TODO insert installer code here in case searchGUI was not included????
         return true;
     }
 

@@ -1,0 +1,17 @@
+<template run='Example_DenovoGUI' user='pladmin' priority='4'>
+ 	<steps>
+		<step class="com.compomics.pladipus.denovo.processsteps.DenovoGUISetupStep"/> 
+		<step class="com.compomics.pladipus.denovo.processsteps.DenovoGUIStep"/> 
+  	</steps> 
+ 	<parameters>
+ 		<run>
+			<param name='DenovoGUI' value =''/>
+  		</run>
+   		<job>
+ 			<param name ='input' default='default'/>
+			<param name ='parameterFile' default='default'/>
+			<param name ='outputFolder' default ='default'/>
+ 		</job>
+ 	</parameters>
+ </template> 
+ 

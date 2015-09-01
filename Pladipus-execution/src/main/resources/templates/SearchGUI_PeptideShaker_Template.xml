@@ -1,21 +1,20 @@
 <template run='Example_SearchGUI_PeptideShaker' user='pladmin' priority='4'>
  	<steps>
-		<step class="com.compomics.pladipus.search.processsteps.InitialisingStep"/> 
+		<step class="com.compomics.pladipus.search.processsteps.SearchSetupStep"/> 
 		<step class="com.compomics.pladipus.search.processsteps.SearchGUIStep"/> 
 		<step class="com.compomics.pladipus.search.processsteps.PeptideShakerStep"/> 
-		<step class="com.compomics.pladipus.search.processsteps.TempCleaningStep"/> 
   	</steps> 
  	<parameters>
  		<run>
- 			<param name='fastafile' value =''/>
+ 			<param name='fastaFile' value =''/>
 			<param name='outputFolder' value =''/>
 			<param name='SearchGUI' value=''/>
 			<param name='PeptideShaker' value=''/>
-			<param name='searchengines' value=''/>
+			<param name='searchEngines' value=''/>
   		</run>
    		<job>
- 			<param name ='peakfile' default='default'/>
-			<param name ='parameterfile' default='default'/>
+ 			<param name ='input' default='default'/>
+			<param name ='parameterFile' default='default'/>
 			<param name ='assay' default ='default'/>
  		</job>
  	</parameters>

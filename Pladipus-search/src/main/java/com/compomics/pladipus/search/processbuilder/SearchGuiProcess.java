@@ -82,7 +82,7 @@ public class SearchGuiProcess {
     private void parseSearchEngines(String[] requestedSearchEngines, List<String> command) {
         List<String> requestedSearchEngineList = Arrays.asList(requestedSearchEngines);
         for (String anEngineSwitch : availableSearchEngineSwitches) {
-            if (!requestedSearchEngineList.contains(anEngineSwitch)) {
+            if (!requestedSearchEngineList.contains(anEngineSwitch.toLowerCase())) {
                 command.add("-" + anEngineSwitch);
                 command.add("0");
             }

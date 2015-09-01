@@ -99,11 +99,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         //step loading
         ProcessingBeanUpdater updater = ProcessingBeanUpdater.getInstance();
         installedProcessStepClasses = updater.getInstalledProcessStepClasses();
-        //combobox
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (String aClass : installedProcessStepClasses.keySet()) {
-            model.addElement(aClass);
-        }
+
         //fill parameters
         tblParameters.getColumn(tblParameters.getColumnName(2)).setCellRenderer(new NimbusCheckBoxRenderer());
         tblParameters.getModel().addTableModelListener(
@@ -154,6 +150,13 @@ public class RunCreationDialog extends javax.swing.JDialog {
             }
         });
 
+        //combobox
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        for (String aClass : installedProcessStepClasses.keySet()) {
+            if (!aClass.toLowerCase().contains("testing")) {
+                model.addElement(aClass);
+            }
+        }
         cbSteps.setModel(model);
 
         liSteps.setModel(new DefaultListModel());
@@ -201,6 +204,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         presets = new LinkedHashMap<>();
         interpeter = XMLTemplateInterpreter.getInstance();
         setTemplateFromResource("None", "Empty_Template.xml");
+        setTemplateFromResource("DenovoGUI", "DenovoGUI_Template.xml");
         setTemplateFromResource("SearchGUI", "SearchGUI_Template.xml");
         setTemplateFromResource("SearchGUI + PeptideShaker", "SearchGUI_PeptideShaker_Template.xml");
         setTemplateFromResource("BLASTn", "BLAST_N_Template.xml");
@@ -1078,7 +1082,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cbPresetsFocusLost
 
     private void btnAddStep1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddStep1ActionPerformed
-              try {
+        try {
             reloadTemplate(interpeter.convertXMLtoTemplate(presets.get(String.valueOf(cbPresets.getSelectedItem()))));
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             LOGGER.error(ex);
