@@ -5,8 +5,8 @@
  */
 package com.compomics.pladipus.controller.setup;
 
-import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
+import com.compomics.pladipus.core.control.util.ZipUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -28,7 +28,7 @@ public class InstallPladipus {
      * The current version of pladipus (//TODO get this from the POM or a
      * properties file???)
      */
-    private static final String version = "0.2.1";
+    private static final String version = "0.3.0";
     /**
      * The pladipus folder (in user home)
      */

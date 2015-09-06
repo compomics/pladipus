@@ -44,7 +44,7 @@ public class ActiveMQPropertyUpdater {
      * @param activeMQXML the activeMQ configuration file
      * @param transporterHostName the name of the transporter to be updated
      * @param activeMQPort the port to be updated
-     * @param jmxPort  the port to be updated for jmx
+     * @param jmxPort the port to be updated for jmx
      */
     public static void updateActiveMQProperties(File activeMQXML, String transporterHostName, String activeMQPort, String jmxPort) {
         try {
@@ -64,6 +64,10 @@ public class ActiveMQPropertyUpdater {
             //get the jmx management item
             Element jmxManagement = (Element) doc.getElementsByTagName("managementContext").item(1);
             jmxManagement.setAttribute("connectorPort", jmxPort);
+
+            //get the policyEntry item
+            Node policyEntry = doc.getElementsByTagName("policyEntry").item(0);
+            ((Element) policyEntry).setAttribute("queuePrefetch", "1");
 
 // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
