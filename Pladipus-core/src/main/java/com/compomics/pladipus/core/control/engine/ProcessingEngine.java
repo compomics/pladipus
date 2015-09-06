@@ -68,6 +68,7 @@ public class ProcessingEngine implements Callable {
     public static int startProcess(File jar, List<String> arguments) throws IOException, InterruptedException, ExecutionException {
         ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(jar.getParentFile());
+        System.out.println("Launching process @ " + processBuilder.directory().getAbsolutePath());
         return ProcessingMonitor.getHook(processBuilder);
     }
 

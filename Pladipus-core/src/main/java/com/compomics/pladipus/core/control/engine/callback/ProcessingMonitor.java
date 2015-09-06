@@ -20,9 +20,9 @@ import org.apache.log4j.Logger;
 
 /**
  *
- * @author Kenneth Verheggen NOTE this class may be obsolete in the future. This was
- * created to circumvent SearchGUI / PeptideShaker to hang, causing the entire
- * system to block
+ * @author Kenneth Verheggen NOTE this class may be obsolete in the future. This
+ * was created to circumvent SearchGUI / PeptideShaker to hang, causing the
+ * entire system to block
  */
 public class ProcessingMonitor implements Callable<Integer> {
 
