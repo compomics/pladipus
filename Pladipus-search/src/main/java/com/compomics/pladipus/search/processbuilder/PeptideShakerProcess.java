@@ -57,7 +57,7 @@ public class PeptideShakerProcess {
      * @return the command line for the process
      * @throws NullPointerException
      */
-    public List<String> generateCommand() throws IOException {
+     public List<String> generateCommand() throws IOException {
         List<String> PSCommandLine = new ArrayList<>();
         PSCommandLine.add("java");
         PSCommandLine.add("-Xmx" + MemoryWarningSystem.getAllowedRam() + "M");
@@ -71,11 +71,11 @@ public class PeptideShakerProcess {
         PSCommandLine.add("-replicate");
         PSCommandLine.add("0");
         PSCommandLine.add("-identification_files");
-        PSCommandLine.add(inputFolder.getAbsolutePath());
-        PSCommandLine.add("-spectrum_files");
+        PSCommandLine.add(inputFolder.getAbsolutePath()+"/searchgui_out.zip");
+       /* PSCommandLine.add("-spectrum_files");
         PSCommandLine.add(getUsedMGFsFromSearchGUI());
         PSCommandLine.add("-id_params");
-        PSCommandLine.add(searchParamFile.getAbsolutePath());
+        PSCommandLine.add(searchParamFile.getAbsolutePath());*/
         PSCommandLine.add("-out");
         PSCommandLine.add(getResultingCpsFile().getAbsolutePath());
         PSCommandLine.add("-max_precursor_error_type");
@@ -139,7 +139,7 @@ public class PeptideShakerProcess {
         if (outputDir.exists()) {
             outputDir.delete();
         }
-        outputDir.mkdirs();
+        outputDir.mkdir();
         this.outputDir = outputDir;
         return this;
     }

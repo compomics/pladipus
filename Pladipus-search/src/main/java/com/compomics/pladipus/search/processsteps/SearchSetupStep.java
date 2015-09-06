@@ -41,11 +41,11 @@ public class SearchSetupStep extends ProcessingStep {
         } else {
             tempResources.mkdirs();
         }
-        InitialiseInputFiles();
+        initialiseInputFiles();
         return true;
     }
 
-    private void InitialiseInputFiles() throws Exception {
+    private void initialiseInputFiles() throws Exception {
         //original
         String inputPath = parameters.get("input");
         String paramPath = parameters.get("parameterFile");
@@ -65,7 +65,7 @@ public class SearchSetupStep extends ProcessingStep {
         File outputFolder = new File(parameters.get("outputFolder") + "/" + parameters.get("assay"));
         outputFolder.mkdirs();
         parameters.put("outputfolder", outputFolder.getAbsolutePath());
-        parameters.put("temp", tempResources.getAbsolutePath());
+        parameters.put("temp", System.getProperty("user.home")+"/.compomics/pladipus/temp/SearchGUI");
 
         System.out.println(parameters);
     }

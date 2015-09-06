@@ -10,8 +10,9 @@ import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.processbuilder.SearchGuiProcess;
-import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.preferences.ModificationProfile;
+import com.compomics.pladipus.search.util.JarLookupService;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,56 +43,58 @@ public class SearchGUIStep extends ProcessingStep {
         identificationParameters.setFastaFile(fastaFile);
         //update other parameters or keep defaults for now?
         //update mods ---> fixed / var
-        ModificationProfile modificationProfile = identificationParameters.getModificationProfile();
+        PtmSettings ptmSettings = identificationParameters.getPtmSettings();
         ArrayList<String> tempMods = new ArrayList<>();
-        tempMods.addAll(modificationProfile.getFixedModifications());
+        tempMods.addAll(ptmSettings.getFixedModifications());
         for (String aPTM : tempMods) {
             //special case...itraq on y
             if (aPTM.toLowerCase().contains("itraq114 on y")) {
-                modificationProfile.addVariableModification(modificationProfile.getPtm(aPTM));
-                modificationProfile.removeFixedModification(aPTM);
+                ptmSettings.addVariableModification(ptmSettings.getPtm(aPTM));
+                ptmSettings.removeFixedModification(aPTM);
             }
             //all other fixed...
             if (!aPTM.toLowerCase().contains("itraq")
                     && !aPTM.toLowerCase().contains("tmt")
                     && !aPTM.toLowerCase().contains("carbamidomethyl")) {
-                modificationProfile.addVariableModification(modificationProfile.getPtm(aPTM));
-                modificationProfile.removeFixedModification(aPTM);
+                ptmSettings.addVariableModification(ptmSettings.getPtm(aPTM));
+                ptmSettings.removeFixedModification(aPTM);
             }
         }
         //
-        identificationParameters.setModificationProfile(modificationProfile);
+        identificationParameters.setPtmSettings(ptmSettings);
+        System.out.println("Setting searchparameter settings location [FIX]");
+        identificationParameters.setParametersFile(parameterFile);
         SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
 
         //get requested search engines
-        String searchEngines = parameters.get("searchEngines");
-        if (searchEngines == null) {
-            searchEngines = "xtandem,tide";
+        String searchEngines = parameters.get("searchEngines").toLowerCase();
+        if (searchEngines == null || searchEngines.isEmpty()) {
+            System.out.println("No search engines requested, defaulting to xTandem, Tide and MSGF+");
+            searchEngines = "xtandem,tide,msgf";
         }
+        System.out.println("Selected engines : " + searchEngines);
         SearchGuiProcess process = new SearchGuiProcess(input, parameterFile, getJar(), searchEngines.split(","));
         File temp = new File(parameters.get("temp"));
         process.setOutputFolder(temp);
         process.finalizeBuild();
         ProcessingEngine.startProcess(getJar(), process.generateCommand());
-        parameters.put("input",temp.getAbsolutePath());
+        parameters.put("input", temp.getAbsolutePath());
         return true;
     }
 
-    
     public File getJar() throws IOException {
         //check if this is possible in another way...
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
-        File temp = new File(toolFolder,"SearchGUI");
-        File denovoGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("SearchGUI"), toolFolder);
-        if (denovoGUIFile.getName().endsWith(".zip")) {
-            ZipUtils.unzipArchive(denovoGUIFile, temp);
+        File temp = new File(toolFolder, "SearchGUI");
+        if (!temp.exists()) {
+            File searchGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("SearchGUI"), toolFolder);
+            if (searchGUIFile.getName().endsWith(".zip")) {
+                ZipUtils.unzipArchive(searchGUIFile, temp);
+            }
         }
-        File jarParent = temp.listFiles()[0];
-        String version = jarParent.getName();
-   //     version=version.substring(0,version.indexOf("-"));
-        return new File(jarParent, version + ".jar");
+        return JarLookupService.lookupFile("SearchGUI-.*.jar", temp);
     }
 
     public boolean aVersionExistsLocal() {

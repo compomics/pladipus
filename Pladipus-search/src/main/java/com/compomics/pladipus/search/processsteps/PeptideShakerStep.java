@@ -10,6 +10,7 @@ import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.processbuilder.PeptideShakerProcess;
+import com.compomics.pladipus.search.util.JarLookupService;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -30,13 +31,12 @@ public class PeptideShakerStep extends ProcessingStep {
     public boolean doAction() throws Exception, Exception {
         System.out.println("Running " + this.getClass().getName());
         File peptideShakerJar = getJar();
-        
+
         File parameterFile = new File(parameters.get("tempParameterFile"));
         File input = new File(parameters.get("input"));
-        
-        
+
         File temp = new File(parameters.get("temp"));
-      
+
         PeptideShakerProcess process = new PeptideShakerProcess(parameters.get("assay"), input, parameterFile, peptideShakerJar);
         parameters.put("cps", process.getResultingCpsFile().getAbsolutePath());
         //TODO REPLACE THIS WITH THE ACTUAL OUTPUTFOLDER OR WAIT TILL THE VERY END IN THE CLEANING STEP?
@@ -52,15 +52,14 @@ public class PeptideShakerStep extends ProcessingStep {
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
-        File temp = new File(toolFolder,"PeptideShaker");
-        File denovoGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("PeptideShaker"), toolFolder);
-        if (denovoGUIFile.getName().endsWith(".zip")) {
-            ZipUtils.unzipArchive(denovoGUIFile, temp);
+        File temp = new File(toolFolder, "PeptideShaker");
+        if (!temp.exists()) {
+            File peptideshakerFile = PladipusFileDownloadingService.downloadFile(parameters.get("PeptideShaker"), toolFolder);
+            if (peptideshakerFile.getName().endsWith(".zip")) {
+                ZipUtils.unzipArchive(peptideshakerFile, temp);
+            }
         }
-        File jarParent = temp.listFiles()[0];
-        String version = jarParent.getName();
-   //     version=version.substring(0,version.indexOf("-"));
-        return new File(jarParent, version + ".jar");
+        return JarLookupService.lookupFile("PeptideShaker-.*.jar", temp);
     }
 
     public boolean aVersionExistsLocal() {
@@ -84,7 +83,7 @@ public class PeptideShakerStep extends ProcessingStep {
             }
         });
 
-        File outputFolder = new File(parameters.get("outputFolder"));
+        File outputFolder = new File(parameters.get("outputFolder")+"/"+parameters.get("assay"));
         outputFolder.mkdirs();
         for (File aFile : files) {
             File dest = new File(outputFolder, aFile.getName());
@@ -95,6 +94,12 @@ public class PeptideShakerStep extends ProcessingStep {
             }
         }
         FileUtils.deleteDirectory(temp);
+        
+        //remove searchGUI input
+        File input = new File(parameters.get("input"));
+        if(input.exists()){
+            input.delete();
+        }
     }
 
     @Override

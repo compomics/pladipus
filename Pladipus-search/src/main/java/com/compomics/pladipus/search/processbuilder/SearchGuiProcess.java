@@ -7,21 +7,15 @@ package com.compomics.pladipus.search.processbuilder;
 import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
-import com.compomics.util.experiment.identification.SearchParameters;
-import com.compomics.util.preferences.ModificationProfile;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -61,12 +55,12 @@ public class SearchGuiProcess {
      * The modification profile for this run (in case it needs
      * updating/correcting)
      */
-    private ModificationProfile modificationProfile;
+    private PtmSettings ptmSettings;
+    //todo refactor this into an enum
     /**
-     * The available search engines CAUTION be careful in case some engines
-     * don't run on a particular OS
+     * The available search engines for windows
      */
-    private final String[] availableSearchEngineSwitches = new String[]{"xtandem", "msgf", "ms_amanda", "myrimatch", "comet", "tide"};
+    private final String[] availablSearchEngineSwitches = new String[]{"xtandem", "msgf", "omssa", "ms_amanda", "myrimatch", "comet", "tide", "andromeda"};
     /**
      * The requested search engines
      */
@@ -81,10 +75,24 @@ public class SearchGuiProcess {
 
     private void parseSearchEngines(String[] requestedSearchEngines, List<String> command) {
         List<String> requestedSearchEngineList = Arrays.asList(requestedSearchEngines);
-        for (String anEngineSwitch : availableSearchEngineSwitches) {
+        String currentOS = System.getProperty("os.name").toLowerCase();
+        System.out.println("Getting all potential engines for " + currentOS);
+        if (currentOS.contains("mac") || currentOS.contains("sunos")) {
+            throw new UnsupportedOperationException("Only linux and windows operating systems are currently supported");
+        } else if (currentOS.contains("win")) {
+            //all work on windows
+        } else //andromeda doesn't work on LINUX
+        if (requestedSearchEngineList.contains("andromeda")) {
+            System.out.println("andromeda is not supported on " + currentOS);
+            requestedSearchEngineList.remove("andromeda");
+        }
+
+        for (String anEngineSwitch : availablSearchEngineSwitches) {
+            command.add("-" + anEngineSwitch);
             if (!requestedSearchEngineList.contains(anEngineSwitch.toLowerCase())) {
-                command.add("-" + anEngineSwitch);
                 command.add("0");
+            } else {
+                command.add("1");
             }
         }
     }
@@ -109,7 +117,9 @@ public class SearchGuiProcess {
         searchGUICommandLine.add("-id_params");
         searchGUICommandLine.add(searchParam.getAbsolutePath());
         searchGUICommandLine.add("-output_option");
-        searchGUICommandLine.add("3");
+        searchGUICommandLine.add("0");
+        searchGUICommandLine.add("-output_data");
+        searchGUICommandLine.add("1");
         searchGUICommandLine.add("-temp_folder");
         searchGUICommandLine.add(System.getProperty("user.home") + "/.compomics/temp");
         parseSearchEngines(requestedSearchEngines, searchGUICommandLine);
@@ -126,7 +136,7 @@ public class SearchGuiProcess {
         if (outputFolder.exists()) {
             outputFolder.delete();
         }
-        outputFolder.mkdirs();
+        outputFolder.mkdir();
         this.outputFolder = outputFolder;
     }
 
@@ -137,34 +147,13 @@ public class SearchGuiProcess {
     PTMFactory factory = PTMFactory.getInstance();
 
     public void finalizeBuild() throws IOException, FileNotFoundException, ClassNotFoundException, Exception {
-        importDefaultMods();
         finalizeFactory();
         tempUserModFile = new File(outputFolder, "temp_usermods.xml");
         if (tempUserModFile.exists()) {
             tempUserModFile.delete();
         }
         tempUserModFile.createNewFile();
-        factory.setSearchedOMSSAIndexes(modificationProfile);
-        factory.writeOmssaUserModificationFile(tempUserModFile);
         factory.saveFactory();
-    }
-
-    private void importDefaultMods() throws IOException, XmlPullParserException {
-        tempModFile = new File(outputFolder, "temp_mods.xml");
-        InputStream inputStream = new ClassPathResource("searchGUI_mods.xml").getInputStream();
-        OutputStream outputStream = new FileOutputStream(tempModFile);
-        IOUtils.copy(inputStream, outputStream);
-        tempModFile.deleteOnExit();
-        factory.clearFactory();
-        factory = PTMFactory.getInstance();
-        factory.importModifications(tempModFile, false, true);
-        clearUserPTMs();
-        tempUserModFile = new File(outputFolder, "temp_usermods.xml");
-        tempUserModFile.deleteOnExit();
-        inputStream = new ClassPathResource("searchGUI_usermods.xml").getInputStream();
-        outputStream = new FileOutputStream(tempUserModFile);
-        IOUtils.copy(inputStream, outputStream);
-        factory.importModifications(tempUserModFile, true, true);
     }
 
     private void clearUserPTMs() throws IOException {
@@ -180,9 +169,9 @@ public class SearchGuiProcess {
 
     private void finalizeFactory() throws Exception {
         SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(searchParam);
-        modificationProfile = identificationParameters.getModificationProfile();
-        for (String aPtmName : modificationProfile.getAllModifications()) {
-            PTM aPtm = modificationProfile.getPtm(aPtmName);
+        ptmSettings = identificationParameters.getPtmSettings();
+        for (String aPtmName : ptmSettings.getAllModifications()) {
+            PTM aPtm = ptmSettings.getPtm(aPtmName);
             if (!factory.containsPTM(aPtm.getName())) {
                 //check for mass
                 boolean add = true;
@@ -190,11 +179,11 @@ public class SearchGuiProcess {
                     PTM factoryPtm = factory.getPTM(aPTMName);
                     if (factoryPtm.getMass() == aPtm.getMass()) {
                         LOGGER.info("There already is a PTM with this mass in the factory : " + factoryPtm.getName() + " - " + factoryPtm.getMass());
-                        removeFromModProfile(modificationProfile, aPtm);
-                        if (modificationProfile.getFixedModifications().contains(aPtmName)) {
-                            modificationProfile.addFixedModification(factoryPtm);
+                        removeFromModProfile(ptmSettings, aPtm);
+                        if (ptmSettings.getFixedModifications().contains(aPtmName)) {
+                            ptmSettings.addFixedModification(factoryPtm);
                         } else {
-                            modificationProfile.addVariableModification(factoryPtm);
+                            ptmSettings.addVariableModification(factoryPtm);
                         }
                         add = false;
                         break;
@@ -208,18 +197,15 @@ public class SearchGuiProcess {
                 LOGGER.info("There already is a PTM with this name in the factory :" + aPtmName);
             }
         }
-        factory.setSearchedOMSSAIndexes(modificationProfile);
-        factory.writeOmssaUserModificationFile(tempUserModFile);
-        factory.importModifications(tempUserModFile, true);
-        identificationParameters.setModificationProfile(modificationProfile);
+        identificationParameters.setPtmSettings(ptmSettings);
         SearchParameters.saveIdentificationParameters(identificationParameters, searchParam);
     }
 
-    private void removeFromModProfile(ModificationProfile profile, PTM aPtm) {
-        if (profile.getFixedModifications().contains(aPtm.getName())) {
-            profile.removeFixedModification(aPtm.getName());
+    private void removeFromModProfile(PtmSettings ptmSettings, PTM aPtm) {
+        if (ptmSettings.getFixedModifications().contains(aPtm.getName())) {
+            ptmSettings.removeFixedModification(aPtm.getName());
         } else {
-            profile.removeVariableModification(aPtm.getName());
+            ptmSettings.removeVariableModification(aPtm.getName());
         }
     }
 
