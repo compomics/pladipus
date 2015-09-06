@@ -6,6 +6,7 @@
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
+import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
@@ -21,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -86,107 +88,106 @@ public class RunCreationDialog extends javax.swing.JDialog {
      */
     public RunCreationDialog(java.awt.Frame parent, String user, boolean modal) throws ParserConfigurationException, IOException, SAXException {
         super(parent, modal);
-        initComponents();
+            initComponents();
 
-        this.user = user;
-        this.setTitle("Run Creation Wizard");
-        //transparent viewports
-        spnlParameters.getViewport().setOpaque(false);
-        spnlPreview.getViewport().setOpaque(false);
-        //preview xmlEditorKit
-        epnlPreviewXML.setEditorKit(new XMLEditorKit());
-        epnlPreviewXML.setEditable(true);
-        //step loading
-        ProcessingBeanUpdater updater = ProcessingBeanUpdater.getInstance();
-        installedProcessStepClasses = updater.getInstalledProcessStepClasses();
+            this.user = user;
+            this.setTitle("Run Creation Wizard");
+            //transparent viewports
+            spnlParameters.getViewport().setOpaque(false);
+            spnlPreview.getViewport().setOpaque(false);
+            //preview xmlEditorKit
+            epnlPreviewXML.setEditorKit(new XMLEditorKit());
+            epnlPreviewXML.setEditable(true);
+            //step loading
+            ProcessingBeanUpdater updater = ProcessingBeanUpdater.getInstance();
+            installedProcessStepClasses = updater.getInstalledProcessStepClasses();
 
-        //fill parameters
-        tblParameters.getColumn(tblParameters.getColumnName(2)).setCellRenderer(new NimbusCheckBoxRenderer());
-        tblParameters.getModel().addTableModelListener(
-                new TableModelListener() {
-                    public void tableChanged(TableModelEvent evt) {
-                        //read all the table values, turn them into proper parameters and fling them into the model, then refresh
-                        DefaultTableModel model = (DefaultTableModel) tblParameters.getModel();
-                        for (int i = 0; i < model.getRowCount(); i++) {
-                            try {
-                                String parameterName = String.valueOf(model.getValueAt(i, 0));
-                                if (!parameterName.isEmpty()) {
-                                    String parameterValue;
-                                    if (model.getValueAt(i, 1) != null) {
-                                        parameterValue = String.valueOf(model.getValueAt(i, 1));
-                                    } else {
-                                        parameterValue = "";
+            //fill parameters
+            tblParameters.getColumn(tblParameters.getColumnName(2)).setCellRenderer(new NimbusCheckBoxRenderer());
+            tblParameters.getModel().addTableModelListener(
+                    new TableModelListener() {
+                        public void tableChanged(TableModelEvent evt) {
+                            //read all the table values, turn them into proper parameters and fling them into the model, then refresh
+                            DefaultTableModel model = (DefaultTableModel) tblParameters.getModel();
+                            for (int i = 0; i < model.getRowCount(); i++) {
+                                try {
+                                    String parameterName = String.valueOf(model.getValueAt(i, 0));
+                                    if (!parameterName.isEmpty()) {
+                                        String parameterValue;
+                                        if (model.getValueAt(i, 1) != null) {
+                                            parameterValue = String.valueOf(model.getValueAt(i, 1));
+                                        } else {
+                                            parameterValue = "";
+                                        }
+                                        boolean runParameter;
+                                        if (model.getValueAt(i, 1) != null) {
+                                            runParameter = (Boolean) model.getValueAt(i, 2);
+                                        } else {
+                                            runParameter = false;
+                                        }
+                                        ProcessingParameterTemplate processingParameter = new ProcessingParameterTemplate(parameterName, parameterValue);
+                                        template.getRunParameters().remove(parameterName);
+                                        template.getJobParameters().remove(parameterName);
+                                        if (runParameter) {
+                                            template.addRunParameter(processingParameter);
+                                        } else {
+                                            template.addJobParameter(processingParameter);
+                                        }
                                     }
-                                    boolean runParameter;
-                                    if (model.getValueAt(i, 1) != null) {
-                                        runParameter = (Boolean) model.getValueAt(i, 2);
-                                    } else {
-                                        runParameter = false;
-                                    }
-                                    ProcessingParameterTemplate processingParameter = new ProcessingParameterTemplate(parameterName, parameterValue);
-                                    template.getRunParameters().remove(parameterName);
-                                    template.getJobParameters().remove(parameterName);
-                                    if (runParameter) {
-                                        template.addRunParameter(processingParameter);
-                                    } else {
-                                        template.addJobParameter(processingParameter);
-                                    }
+                                } catch (NullPointerException e) {
+                                    //todo refactor to avoid this
                                 }
-                            } catch (NullPointerException e) {
-                                //todo refactor to avoid this
                             }
+                            refreshPreview();
                         }
-                        refreshPreview();
-                    }
-                });
+                    });
 
-        tfRunName.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent arg0) {
-                super.focusLost(arg0);
-                String text = tfRunName.getText();
-                template.setName(text);
-                refreshPreview();
+            tfRunName.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusLost(FocusEvent arg0) {
+                    super.focusLost(arg0);
+                    String text = tfRunName.getText();
+                    template.setName(text);
+                    refreshPreview();
+                }
+            });
+
+            //combobox
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (String aClass : installedProcessStepClasses.keySet()) {
+                if (!aClass.toLowerCase().contains("testing")) {
+                    model.addElement(aClass);
+                }
             }
-        });
+            cbSteps.setModel(model);
 
-        //combobox
-        DefaultComboBoxModel model = new DefaultComboBoxModel();
-        for (String aClass : installedProcessStepClasses.keySet()) {
-            if (!aClass.toLowerCase().contains("testing")) {
-                model.addElement(aClass);
+            liSteps.setModel(new DefaultListModel());
+
+            template = new PladipusProcessingTemplate("Default Run Name", user, 4, prerequisite);
+
+            //add prerequisite buttons
+            btnGroupOSArch.add(rdbLinux32);
+            btnGroupOSArch.add(rdbLinux64);
+            btnGroupOSArch.add(rdbWindows32);
+            btnGroupOSArch.add(rdbWindows64);
+
+            //add icons to up and down buttons
+            ImageIcon imageUp = new ImageIcon(
+                    getClass().getResource(
+                            "/images/icons/arrowUp.png"));
+            btnUp.setIcon(imageUp);
+            ImageIcon imageDown = new ImageIcon(
+                    getClass().getResource(
+                            "/images/icons/arrowDown.png"));
+            btnDown.setIcon(imageDown);
+            btnUp.repaint();
+            btnDown.repaint();
+            refreshPreview();
+            try {
+                loadPresets();
+            } catch (StepLoadingException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
             }
-        }
-        cbSteps.setModel(model);
-
-        liSteps.setModel(new DefaultListModel());
-
-        template = new PladipusProcessingTemplate("Default Run Name", user, 4, prerequisite);
-
-        //add prerequisite buttons
-        btnGroupOSArch.add(rdbLinux32);
-        btnGroupOSArch.add(rdbLinux64);
-        btnGroupOSArch.add(rdbWindows32);
-        btnGroupOSArch.add(rdbWindows64);
-
-        //add icons to up and down buttons
-        ImageIcon imageUp = new ImageIcon(
-                getClass().getResource(
-                        "/images/icons/arrowUp.png"));
-        btnUp.setIcon(imageUp);
-        ImageIcon imageDown = new ImageIcon(
-                getClass().getResource(
-                        "/images/icons/arrowDown.png"));
-        btnDown.setIcon(imageDown);
-        btnUp.repaint();
-        btnDown.repaint();
-        refreshPreview();
-        try {
-            loadPresets();
-        } catch (StepLoadingException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
-        }
-
     }
 
     private void setTemplateFromResource(String templateIdentifier, String templateFileName) throws IOException, ParserConfigurationException, StepLoadingException, SAXException {
@@ -752,7 +753,17 @@ public class RunCreationDialog extends javax.swing.JDialog {
                         "Inane error",
                         JOptionPane.ERROR_MESSAGE);
             }
-
+        }
+        if (confirmed) {
+            RunDAO rInstance = RunDAO.getInstance();
+            try {
+                int runID = rInstance.createRun(template);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "An error occurred during run storage in database  : " + ex.getMessage(),
+                        "Inane error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnCreateRunActionPerformed
 

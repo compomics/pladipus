@@ -6,8 +6,6 @@
 package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.core.control.distribution.service.UserService;
-import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
-import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.core.model.properties.PladipusProperties;
 import com.compomics.pladipus.view.dialogs.LoginDialog;
@@ -19,6 +17,7 @@ import com.compomics.pladipus.view.panels.UpdatingPanel;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
@@ -238,22 +237,19 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_miLaunchAdminActionPerformed
 
     private void miCreateRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCreateRunActionPerformed
-   showCreateNewRunDialog();
+        showCreateNewRunDialog();
     }//GEN-LAST:event_miCreateRunActionPerformed
 
-    private void showCreateNewRunDialog(){
-             try {
+    private void showCreateNewRunDialog() {
+        try {
             RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
             dialog.setVisible(true);
-            PladipusProcessingTemplate processingTemplate = dialog.getProcessingTemplate();
-            RunDAO rInstance = RunDAO.getInstance();
-            int runID = rInstance.createRun(processingTemplate);
-        } catch (SQLException | ParserConfigurationException | IOException | SAXException ex) {
-            ex.printStackTrace();
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
         }
     }
-    
-    
+
     /**
      * @param args the command line arguments
      */
