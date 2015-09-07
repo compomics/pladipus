@@ -30,6 +30,10 @@ public class InstallPladipus {
      */
     private static final String version = "0.3.0";
     /**
+     * The available pladipus steps that need to be installed
+     */
+    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo"};
+    /**
      * The pladipus folder (in user home)
      */
     private static final File pladipusFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/");
@@ -48,7 +52,7 @@ public class InstallPladipus {
      * @throws IOException
      */
     public void installWorker() throws IOException {
-        setUpPladipusSearch();
+        installPladipusModules();
         installProcessingBeanProperties();
         writeWorkerBash();
     }
@@ -60,7 +64,7 @@ public class InstallPladipus {
      */
     public void installConsole() throws IOException {
         setupPladipus();
-        setUpPladipusSearch();
+        installPladipusModules();
         installProcessingBeanProperties();
         createDesktopIcon();
     }
@@ -123,16 +127,14 @@ public class InstallPladipus {
         dest.deleteOnExit();
     }
 
-    private void setUpPladipusSearch() throws IOException {
-        //1. extract
-        URL inputUrl = getClass().getResource("/Pladipus-search-" + version + ".jar");
-        File dest = new File(pladipusFolder, "/external/Pladipus-search-" + version + ".jar");
-        dest.getParentFile().mkdirs();
-        FileUtils.copyURLToFile(inputUrl, dest);
-        //2. unzip
-        //  ZipUtils.unzipArchive(dest, jarFolder);
-        //3. cleanup
-        //  dest.deleteOnExit();
+    private void installPladipusModules() throws IOException {
+        //search
+        for (String aModuleName : modulesToInstall) {
+            URL inputUrl = getClass().getResource("modules/Pladipus-" + aModuleName + "-" + version + ".jar");
+            File dest = new File(pladipusFolder, "/external/Pladipus-" + aModuleName + "-" + version + ".jar");
+            dest.getParentFile().mkdirs();
+            FileUtils.copyURLToFile(inputUrl, dest);
+        }
     }
 
 }
