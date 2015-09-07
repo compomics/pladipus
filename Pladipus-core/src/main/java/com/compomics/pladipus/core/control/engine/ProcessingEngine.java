@@ -58,16 +58,16 @@ public class ProcessingEngine implements Callable {
 
     /**
      *
-     * @param jar the jar that should be started on this jvm
+     * @param executable the jar that should be started on this jvm
      * @param arguments list of arguments + values required to start the jar
      * @return the system exit value of the process
      * @throws IOException
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public static int startProcess(File jar, List<String> arguments) throws IOException, InterruptedException, ExecutionException {
+    public static int startProcess(File executable, List<String> arguments) throws IOException, InterruptedException, ExecutionException {
         ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-        processBuilder.directory(jar.getParentFile());
+        processBuilder.directory(executable.getParentFile());
         System.out.println("Launching process @ " + processBuilder.directory().getAbsolutePath());
         return ProcessingMonitor.getHook(processBuilder);
     }
