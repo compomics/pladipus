@@ -206,7 +206,6 @@ public class InstallerGUI extends javax.swing.JFrame {
     private void showCard() {
         CardLayout card = (CardLayout) pnlCards.getLayout();
         String cardName = cards.get(cursor);
-        System.out.println(cursor + "\t" + cardName);
         card.show(pnlCards, cardName);
         setDescriptingText();
     }

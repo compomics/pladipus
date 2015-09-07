@@ -17,6 +17,7 @@ import java.net.URL;
 import net.jimmc.jshortcut.JShellLink;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -41,6 +42,10 @@ public class InstallPladipus {
      * The path to the jar file post installing
      */
     private static final String jarFilePath = pladipusFolder.getAbsolutePath() + "/" + "Pladipus-execution-" + version + "/Pladipus-execution-" + version + ".jar";
+    /**
+     * The logging instance
+     */
+    private static final Logger LOGGER = Logger.getLogger(InstallPladipus.class);
 
     public InstallPladipus() {
 
@@ -130,7 +135,8 @@ public class InstallPladipus {
     private void installPladipusModules() throws IOException {
         //search
         for (String aModuleName : modulesToInstall) {
-            URL inputUrl = getClass().getResource("modules/Pladipus-" + aModuleName + "-" + version + ".jar");
+            LOGGER.debug("Installing " + aModuleName);
+            URL inputUrl = getClass().getResource("/modules/Pladipus-" + aModuleName + "-" + version + ".jar");
             File dest = new File(pladipusFolder, "/external/Pladipus-" + aModuleName + "-" + version + ".jar");
             dest.getParentFile().mkdirs();
             FileUtils.copyURLToFile(inputUrl, dest);
