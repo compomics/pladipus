@@ -6,12 +6,15 @@
 package com.compomics.pladipus;
 
 import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
+import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.view.MainGUI;
 import com.sun.mail.iap.ConnectionException;
 import java.io.Console;
 import java.io.EOFException;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -55,6 +58,10 @@ public class CLIExecutor {
      * the current user
      */
     private static String user;
+    /**
+     * the password for the current user
+     */
+    private static String password;
     /**
      * boolean indicating if the worker can pull tasks indefinitely
      */
@@ -114,6 +121,23 @@ public class CLIExecutor {
         }
     }
 
+    private static boolean login() {
+        boolean accept = false;
+        UserService uService = UserService.getInstance();
+        try {
+            if (!uService.userExists(user)) {
+                throw new SecurityException(user + " was not found !");
+            } else if (uService.verifyUser(user, password)) {
+                accept = true;
+            } else {
+                throw new SecurityException(user + " is not a authorized to push jobs !");
+            }
+        } catch (SQLException | UnsupportedEncodingException ex) {
+            LOGGER.error(ex);
+        }
+        return accept;
+    }
+
     private static void parseCLI(String[] args) {
         LOGGER.info("Parsing arguments...");
         CommandLineParser parser = new GnuParser();
@@ -123,32 +147,47 @@ public class CLIExecutor {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("LyraPolicy", options);
             }
-            //check for pushing options
-            if (line.hasOption("push")) {
-                push = true;
-                if (line.hasOption("l")) {
-                    pushFromLocal = true;
-                    user = line.getOptionValue("l");
-                }
-                if (line.hasOption("template")) {
-                    templateFile = new File(line.getOptionValue("template"));
-                } else if (!pushFromLocal) {
-                    throw new ParseException("The template should be declared !");
-                }
-                if (line.hasOption("job_config")) {
-                    jobConfigurationFile = new File(line.getOptionValue("job_config"));
-                } else if (!pushFromLocal) {
-                    throw new ParseException("The job configuration should be declared !");
-                }
-            } else if (line.hasOption("pull")) {
-                push = false;
-            } else if (line.hasOption("auto_pull")) {
-                push = false;
-                auto = true;
+            //verify the user
+            if (line.hasOption("u")) {
+                user = line.getOptionValue("u");
             } else {
-                throw new ParseException("Please specify the action :  push, pull or auto_pull");
+                throw new SecurityException("User is not provided");
+            }
+//verify the user
+            if (line.hasOption("p")) {
+                password = line.getOptionValue("p");
+            } else {
+                LOGGER.warn("No password was provided...");
+                password = "";
             }
 
+            if (login()) {
+                //check for pushing options
+                if (line.hasOption("push")) {
+                    push = true;
+                    if (line.hasOption("l")) {
+                        pushFromLocal = true;
+                        user = line.getOptionValue("l");
+                    } else if (line.hasOption("template")) {
+                        templateFile = new File(line.getOptionValue("template"));
+                    } else if (!pushFromLocal) {
+                        throw new ParseException("The template should be declared !");
+                    }
+                    if (line.hasOption("job_config")) {
+                        jobConfigurationFile = new File(line.getOptionValue("job_config"));
+                    } else if (!pushFromLocal) {
+                        throw new ParseException("The job configuration should be declared !");
+                    }
+                } else if (line.hasOption("pull")) {
+                    push = false;
+                } else if (line.hasOption("auto_pull")) {
+                    push = false;
+                    auto = true;
+                } else {
+                    throw new ParseException("Please specify the action :  push, pull or auto_pull");
+                }
+
+            }
         } catch (ParseException exp) {
             // oops, something went wrong
             LOGGER.error("Parsing failed. Reason: " + exp.getMessage());
