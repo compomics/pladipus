@@ -198,6 +198,8 @@ public class CLIExecutor {
         //options
         options = new Options();
         options.addOption(new Option("help", "prints help message"));
+        options.addOption(new Option("u", "pladipus user"));
+        options.addOption(new Option("p", "pladipus password"));
         //pushing options
         options.addOption(new Option("template", true, "The template XML file to generate jobs with"));
         options.addOption(new Option("job_config", true, "The TSV file containing tab separated parameters (one job per line)"));
