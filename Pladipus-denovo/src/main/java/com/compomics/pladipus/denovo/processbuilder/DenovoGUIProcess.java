@@ -38,10 +38,10 @@ public class DenovoGUIProcess {
      */
     private File outputDir;
 
-    public DenovoGUIProcess(File outputFolder, File inputFolder, File searchParamFile, File peptideShakerJar) {
+    public DenovoGUIProcess(File outputFolder, File inputFolder, File searchParamFile, File denovoGUIJar) {
         this.inputFolder = inputFolder;
         this.searchParamFile = searchParamFile;
-        this.denovoGUIJar = peptideShakerJar;
+        this.denovoGUIJar = denovoGUIJar;
         this.outputDir = outputFolder;
     }
 
@@ -64,9 +64,9 @@ public class DenovoGUIProcess {
         PSCommandLine.add("-id_params");
         PSCommandLine.add(searchParamFile.getAbsolutePath());
 
-        for (String anArg : PSCommandLine) {
+        PSCommandLine.stream().forEach((anArg) -> {
             LOGGER.info(anArg + " ");
-        }
+        });
 
         return PSCommandLine;
     }

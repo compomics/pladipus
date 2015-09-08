@@ -6,6 +6,7 @@
 package com.compomics.pladipus.denovo.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
@@ -42,19 +43,19 @@ public class DenovoGUIStep extends ProcessingStep {
         return true;
     }
 
-    public File getJar() throws IOException {
+   public File getJar() throws IOException {
         //check if this is possible in another way...
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
-        File temp = new File(toolFolder,"DenovoGUI");
-        File denovoGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("DenovoGUI"), toolFolder);
-        if (denovoGUIFile.getName().endsWith(".zip")) {
-            ZipUtils.unzipArchive(denovoGUIFile, temp);
+        File temp = new File(toolFolder, "DeNovoGUI");
+        if (!temp.exists()) {
+            File searchGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("DeNovoGUI"), toolFolder);
+            if (searchGUIFile.getName().endsWith(".zip")) {
+                ZipUtils.unzipArchive(searchGUIFile, temp);
+            }
         }
-        File jarParent = temp.listFiles()[0];
-        String version = jarParent.getName();
-        return new File(jarParent, version + ".jar");
+        return JarLookupService.lookupFile("DeNovoGUI-.*.jar", temp);
     }
 
     public boolean aVersionExistsLocal() {
