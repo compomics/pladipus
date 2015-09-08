@@ -6,11 +6,11 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.processbuilder.PeptideShakerProcess;
-import com.compomics.pladipus.search.util.JarLookupService;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;

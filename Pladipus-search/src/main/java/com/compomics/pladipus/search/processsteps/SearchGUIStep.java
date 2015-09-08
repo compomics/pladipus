@@ -6,11 +6,11 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.processbuilder.SearchGuiProcess;
-import com.compomics.pladipus.search.util.JarLookupService;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import java.io.File;
