@@ -76,7 +76,8 @@ public class SearchGUIStep extends ProcessingStep {
         SearchGuiProcess process = new SearchGuiProcess(input, parameterFile, getJar(), searchEngines.split(","));
         File temp = new File(parameters.get("temp"));
         process.setOutputFolder(temp);
-        process.finalizeBuild();
+       // process.finalizeBuild();
+        System.out.println("Starting process !");
         ProcessingEngine.startProcess(getJar(), process.generateCommand());
         parameters.put("input", temp.getAbsolutePath());
         return true;

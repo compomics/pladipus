@@ -1,8 +1,11 @@
+<img src="https://raw.githubusercontent.com/wiki/compomics/pladipus/pladipus_logo.svg" width="200">
+
 # Pladipus
 
  * [Project Description](#project-description)
- * [Summary](#project-summary)
- * [Install](#downloads)
+ * [Summary](#summary)
+ * [Install](#install)
+ * [Manual](#manual)
 
 ----
 
@@ -33,7 +36,19 @@ Download the pladipus installer [here](http://genesis.ugent.be/pladipus/download
 
 In the case of a headless installation, please download either the complete [Linux version] (http://genesis.ugent.be/pladipus/download/pladipus-linux) or [Windows version] (http://genesis.ugent.be/pladipus/download/pladipus-windows) and extract the folder contents in the user home directory.
 
-For further details on how to correctly configure pladipus, please consult the [wiki](https://github.com/compomics/pladipus/wiki).
+For further details on how to correctly configure pladipus, please consult the [wiki](https://github.com/compomics/pladipus/wiki/Settings).
+
+[Go to top of page](#pladipus)
+
+----
+
+## Manual
+
+A step by step tutorial is available at the [wiki](https://github.com/compomics/pladipus/wiki/Manual). 
+
+Alternatively, there is a video tutorial showcasing the basic operation of Pladipus [here](https://www.youtube.com/watch?v=aeTF7Y0XfBY).
+
+
 
 [Go to top of page](#pladipus)
 
