@@ -36,6 +36,10 @@ public class InstallExample {
      * The progressdialog for peptideShaker
      */
     private ProgressDialogX peptideShakerDialog;
+    /**
+     * The progressdialog for deNovoGUI
+     */
+    private ProgressDialogX deNovoGUIDialog;
 
     public InstallExample() {
 
@@ -47,6 +51,7 @@ public class InstallExample {
     public void install() {
         installSearchGUI();
         installPeptideShaker();
+        installDeNovoGUI();
     }
 
     private void installSearchGUI() {
@@ -129,6 +134,52 @@ public class InstallExample {
                 } finally {
                     peptideShakerDialog.setRunFinished();
                     peptideShakerDialog.setVisible(false);
+                }
+            }
+        };
+        thread.start();
+    }
+
+    private void installDeNovoGUI() {
+        File installFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/tools/DeNovoGUI");
+        installFolder.mkdir();
+        deNovoGUIDialog = new ProgressDialogX(new JFrame(),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/peptide-shaker.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/peptide-shaker-orange.gif")),
+                true);
+        deNovoGUIDialog.setLocationRelativeTo(peptideShakerDialog);
+        Point searchGUIDialogLocation = peptideShakerDialog.getLocation();
+        searchGUIDialogLocation.move((int) searchGUIDialogLocation.getX(), (int) searchGUIDialogLocation.getY() + peptideShakerDialog.getHeight());
+        deNovoGUIDialog.setLocation(searchGUIDialogLocation);
+        new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    deNovoGUIDialog.setPrimaryProgressCounterIndeterminate(true);
+                    deNovoGUIDialog.setTitle("Downloading DeNovoGUI. Please Wait...");
+                    deNovoGUIDialog.setVisible(true);
+                } catch (IndexOutOfBoundsException e) {
+                    // ignore
+                } finally {
+                    deNovoGUIDialog.setRunFinished();
+                    deNovoGUIDialog.setVisible(false);
+                }
+            }
+        }, "ProgressDialog").start();
+
+        Thread thread = new Thread("DownloadThread") {
+            @Override
+            public void run() {
+                try {
+                    URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
+                    downloadLatestZipFromRepo(installFolder, "DeNovoGUI", "com.compomics.denovogui", "DeNovoGUI", "denovogui.ico",
+                            null, jarRepository, false, true, new GUIFileDAO(), deNovoGUIDialog);
+                } catch (IOException | URISyntaxException | XMLStreamException e) {
+                    LOGGER.error(e);
+                    e.printStackTrace();
+                } finally {
+                    deNovoGUIDialog.setRunFinished();
+                    deNovoGUIDialog.setVisible(false);
                 }
             }
         };
