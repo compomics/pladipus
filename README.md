@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/wiki/compomics/pladipus/pladipus_logo.svg" width="200">
+<img src="https://raw.githubusercontent.com/wiki/compomics/pladipus/pladipus_logo.jpg" width="200">
 
 # Pladipus
 
