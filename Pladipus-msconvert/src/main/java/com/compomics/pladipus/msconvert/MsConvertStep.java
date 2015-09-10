@@ -7,9 +7,11 @@ package com.compomics.pladipus.msconvert;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
+import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,6 +30,8 @@ public class MsConvertStep extends ProcessingStep {
     public boolean doAction() throws Exception {
         System.out.println("Running " + this.getClass().getName());
         boolean success = false;
+        Level level = LOGGER.getLevel();
+        LOGGER.setLevel(Level.INFO);
         File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/msconvert");
         tempResources.mkdirs();
         try {
@@ -47,20 +51,29 @@ public class MsConvertStep extends ProcessingStep {
                 //convert the RAW file
                 MsConvertProcess process = new MsConvertProcess(tempRAW, tempMGF, executable);
                 ProcessingEngine.startProcess(executable, process.generateCommand());
-
                 File resultFile = tempMGF.listFiles()[0];
-                //deliver the file to the correct location
-                FileUtils.copyFile(resultFile, output, true);
-                //delete the tempfolder
 
-                FileUtils.deleteDirectory(tempResources);
+                LOGGER.info("Processing complete...Zipping result MGF...");
+                String fileName = resultFile.getName().substring(0, resultFile.getName().indexOf(".")) + "zip";
+                File zippedOutput = new File(resultFile.getParentFile(), fileName);
+                ZipUtils.zipLargeFile(resultFile, zippedOutput);
+                //deliver the file to the correct location
+                if (!output.getName().toLowerCase().endsWith(".zip")) {
+                    output = new File(output.getAbsolutePath() + ".zip");
+                }
+                LOGGER.info("Copying " + zippedOutput.getAbsolutePath() + " to " + output);
+                FileUtils.copyFile(zippedOutput, output, true);
+                //delete the tempfolder
+                LOGGER.info("DONE");
             }
             success = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
+            LOGGER.info("Cleaning temp folder");
             FileUtils.deleteDirectory(tempResources);
+            LOGGER.setLevel(level);
             return success;
         }
     }
