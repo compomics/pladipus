@@ -58,7 +58,8 @@ public class ActiveMQPropertyUpdater {
             if (attr.getNamedItem("name").getTextContent().equals("openwire")) {
                 //update the transporter URI
                 Node nodeAttr = attr.getNamedItem("uri");
-                nodeAttr.setTextContent("tcp://" + transporterHostName + ":" + activeMQPort + "?jms.prefetchPolicy.queuePrefetch=1");
+                //also disable the inactivitymonitoring
+                nodeAttr.setTextContent("tcp://" + transporterHostName + ":" + activeMQPort + "?jms.prefetchPolicy.queuePrefetch=1;transport.useInactivityMonitor=false");
             }
 
             //get the jmx management item
