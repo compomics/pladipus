@@ -8,11 +8,13 @@ package com.compomics.pladipus.core.control.util;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
@@ -30,9 +32,14 @@ public class ZipUtils {
      * boolean indicating if the file is unzipped
      */
     private static boolean unzipped = false;
+    /**
+     * The zipping buffer size
+     */
+    private static int BUFFER_SIZE = 1024;
 
     /**
      * Unzips a file to the specified folder
+     *
      * @param archive the zipped folder
      * @param outputDir the destination folder
      */
@@ -77,4 +84,24 @@ public class ZipUtils {
             throw new RuntimeException("Can not create dir " + dir);
         }
     }
+    /**
+     * Unzips a single file to the specified folder
+     *
+     * @param input the original folder
+     * @param output the destination zip file
+     */
+    public static void zipLargeFile(File input, File output) throws IOException {
+
+        byte[] buffer = new byte[BUFFER_SIZE];
+        output.getParentFile().mkdirs();
+        FileOutputStream fos = new FileOutputStream(output);
+        try (ZipOutputStream zos = new ZipOutputStream(fos); FileInputStream in = new FileInputStream(input)) {
+            int len;
+            while ((len = in.read(buffer)) > 0) {
+                zos.write(buffer, 0, len);
+            }
+            zos.closeEntry();
+        }
+    }
+
 }
