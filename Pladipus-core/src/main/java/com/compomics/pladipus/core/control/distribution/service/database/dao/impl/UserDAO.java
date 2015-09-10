@@ -53,7 +53,7 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      * @throws SQLException
      */
     public boolean createUser(String user, String passWord, String contactAddress) throws SQLException {
-        boolean created = false;
+        boolean created;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
                 PreparedStatement queryUser = c.prepareStatement("SELECT USER_NAME FROM USERS WHERE USER_NAME=?");
                 PreparedStatement updateUser = c.prepareStatement("INSERT INTO USERS(USER_NAME,PASSWORD,CONTACT) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);

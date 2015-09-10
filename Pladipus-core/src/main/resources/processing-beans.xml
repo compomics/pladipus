@@ -27,6 +27,10 @@
  
     <bean id="BlastXStep" class="com.compomics.pladipus.blast.BlastXStep" lazy-init="true"/>    
     
+      <!--MsConvert beans -->
+    
+    <bean id="MsConvertStep" class="com.compomics.pladipus.msconvert.MsConvertStep" lazy-init="true"/>    
+   
     <!--DO NOT EDIT THESE STEPS -->
     <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
     
