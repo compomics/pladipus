@@ -153,6 +153,7 @@ public class CLIExecutor {
             } else {
                 throw new SecurityException("User is not provided");
             }
+            System.out.println("user is "+user);
 //verify the user
             if (line.hasOption("p")) {
                 password = line.getOptionValue("p");
@@ -167,7 +168,6 @@ public class CLIExecutor {
                     push = true;
                     if (line.hasOption("l")) {
                         pushFromLocal = true;
-                        user = line.getOptionValue("l");
                     } else if (line.hasOption("template")) {
                         templateFile = new File(line.getOptionValue("template"));
                     } else if (!pushFromLocal) {
@@ -198,8 +198,8 @@ public class CLIExecutor {
         //options
         options = new Options();
         options.addOption(new Option("help", "prints help message"));
-        options.addOption(new Option("u", "pladipus user"));
-        options.addOption(new Option("p", "pladipus password"));
+        options.addOption(new Option("u",true, "pladipus user"));
+        options.addOption(new Option("p",true, "pladipus password"));
         //pushing options
         options.addOption(new Option("template", true, "The template XML file to generate jobs with"));
         options.addOption(new Option("job_config", true, "The TSV file containing tab separated parameters (one job per line)"));
