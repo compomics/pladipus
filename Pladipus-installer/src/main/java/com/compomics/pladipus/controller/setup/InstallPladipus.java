@@ -33,7 +33,7 @@ public class InstallPladipus {
     /**
      * The available pladipus steps that need to be installed
      */
-    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo"};
+    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo","msconvert"};
     /**
      * The pladipus folder (in user home)
      */
@@ -102,7 +102,7 @@ public class InstallPladipus {
         String os = System.getProperty("os.name");
         long maxMemory = Runtime.getRuntime().maxMemory();
         int memory = (int) (0.9 * ((double) maxMemory / (double) (1024 * 1024)));
-        String command = "java -Xmx" + memory + "m -Xms" + memory + "m -cp " + pladipusFolder + "/" + "Pladipus-execution-0.2.1/Pladipus-execution-0.2.1.jar com.compomics.pladipus.playground.ConsumerStarter";
+        String command = "java -Xmx" + memory + "m -Xms" + memory + "m -cp " + pladipusFolder + "/" + "Pladipus-execution-"+version+"/Pladipus-execution-"+version+".jar com.compomics.pladipus.playground.ConsumerStarter";
         FileWriter bashWriter;
         if (os.toLowerCase().contains("windows")) {
             File bashFile = new File(System.getProperty("user.home") + "/Desktop/Pladipus-Worker.bat");
