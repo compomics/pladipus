@@ -195,18 +195,22 @@ public class ProcessingMonitor implements Callable<Integer> {
         process = processBuilder.start();
 
         /*     ExecutorService pool = Executors.newFixedThreadPool(1);
-         Callable<Integer> callable = new ProcessingMonitor(process);
-         Future<Integer> future = pool.submit(callable);
-         //wait for the process, the hook will kill it if needed...
-         pool.shutdown();
-         process.waitFor();
-         int systemExitValue = 0;
-         try {
-         systemExitValue = future.get();
-         } catch (Throwable e) {
-         e.printStackTrace();
-         }
-         // pool.shutdownNow();*/
+        Callable<Integer> callable = new ProcessingMonitor(process);
+        Future<Integer> future = pool.submit(callable);
+        //wait for the process, the hook will kill it if needed...
+        pool.shutdown();
+        process.waitFor();
+        int systemExitValue = 0;
+        try {
+        systemExitValue = future.get();
+        } catch (Throwable e) {
+        e.printStackTrace();
+        }
+        // pool.shutdownNow();*/
+        InputStream processOutput = process.getInputStream();
+        while(processOutput.read()>=0){
+            //wait?
+        }
         process.waitFor();
         return process.exitValue();
     }
