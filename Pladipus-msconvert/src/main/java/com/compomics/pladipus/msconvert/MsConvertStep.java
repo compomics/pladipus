@@ -54,9 +54,9 @@ public class MsConvertStep extends ProcessingStep {
                 File resultFile = tempMGF.listFiles()[0];
 
                 LOGGER.info("Processing complete...Zipping result MGF...");
-                String fileName = resultFile.getName().substring(0, resultFile.getName().indexOf(".")) + "zip";
+                String fileName = resultFile.getName().substring(0, resultFile.getName().indexOf(".")) + ".zip";
                 File zippedOutput = new File(resultFile.getParentFile(), fileName);
-                ZipUtils.zipLargeFile(resultFile, zippedOutput);
+                ZipUtils.zipFile(resultFile, zippedOutput);
                 //deliver the file to the correct location
                 if (!output.getName().toLowerCase().endsWith(".zip")) {
                     output = new File(output.getAbsolutePath() + ".zip");
