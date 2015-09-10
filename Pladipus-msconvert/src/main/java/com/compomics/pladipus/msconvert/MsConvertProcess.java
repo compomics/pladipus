@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pladipus.blast;
+package com.compomics.pladipus.msconvert;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,19 +26,16 @@ public class MsConvertProcess {
     /**
      * The input raw file
      */
-    private final File raw;
-    /**
-     * The input conversion parameters file
-     */
-    private final File convertParam;
+    private final File input;
+
     /**
      * The output file
      */
     private File outputFile;
 
-    public MsConvertProcess(File input, File output, File convertParam, File executable) {
-        this.raw = input;
-        this.convertParam = convertParam;
+    public MsConvertProcess(File input, File output,File executable) {
+        this.input = input;
+        this.outputFile=output;
         this.executable = executable;
     }
 
@@ -51,7 +48,7 @@ public class MsConvertProcess {
         List<String> msConvertCommandLine = new ArrayList<>();
         //set input
         msConvertCommandLine.add("msconvert");
-        msConvertCommandLine.add(raw.getAbsolutePath());
+        msConvertCommandLine.add(input.getAbsolutePath());
         //set output
         msConvertCommandLine.add("-o");
         msConvertCommandLine.add(outputFile.getAbsolutePath());
@@ -61,13 +58,13 @@ public class MsConvertProcess {
         msConvertCommandLine.add("--mgf");
         //only retain ms2
         msConvertCommandLine.add("--filter");
-        msConvertCommandLine.add("msLevel 2");
+        msConvertCommandLine.add("\"msLevel 2\"");
         // do peak_picking
         msConvertCommandLine.add("--filter");
-        msConvertCommandLine.add("peakPicking true 1-");
+        msConvertCommandLine.add("\"peakPicking true 1-\"");
         //remove zero peaks
         msConvertCommandLine.add("--filter");
-        msConvertCommandLine.add("zeroSamples removeExtra");
+        msConvertCommandLine.add("\"zeroSamples removeExtra\"");
         LOGGER.info("MSCONVERT COMMAND LINE : " + System.lineSeparator() + msConvertCommandLine.toString());
         return msConvertCommandLine;
     }
