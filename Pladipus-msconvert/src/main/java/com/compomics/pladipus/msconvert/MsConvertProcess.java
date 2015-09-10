@@ -22,7 +22,7 @@ public class MsConvertProcess {
     /**
      * The executable file
      */
-    private final File executable;
+    private final File executableLocation;
     /**
      * The input raw file
      */
@@ -33,10 +33,10 @@ public class MsConvertProcess {
      */
     private File outputFile;
 
-    public MsConvertProcess(File input, File output,File executable) {
+    public MsConvertProcess(File input, File output, File executable) {
         this.input = input;
-        this.outputFile=output;
-        this.executable = executable;
+        this.outputFile = output;
+        this.executableLocation = executable;
     }
 
     /**
@@ -47,7 +47,7 @@ public class MsConvertProcess {
     public List<String> generateCommand() throws NullPointerException {
         List<String> msConvertCommandLine = new ArrayList<>();
         //set input
-        msConvertCommandLine.add("msconvert");
+        msConvertCommandLine.add(executableLocation.getAbsolutePath());
         msConvertCommandLine.add(input.getAbsolutePath());
         //set output
         msConvertCommandLine.add("-o");
@@ -65,7 +65,12 @@ public class MsConvertProcess {
         //remove zero peaks
         msConvertCommandLine.add("--filter");
         msConvertCommandLine.add("\"zeroSamples removeExtra\"");
-        LOGGER.info("MSCONVERT COMMAND LINE : " + System.lineSeparator() + msConvertCommandLine.toString());
+
+        StringBuilder rString = new StringBuilder();
+        for (String each : msConvertCommandLine) {
+            rString.append(each).append(" ");
+        }
+        LOGGER.info("MSCONVERT COMMAND LINE : " + rString);
         return msConvertCommandLine;
     }
 

@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 public class MsConvertStep extends ProcessingStep {
 
     private static final Logger LOGGER = Logger.getLogger(MsConvertStep.class);
-    
+
     public MsConvertStep() {
 
     }
@@ -27,6 +27,9 @@ public class MsConvertStep extends ProcessingStep {
     @Override
     public boolean doAction() throws Exception {
         System.out.println("Running " + this.getClass().getName());
+        boolean success = false;
+        File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/msconvert");
+        tempResources.mkdirs();
         try {
             if (checkOS()) {
                 //check if searchgui is local, if not download it
@@ -35,11 +38,9 @@ public class MsConvertStep extends ProcessingStep {
                 File executable = new File(parameters.get("pwiz_folder"), "msconvert");
 
                 //download the input to a temp folder?
-                File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/msconvert");
-                tempResources.mkdirs();
                 LOGGER.info("Downloading...");
                 File tempRAW = new File(PladipusFileDownloadingService.downloadFile(input.getAbsolutePath(), tempResources).getAbsolutePath());
-                File tempMGF = new File(tempRAW.getParentFile(), "temp_"+System.currentTimeMillis());
+                File tempMGF = new File(tempRAW.getParentFile(), "temp_" + System.currentTimeMillis());
                 System.out.println("Done downloading !");
                 System.out.println("tempRAW = " + tempRAW.getAbsolutePath());
                 System.out.println("tempMGF = " + tempMGF.getAbsolutePath());
@@ -47,19 +48,20 @@ public class MsConvertStep extends ProcessingStep {
                 MsConvertProcess process = new MsConvertProcess(tempRAW, tempMGF, executable);
                 ProcessingEngine.startProcess(executable, process.generateCommand());
 
+                File resultFile = tempMGF.listFiles()[0];
                 //deliver the file to the correct location
-                FileUtils.copyFile(tempMGF, output, true);
+                FileUtils.copyFile(resultFile, output, true);
                 //delete the tempfolder
-                tempRAW.delete();
-                tempMGF.delete();
+
                 FileUtils.deleteDirectory(tempResources);
             }
-            return true;
+            success = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            return false;
+            FileUtils.deleteDirectory(tempResources);
+            return success;
         }
     }
 
