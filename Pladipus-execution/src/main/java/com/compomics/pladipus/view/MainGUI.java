@@ -208,10 +208,9 @@ public class MainGUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void miImportRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportRunActionPerformed
-        RunImportDialog runCreationDialog = new RunImportDialog(this, userPanel, true);
-        runCreationDialog.setUser(loggedInUser);
-        runCreationDialog.setVisible(true);
-
+        RunImportDialog runImportDialog = new RunImportDialog(this, userPanel, true);
+        runImportDialog.setUser(loggedInUser);
+        runImportDialog.setVisible(true);
     }//GEN-LAST:event_miImportRunActionPerformed
 
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed

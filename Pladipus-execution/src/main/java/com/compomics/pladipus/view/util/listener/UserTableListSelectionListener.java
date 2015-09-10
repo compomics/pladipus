@@ -21,7 +21,6 @@ public class UserTableListSelectionListener implements ListSelectionListener {
     private final UserPanel panel;
     private final Logger LOGGER = Logger.getLogger(UserTableListSelectionListener.class);
     private int run_id;
-    private ProgressDialogX dialog;
     private ProgressDialogX progressDialog;
 
     public UserTableListSelectionListener(UserPanel panel) {
@@ -33,8 +32,10 @@ public class UserTableListSelectionListener implements ListSelectionListener {
         //Run_ID 
         try {
             JTable runTable = panel.getRunTable();
+            //counter for multiple rows and hanging !
+
             int selected_row = runTable.getSelectedRow();
-            if (selected_row > -1) {
+            if (selected_row > -1 && runTable.getSelectedRowCount() == 1) {
                 run_id = Integer.parseInt(runTable.getValueAt(selected_row, 1).toString());
                 //do this in a swing worker?
                 doUpdate();
@@ -54,8 +55,10 @@ public class UserTableListSelectionListener implements ListSelectionListener {
             public void run() {
                 try {
                     progressDialog.setVisible(true);
-                } catch (IndexOutOfBoundsException e) {
-                    // ignore
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                } finally {
+                    progressDialog.setRunFinished();
                 }
             }
         }, "ProgressDialog").start();
@@ -67,12 +70,12 @@ public class UserTableListSelectionListener implements ListSelectionListener {
                     if (run_id > 0) {
                         panel.setSelectedRunId(run_id);
                         panel.updateProcessTable();
-                        boolean processCancelled = progressDialog.isRunCanceled();
-                        progressDialog.setRunFinished();
                     }
                 } catch (Exception e) {
+                    LOGGER.error(e);
+                } finally {
                     progressDialog.setRunFinished();
-                    e.printStackTrace();
+
                 }
             }
         }.start();
