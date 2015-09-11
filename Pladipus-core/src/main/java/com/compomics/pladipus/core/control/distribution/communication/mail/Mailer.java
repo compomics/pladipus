@@ -5,7 +5,6 @@
  */
 package com.compomics.pladipus.core.control.distribution.communication.mail;
 
-import com.compomics.pladipus.core.control.distribution.service.UserService;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -39,33 +38,39 @@ public class Mailer {
         this.recipient = recipient;
     }
 
-     private Properties mailServerProperties;
+    public static void main(String[] args) {
+        try {
+            new Mailer("kenneth.verheggen@ugent.be").generateAndSendEmail("TEST", "TEST", "kenneth.verheggen@ugent.be");
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private Properties mailServerProperties;
     private Session getMailSession;
     private MimeMessage generateMailMessage;
 
     public void generateAndSendEmail(String subject, String message, String recipient) throws AddressException, MessagingException {
         // Step1
-        System.out.println("\n 1st ===> setup Mail Server Properties..");
+        LOGGER.info("Sending report mail to " + recipient);
         mailServerProperties = System.getProperties();
         mailServerProperties.put("mail.smtp.port", "587");
         mailServerProperties.put("mail.smtp.auth", "true");
         mailServerProperties.put("mail.smtp.starttls.enable", "true");
         System.out.println("Mail Server Properties have been setup successfully..");
         // Step2
-        System.out.println("\n\n 2nd ===> get Mail Session..");
+        LOGGER.info("Generating message...");
         getMailSession = Session.getDefaultInstance(mailServerProperties, null);
         generateMailMessage = new MimeMessage(getMailSession);
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
         generateMailMessage.setSubject(subject);
         String emailBody = message + "<br><br> Best regards, <br>Pladipus Admin";
         generateMailMessage.setContent(emailBody, "text/html");
-        System.out.println("Mail Session has been created successfully..");
-        // Step3
-        System.out.println("\n\n 3rd ===> Get Session and Send mail");
         Transport transport = getMailSession.getTransport("smtp");
-        transport.connect("smtp.gmail.com", "pladipus.compomics@gmail.com", UserService.getInstance().encryptPassword("justanotherpassword"));
+        transport.connect("smtp.gmail.com", "pladipus.compomics@gmail.com", "'**********'");
         transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
         transport.close();
+        LOGGER.info("Done !");
     }
 
 }
