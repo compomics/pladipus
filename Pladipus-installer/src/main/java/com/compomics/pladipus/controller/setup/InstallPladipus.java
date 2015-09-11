@@ -5,15 +5,26 @@
  */
 package com.compomics.pladipus.controller.setup;
 
+import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.sql.SQLException;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import net.jimmc.jshortcut.JShellLink;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -33,7 +44,7 @@ public class InstallPladipus {
     /**
      * The available pladipus steps that need to be installed
      */
-    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo","msconvert"};
+    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo", "msconvert"};
     /**
      * The pladipus folder (in user home)
      */
@@ -56,10 +67,10 @@ public class InstallPladipus {
      *
      * @throws IOException
      */
-    public void installWorker() throws IOException {
+    public void installWorker() throws IOException,SecurityException {
         installPladipusModules();
         installProcessingBeanProperties();
-        writeWorkerBash();
+        validateUser();
     }
 
     /**
@@ -71,10 +82,10 @@ public class InstallPladipus {
         setupPladipus();
         installPladipusModules();
         installProcessingBeanProperties();
-        createDesktopIcon();
+        createDesktopIcon("Pladipus-" + version);
     }
 
-    private void createDesktopIcon() {
+    private void createDesktopIcon(String linkName) {
         //copy the ico file to the installation folder
         File icoFile = new File(pladipusFolder, "pladipus.ico");
         try (OutputStream out = new FileOutputStream(icoFile); InputStream in = getClass().getClassLoader().getResource("images/pladipus.ico").openStream()) {
@@ -83,7 +94,7 @@ public class InstallPladipus {
             String iconFileLocation = icoFile.getAbsolutePath();
             JShellLink link = new JShellLink();
             link.setFolder(JShellLink.getDirectory("desktop"));
-            link.setName("Pladipus-" + version);
+            link.setName(linkName);
             link.setIconLocation(iconFileLocation);
             link.setPath(jarFilePath);
             link.save();
@@ -98,11 +109,11 @@ public class InstallPladipus {
      *
      * @throws IOException
      */
-    public void writeWorkerBash() throws IOException {
+    private void writeWorkerBash(String user, String password) throws IOException {
         String os = System.getProperty("os.name");
         long maxMemory = Runtime.getRuntime().maxMemory();
         int memory = (int) (0.9 * ((double) maxMemory / (double) (1024 * 1024)));
-        String command = "java -Xmx" + memory + "m -Xms" + memory + "m -cp " + pladipusFolder + "/" + "Pladipus-execution-"+version+"/Pladipus-execution-"+version+".jar com.compomics.pladipus.playground.ConsumerStarter";
+        String command = "java -Xmx" + memory + "m -Xms" + memory + "m -jar " + pladipusFolder + "/" + "Pladipus-execution-" + version + "/Pladipus-execution-" + version + ".jar -auto_pull -u " + user + " -p " + password;
         FileWriter bashWriter;
         if (os.toLowerCase().contains("windows")) {
             File bashFile = new File(System.getProperty("user.home") + "/Desktop/Pladipus-Worker.bat");
@@ -113,6 +124,58 @@ public class InstallPladipus {
         }
         bashWriter.append(command).flush();
         bashWriter.close();
+    }
+
+    /**
+     * Queries the user for the valid user login and password
+     *
+     * @throws IOException
+     */
+    public void validateUser() throws IOException {
+       
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+
+        JPanel label = new JPanel(new GridLayout(0, 1, 2, 2));
+        label.add(new JLabel("Username", SwingConstants.RIGHT));
+        label.add(new JLabel("Password", SwingConstants.RIGHT));
+        panel.add(label, BorderLayout.WEST);
+
+        JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));
+        JTextField username = new JTextField();
+        controls.add(username);
+        JPasswordField password = new JPasswordField();
+        controls.add(password);
+
+        panel.add(controls, BorderLayout.CENTER);
+
+        JOptionPane.showMessageDialog(null, panel, "login", JOptionPane.OK_CANCEL_OPTION);
+
+        String user = username.getText();
+        String pass = new String(password.getPassword());
+
+        if (login(user, pass)) {
+            writeWorkerBash(user, pass);
+        } else {
+            throw new SecurityException("Credentials are not correct !");
+        }
+
+    }
+
+    private static boolean login(String user, String password) {
+        boolean accept = false;
+        UserService uService = UserService.getInstance();
+        try {
+            if (!uService.userExists(user)) {
+                throw new SecurityException(user + " was not found !");
+            } else if (uService.verifyUser(user, password)) {
+                accept = true;
+            } else {
+                throw new SecurityException(user + " is not a authorized to push jobs !");
+            }
+        } catch (SQLException | UnsupportedEncodingException ex) {
+            LOGGER.error(ex);
+        }
+        return accept;
     }
 
     private void installProcessingBeanProperties() {

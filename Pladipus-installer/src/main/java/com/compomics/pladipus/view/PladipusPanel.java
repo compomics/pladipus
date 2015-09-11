@@ -181,7 +181,7 @@ public class PladipusPanel extends javax.swing.JPanel {
                 try {
                     new InstallPladipus().installWorker();
                     JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus worker");
-                } catch (IOException ex) {
+                } catch (SecurityException|IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
                             "Could not install Pladipus worker : " + System.lineSeparator() + ex.getMessage(),
                             "Inane error",
