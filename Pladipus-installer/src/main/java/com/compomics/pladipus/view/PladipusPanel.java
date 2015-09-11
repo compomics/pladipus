@@ -50,7 +50,7 @@ public class PladipusPanel extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
 
         btnRegister.setBackground(new java.awt.Color(255, 255, 255));
-        btnRegister.setText("Register");
+        btnRegister.setText("Register new user");
         btnRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegisterActionPerformed(evt);
@@ -80,7 +80,7 @@ public class PladipusPanel extends javax.swing.JPanel {
         );
 
         btnInstallGUI.setBackground(new java.awt.Color(255, 255, 255));
-        btnInstallGUI.setText("Install Console-mode");
+        btnInstallGUI.setText("Install Management-mode");
         btnInstallGUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInstallGUIActionPerformed(evt);
@@ -88,7 +88,7 @@ public class PladipusPanel extends javax.swing.JPanel {
         });
 
         btnInstallWorker.setBackground(new java.awt.Color(255, 255, 255));
-        btnInstallWorker.setText("Install Worker-mode");
+        btnInstallWorker.setText("Install Execution-mode");
         btnInstallWorker.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInstallWorkerActionPerformed(evt);
@@ -108,14 +108,14 @@ public class PladipusPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(108, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnRegister)
                     .addComponent(btnInstallGUI)
                     .addComponent(btnInstallWorker)
                     .addComponent(btnInstallExample))
-                .addGap(123, 123, 123))
+                .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnInstallExample, btnInstallGUI, btnInstallWorker, btnRegister});
