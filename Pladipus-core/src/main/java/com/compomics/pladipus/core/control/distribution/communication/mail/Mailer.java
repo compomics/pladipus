@@ -38,14 +38,6 @@ public class Mailer {
         this.recipient = recipient;
     }
 
-    public static void main(String[] args) {
-        try {
-            new Mailer("kenneth.verheggen@ugent.be").generateAndSendEmail("TEST", "TEST", "kenneth.verheggen@ugent.be");
-        } catch (MessagingException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     private Properties mailServerProperties;
     private Session getMailSession;
     private MimeMessage generateMailMessage;
