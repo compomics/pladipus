@@ -243,7 +243,7 @@ public class MainGUI extends javax.swing.JFrame {
         try {
             RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
             dialog.setVisible(true);
-        } catch (ParserConfigurationException | IOException | SAXException e) {
+        } catch (NullPointerException|ParserConfigurationException | IOException | SAXException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

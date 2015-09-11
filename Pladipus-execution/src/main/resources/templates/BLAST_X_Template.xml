@@ -1,0 +1,18 @@
+<template run='Example_Blast_X' user='pladmin' priority='4'>
+ 	<steps>
+		<step class="com.compomics.pladipus.blast.BlastSetupStep"/> 
+		<step class="com.compomics.pladipus.blast.BlastPrepareDbStep"/> 
+		<step class="com.compomics.pladipus.blast.BlastXStep"/> 
+  	</steps> 
+ 	<parameters>
+ 		<run>
+                    <param name='dbFasta' value =''/>
+                    <param name='blastType' value =''/>
+                    <param name='blastFolder' value =''/>
+ 		</run>
+   		<job>
+                    <param name ='queryFasta' default='default'/>
+                    <param name='output' default='default'/>
+ 		</job>
+ 	</parameters>
+ </template> 
