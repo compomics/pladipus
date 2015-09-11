@@ -10,6 +10,10 @@ import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -33,6 +37,10 @@ public class MsConvertStep extends ProcessingStep {
         Level level = LOGGER.getLevel();
         LOGGER.setLevel(Level.INFO);
         File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/msconvert");
+        if (tempResources.exists()) {
+            LOGGER.info("Cleaning temp folder");
+            FileUtils.deleteDirectory(tempResources);
+        }
         tempResources.mkdirs();
         try {
             if (checkOS()) {
@@ -61,9 +69,7 @@ public class MsConvertStep extends ProcessingStep {
                 if (!output.getName().toLowerCase().endsWith(".zip")) {
                     output = new File(output.getAbsolutePath() + ".zip");
                 }
-                LOGGER.info("Copying " + zippedOutput.getAbsolutePath() + " to " + output);
-                FileUtils.copyFile(zippedOutput, output, true);
-                //delete the tempfolder
+                copyFile(zippedOutput, output);
                 LOGGER.info("DONE");
             }
             success = true;
@@ -71,8 +77,6 @@ public class MsConvertStep extends ProcessingStep {
             e.printStackTrace();
             throw e;
         } finally {
-            LOGGER.info("Cleaning temp folder");
-            FileUtils.deleteDirectory(tempResources);
             LOGGER.setLevel(level);
             return success;
         }
@@ -96,4 +100,14 @@ public class MsConvertStep extends ProcessingStep {
         throw new UnsupportedOperationException("MsConvert uses vendor specific libraries only available on windows !");
     }
 
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        LOGGER.info("Copying " + sourceFile.getAbsolutePath() + " to " + destFile);
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+        try (FileChannel source = new FileInputStream(sourceFile).getChannel();
+                FileChannel destination = new FileOutputStream(destFile).getChannel()) {
+            destination.transferFrom(source, 0, source.size());
+        }
+    }
 }
