@@ -43,10 +43,11 @@ public class UserService {
 
     }
 
-    private String encryptPassword(String password) {
+    public String encryptPassword(String password) {
         return encryptor.encryptPassword(password);
     }
-
+ 
+    
     /**
      *
      * @param user the username

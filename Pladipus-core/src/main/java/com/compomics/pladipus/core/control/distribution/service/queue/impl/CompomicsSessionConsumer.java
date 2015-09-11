@@ -28,6 +28,7 @@ import java.util.concurrent.TimeoutException;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
+import javax.mail.MessagingException;
 import org.apache.log4j.Logger;
 
 /**
@@ -105,7 +106,11 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
             String recipient = rService.getOwnerContact(parentRunID);
             LOGGER.info("Run complete, notifying " + recipient);
             Mailer mailer = new Mailer(recipient);
-            mailer.sendMail(generator.generateSubject(parentRunID), generator.generateReport(parentRunID));
+            try {
+                mailer.generateAndSendEmail(generator.generateSubject(parentRunID), generator.generateReport(parentRunID),recipient);
+            } catch (MessagingException ex) {
+                LOGGER.warn("Could not notify run owner of finished run !");
+            }
         }
     }
 

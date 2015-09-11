@@ -5,13 +5,13 @@
  */
 package com.compomics.pladipus.core.control.distribution.communication.mail;
 
-import com.compomics.pladipus.core.model.properties.MailingProperties;
-import java.io.IOException;
-import java.util.Date;
+import com.compomics.pladipus.core.control.distribution.service.UserService;
+import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
@@ -39,29 +39,33 @@ public class Mailer {
         this.recipient = recipient;
     }
 
-    /**
-     *
-     * @param subject e-mail title
-     * @param message e-mail body
-     * @throws IOException
-     */
-    public void sendMail(String subject, String message) throws IOException {
-        MailingProperties mailProps = MailingProperties.getInstance();
-        Session session = Session.getInstance(mailProps, mailProps.getMailingAuthenticator());
-        session.setDebug(mailProps.isDebugMessagesRequired());
-        MimeMessage mimeMessage = new MimeMessage(session);
-        try {
-            LOGGER.info("Sending as " + mailProps.getMaskedaddress() + " to " + recipient);
-            mimeMessage.setFrom(new InternetAddress(mailProps.getMaskedaddress()));
-            mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-            mimeMessage.setSubject(subject);
-            mimeMessage.setSentDate(new Date());
-            mimeMessage.setText(message);
-            Transport.send(mimeMessage);
-            LOGGER.info("Done !");
-        } catch (MessagingException ex) {
-            LOGGER.error(ex);
-        }
+     private Properties mailServerProperties;
+    private Session getMailSession;
+    private MimeMessage generateMailMessage;
+
+    public void generateAndSendEmail(String subject, String message, String recipient) throws AddressException, MessagingException {
+        // Step1
+        System.out.println("\n 1st ===> setup Mail Server Properties..");
+        mailServerProperties = System.getProperties();
+        mailServerProperties.put("mail.smtp.port", "587");
+        mailServerProperties.put("mail.smtp.auth", "true");
+        mailServerProperties.put("mail.smtp.starttls.enable", "true");
+        System.out.println("Mail Server Properties have been setup successfully..");
+        // Step2
+        System.out.println("\n\n 2nd ===> get Mail Session..");
+        getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+        generateMailMessage = new MimeMessage(getMailSession);
+        generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+        generateMailMessage.setSubject(subject);
+        String emailBody = message + "<br><br> Best regards, <br>Pladipus Admin";
+        generateMailMessage.setContent(emailBody, "text/html");
+        System.out.println("Mail Session has been created successfully..");
+        // Step3
+        System.out.println("\n\n 3rd ===> Get Session and Send mail");
+        Transport transport = getMailSession.getTransport("smtp");
+        transport.connect("smtp.gmail.com", "pladipus.compomics@gmail.com", UserService.getInstance().encryptPassword("justanotherpassword"));
+        transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
+        transport.close();
     }
 
 }
