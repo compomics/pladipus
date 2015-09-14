@@ -15,6 +15,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
 public class PladipusFileDownloadingService {
+
     /**
      * The Logging instance
      */
