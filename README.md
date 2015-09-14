@@ -47,7 +47,7 @@ For further details on how to correctly configure pladipus, please consult the [
 
 A step by step tutorial is available at the [wiki](https://github.com/compomics/pladipus/wiki/Manual). 
 
-Alternatively, there is a video tutorial showcasing the basic operation of Pladipus [here](https://www.youtube.com/watch?v=aeTF7Y0XfBY).
+Alternatively, there is a video tutorial showcasing the basic operation of Pladipus [here](https://www.youtube.com/watch?v=ZQff2Yqhgrk).
 
 [Go to top of page](#pladipus)
 
