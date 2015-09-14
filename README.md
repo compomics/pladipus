@@ -14,10 +14,8 @@
 The [CompOmics](http://www.compomics.com) Pladipus system is an affordable cluster computing framework allowing for distributed processing, management and analyses for bio-informatics pipelines.
 The following video is a recommended introduction to the Pladipus framework
 
-<a href="http://www.youtube.com/watch?v=cX0tKRHy8SI" target="_blank"><img src="http://img.youtube.com/vi/cX0tKRHy8SI/0.jpg" 
+<a href="http://www.youtube.com/watch?v=d3bXgogYYhI" target="_blank"><img src="http://img.youtube.com/vi/d3bXgogYYhI/0.jpg" 
 alt="Pladipus video tutorial" width="240" height="180" border="10" /></a>
-
-[Pladipus video tutorial](http://www.youtube.com/watch?v=cX0tKRHy8SI)
 
 [Go to top of page](#pladipus)
 
