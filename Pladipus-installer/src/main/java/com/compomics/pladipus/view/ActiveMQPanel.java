@@ -218,7 +218,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(ActiveMQPanel.this,
                             "Could not install activeMQ : " + System.lineSeparator() + ex.getMessage(),
-                            "Inane error",
+                            "Installation failed",
                             JOptionPane.ERROR_MESSAGE);
                 } finally {
                     dialog.setRunFinished();
@@ -261,7 +261,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "ActiveMQ could not be reached: " + System.lineSeparator() + ex.getMessage(),
-                    "Inane error",
+                    "Connection failed",
                     JOptionPane.ERROR_MESSAGE);
         }
     }

@@ -221,7 +221,7 @@ public class MySQLPanel extends javax.swing.JPanel {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this,
                     "Could not update properties",
-                    "Inane error", JOptionPane.ERROR_MESSAGE);
+                    "Failed to update properties", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnApplyActionPerformed
 
@@ -267,14 +267,14 @@ public class MySQLPanel extends javax.swing.JPanel {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                         "Could not connect to the database",
-                        "Inane error",
+                        "Failed to connect",
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException ex) {
             //custom title, error icon
             JOptionPane.showMessageDialog(this,
                     "Could not import SQL init script",
-                    "Inane error",
+                    "Database creation error",
                     JOptionPane.ERROR_MESSAGE);
         }
 

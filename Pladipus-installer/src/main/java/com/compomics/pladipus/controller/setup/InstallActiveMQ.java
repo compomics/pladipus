@@ -6,8 +6,8 @@
 package com.compomics.pladipus.controller.setup;
 
 import com.compomics.pladipus.controller.util.ActiveMQPropertyUpdater;
-import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
+import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import java.io.File;
 import java.io.FileWriter;
@@ -73,8 +73,8 @@ public class InstallActiveMQ {
         ActiveMQPropertyUpdater.updateActiveMQProperties(activeMQSettingsFile, host, amqPort, jmxPort);
 
         NetworkProperties properties = NetworkProperties.getInstance();
-        properties.setProperty("AMQ.host", "localhost");
-        properties.setProperty("AMQ.port.queue", "3389");
+        properties.setProperty("AMQ.host", host);
+        properties.setProperty("AMQ.port.queue", amqPort);
         properties.setProperty("AMQ.version", "5.11.1");
         properties.setProperty("app.classpath", System.getProperty("user.home") + "/.compomics/pladipus/external/");
         properties.save();
