@@ -216,9 +216,10 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 return canEdit [columnIndex];
             }
         });
-        tblRunInfo.setColumnSelectionAllowed(true);
+        tblRunInfo.setCellSelectionEnabled(false);
         tblRunInfo.setGridColor(new java.awt.Color(255, 255, 255));
         tblRunInfo.setOpaque(false);
+        tblRunInfo.setRowSelectionAllowed(true);
         tblRunInfo.getTableHeader().setReorderingAllowed(false);
         spnlRun.setViewportView(tblRunInfo);
         tblRunInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -418,8 +419,6 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 .addComponent(pnlPagination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        pnlProcess.getAccessibleContext().setAccessibleName("My Processes");
     }// </editor-fold>//GEN-END:initComponents
 
     private void showCreateNewRunDialog() {
@@ -535,7 +534,6 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     private javax.swing.JPanel pnlRun;
     private javax.swing.JScrollPane spnlProcess;
     private javax.swing.JScrollPane spnlRun;
-    private javax.swing.JScrollPane spnlRun1;
     private javax.swing.JTable tblProcessInfo;
     private javax.swing.JTable tblRunInfo;
     private javax.swing.JTextField tfCurrentPage;
