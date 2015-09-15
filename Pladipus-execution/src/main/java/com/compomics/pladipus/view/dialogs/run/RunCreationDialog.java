@@ -750,12 +750,14 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
+            if(!fileToSave.getName().endsWith(".xml")){
+                fileToSave = new File(fileToSave.getAbsolutePath()+".xml");
+            }
             lastSelectedFolder = fileToSave.getParentFile();
             if (fileToSave.exists()) {
                 int dialogResult = JOptionPane.showConfirmDialog(this, fileToSave.getName() + " already exists, do you want to overwrite the file?");
                 if (dialogResult != JOptionPane.YES_OPTION) {
                     return;
-
                 }
             }
             try (FileWriter xmlOut = new FileWriter(fileToSave);
