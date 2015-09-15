@@ -214,7 +214,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 try {
 
                     setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
-                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Succesfully created launcher on desktop for the activeMQ starter");
+                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Installation completed. Please launch the server using the generated executable on the desktop.");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(ActiveMQPanel.this,
                             "Could not install activeMQ : " + System.lineSeparator() + ex.getMessage(),
@@ -231,6 +231,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         dialog.setPrimaryProgressCounterIndeterminate(true);
         dialog.setTitle("Installing ActiveMQ Server");
         dialog.setVisible(true);
+        
     }//GEN-LAST:event_btnInstallAmqActionPerformed
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
