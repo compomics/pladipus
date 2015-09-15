@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -38,8 +37,13 @@ public class MsConvertStep extends ProcessingStep {
         LOGGER.setLevel(Level.INFO);
         File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/msconvert");
         if (tempResources.exists()) {
-            LOGGER.info("Cleaning temp folder");
-            FileUtils.deleteDirectory(tempResources);
+            try {
+                LOGGER.info("Cleaning temp folder");
+                deleteFolder(tempResources);
+            } catch (Exception e) {
+                LOGGER.error("Could not clean directory : ");
+                e.printStackTrace();
+            }
         }
         tempResources.mkdirs();
         try {
@@ -110,4 +114,21 @@ public class MsConvertStep extends ProcessingStep {
             destination.transferFrom(source, 0, source.size());
         }
     }
+
+    private boolean deleteFolder(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteFolder(f);
+                } else {
+                    System.out.println("Deleted " + f.getAbsolutePath());
+                    f.delete();
+                }
+            }
+        }
+
+        return path.delete();
+    }
+
 }
