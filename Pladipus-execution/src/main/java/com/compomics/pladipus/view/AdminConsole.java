@@ -39,6 +39,7 @@ public class AdminConsole extends javax.swing.JFrame {
      * Creates new form AdminConsole
      */
     public AdminConsole(String user) {
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.user = user;
         // try to set the look and feel
         try {

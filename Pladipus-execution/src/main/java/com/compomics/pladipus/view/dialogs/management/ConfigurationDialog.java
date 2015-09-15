@@ -166,7 +166,8 @@ public class ConfigurationDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this,
                     "Saving successful",
                     "Updated properties",
-                    JOptionPane.OK_OPTION);
+                    JOptionPane.INFORMATION_MESSAGE
+            );
 
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this,
@@ -179,7 +180,7 @@ public class ConfigurationDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
- 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
     private javax.swing.JPanel pnlMain;
