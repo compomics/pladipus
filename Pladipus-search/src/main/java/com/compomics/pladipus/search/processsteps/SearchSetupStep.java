@@ -64,9 +64,11 @@ public class SearchSetupStep extends ProcessingStep {
         //output
         File outputFolder = new File(parameters.get("outputFolder") + "/" + parameters.get("assay"));
         outputFolder.mkdirs();
+        File tempFolder =new File(System.getProperty("user.home")+"/.compomics/pladipus/temp/SearchGUI");
+        tempFolder.mkdirs();
         parameters.put("outputfolder", outputFolder.getAbsolutePath());
-        parameters.put("temp", System.getProperty("user.home")+"/.compomics/pladipus/temp/SearchGUI");
-
+        parameters.put("temp", tempFolder.getAbsolutePath());
+        
         System.out.println(parameters);
     }
 
