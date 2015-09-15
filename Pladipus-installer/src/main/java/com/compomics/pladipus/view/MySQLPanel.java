@@ -266,7 +266,7 @@ public class MySQLPanel extends javax.swing.JPanel {
             if (!connected) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this,
-                        "Could not connect to the database",
+                        "Could not connect to the database :"+System.lineSeparator()+e.getMessage(),
                         "Failed to connect",
                         JOptionPane.ERROR_MESSAGE);
             }
