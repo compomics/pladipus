@@ -9,6 +9,7 @@ import java.awt.CardLayout;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,7 +86,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         pnlDescription = new javax.swing.JPanel();
         spnlDescription = new javax.swing.JScrollPane();
         epDescription = new javax.swing.JEditorPane();
-        btnViewDisclaimer = new javax.swing.JButton();
+        btnHelp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -138,15 +139,10 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addGap(44, 44, 44))
         );
 
-        btnViewDisclaimer.setBackground(new java.awt.Color(255, 255, 255));
-        btnViewDisclaimer.setForeground(java.awt.SystemColor.textHighlight);
-        btnViewDisclaimer.setText("View Disclaimer");
-        btnViewDisclaimer.setBorder(null);
-        btnViewDisclaimer.setBorderPainted(false);
-        btnViewDisclaimer.setContentAreaFilled(false);
-        btnViewDisclaimer.addActionListener(new java.awt.event.ActionListener() {
+        btnHelp.setText("Help");
+        btnHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewDisclaimerActionPerformed(evt);
+                btnHelpActionPerformed(evt);
             }
         });
 
@@ -158,7 +154,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnViewDisclaimer))
+                    .addComponent(btnHelp))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlMainLayout.createSequentialGroup()
@@ -183,7 +179,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                     .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnNext)
                         .addComponent(btnPrev))
-                    .addComponent(btnViewDisclaimer, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(btnHelp))
                 .addContainerGap())
         );
 
@@ -234,9 +230,31 @@ public class InstallerGUI extends javax.swing.JFrame {
         btnNext.setText("Next");
     }//GEN-LAST:event_btnPrevActionPerformed
 
-    private void btnViewDisclaimerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDisclaimerActionPerformed
-        showDisclaimer();
-    }//GEN-LAST:event_btnViewDisclaimerActionPerformed
+    private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpActionPerformed
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                String cardName = cards.get(cursor);
+                URL helpPage = new URL("http://compomics.github.io/projects/pladipus.html");
+                switch (cardName) {
+                    case "mySQLCard":
+                        helpPage = new URL("http://compomics.github.io/pladipus/wiki/installingmysql.html");
+                        break;
+                    case "activeMQCard":
+                        helpPage = new URL("http://compomics.github.io/pladipus/wiki/installingactivemq.html");
+                        break;
+                    case "pladipusCard":
+                        helpPage = new URL("http://compomics.github.io/pladipus/wiki/installingpladipus.html");
+                        break;
+                }
+                desktop.browse(helpPage.toURI());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            System.out.println("Please consult the wiki at http://compomics.github.io/projects/pladipus.html");
+        }
+    }//GEN-LAST:event_btnHelpActionPerformed
 
     private void showDisclaimer() {
         try {
@@ -320,9 +338,9 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnHelp;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
-    private javax.swing.JButton btnViewDisclaimer;
     private javax.swing.JEditorPane epDescription;
     private com.compomics.pladipus.view.ActiveMQPanel pnlActiveMQ;
     private javax.swing.JPanel pnlCards;
