@@ -1,19 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.util.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 /**
  * A custom renderer to show progress bars in a jTable
+ *
  * @author Kenneth Verheggen
+ * @author Harald Barsnes
  */
 public class ProgressCellRenderer extends JProgressBar implements TableCellRenderer {
 
@@ -32,7 +31,14 @@ public class ProgressCellRenderer extends JProgressBar implements TableCellRende
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         this.setForeground(Color.BLACK);
-        this.setBackground(Color.GREEN);
+        JLabel label = (JLabel) new DefaultTableCellRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        Color bg = label.getBackground();
+
+        // We have to create a new color object because Nimbus returns
+        // a color of type DerivedColor, which behaves strange, not sure why.
+        this.setOpaque(true);
+        this.setBackground(new Color(bg.getRed(), bg.getGreen(), bg.getBlue()));
+
         double parseDouble = 0;
         if (value != null) {
             parseDouble = Double.parseDouble(String.valueOf(value));
@@ -41,10 +47,9 @@ public class ProgressCellRenderer extends JProgressBar implements TableCellRende
             //TODO make this a color index?        
             this.setValue(actualValue);
             this.setString(actualValue + "%");
-        }else{
+        } else {
             this.setVisible(false);
         }
         return this;
     }
-
 }
