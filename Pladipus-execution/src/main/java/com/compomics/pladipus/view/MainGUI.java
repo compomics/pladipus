@@ -264,6 +264,14 @@ public class MainGUI extends javax.swing.JFrame {
         } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
             JOptionPane.showMessageDialog(this, "An error occurred loading a preset template: " + e.getMessage(), "Template Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
+        } finally {
+            try {
+                userPanel.updateProcessTable();
+                userPanel.updateRunTable();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                //ignore for now...
+            }
         }
     }//GEN-LAST:event_miCreateRunActionPerformed
 
