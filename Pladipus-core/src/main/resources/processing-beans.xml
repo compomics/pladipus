@@ -17,15 +17,11 @@
            
     <!--Blasting beans-->
     
-    <bean id="BlastPrepareDbStep" class="com.compomics.pladipus.blast.BlastPrepareDbStep" lazy-init="true"/>    
+    <bean id="MakeBlastDbStep" class="com.compomics.pladipus.blast.MakeBlastDbStep" lazy-init="true"/>    
 
     <bean id="BlastSetupStep" class="com.compomics.pladipus.blast.BlastSetupStep" lazy-init="true"/>    
   
-    <bean id="BlastNStep" class="com.compomics.pladipus.blast.BlastNStep" lazy-init="true"/>    
-
-    <bean id="BlastPStep" class="com.compomics.pladipus.blast.BlastPStep" lazy-init="true"/>    
- 
-    <bean id="BlastXStep" class="com.compomics.pladipus.blast.BlastXStep" lazy-init="true"/>    
+    <bean id="BlastStep" class="com.compomics.pladipus.blast.BlastStep" lazy-init="true"/>     
     
     <!--MsConvert beans -->
     
