@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view;
 
 import java.awt.CardLayout;
 import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +32,7 @@ public class InstallerGUI extends javax.swing.JFrame {
     private Disclaimer disclaimer;
 
     /**
-     * Creates new form InstallerGUI
+     * Creates a new InstallerGUI.
      */
     public InstallerGUI() {
         showDisclaimer();
@@ -63,6 +58,8 @@ public class InstallerGUI extends javax.swing.JFrame {
             }
         });
 
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
+
         setDescriptingText();
 
     }
@@ -86,14 +83,12 @@ public class InstallerGUI extends javax.swing.JFrame {
         pnlDescription = new javax.swing.JPanel();
         spnlDescription = new javax.swing.JScrollPane();
         epDescription = new javax.swing.JEditorPane();
-        btnHelp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         pnlMain.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnNext.setBackground(new java.awt.Color(255, 255, 255));
         btnNext.setText("Next");
         btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,7 +96,6 @@ public class InstallerGUI extends javax.swing.JFrame {
             }
         });
 
-        btnPrev.setBackground(new java.awt.Color(255, 255, 255));
         btnPrev.setText("Previous");
         btnPrev.setEnabled(false);
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
@@ -129,22 +123,16 @@ public class InstallerGUI extends javax.swing.JFrame {
         pnlDescription.setLayout(pnlDescriptionLayout);
         pnlDescriptionLayout.setHorizontalGroup(
             pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spnlDescription, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDescriptionLayout.createSequentialGroup()
+                .addGap(0, 29, Short.MAX_VALUE)
+                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnlDescriptionLayout.setVerticalGroup(
             pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDescriptionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDescriptionLayout.createSequentialGroup()
+                .addGap(0, 109, Short.MAX_VALUE)
+                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-
-        btnHelp.setText("Help");
-        btnHelp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHelpActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
@@ -152,20 +140,20 @@ public class InstallerGUI extends javax.swing.JFrame {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnHelp))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addComponent(btnPrev)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnNext))
                     .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {pnlCards, pnlDescription});
+
+        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnNext, btnPrev});
 
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,11 +163,9 @@ public class InstallerGUI extends javax.swing.JFrame {
                     .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnNext)
-                        .addComponent(btnPrev))
-                    .addComponent(btnHelp))
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNext)
+                    .addComponent(btnPrev))
                 .addContainerGap())
         );
 
@@ -189,7 +175,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,32 +215,6 @@ public class InstallerGUI extends javax.swing.JFrame {
         }
         btnNext.setText("Next");
     }//GEN-LAST:event_btnPrevActionPerformed
-
-    private void btnHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHelpActionPerformed
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                String cardName = cards.get(cursor);
-                URL helpPage = new URL("http://compomics.github.io/projects/pladipus.html");
-                switch (cardName) {
-                    case "mySQLCard":
-                        helpPage = new URL("http://compomics.github.io/pladipus/wiki/installingmysql.html");
-                        break;
-                    case "activeMQCard":
-                        helpPage = new URL("http://compomics.github.io/pladipus/wiki/installingactivemq.html");
-                        break;
-                    case "pladipusCard":
-                        helpPage = new URL("http://compomics.github.io/pladipus/wiki/installingpladipus.html");
-                        break;
-                }
-                desktop.browse(helpPage.toURI());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else{
-            System.out.println("Please consult the wiki at http://compomics.github.io/projects/pladipus.html");
-        }
-    }//GEN-LAST:event_btnHelpActionPerformed
 
     private void showDisclaimer() {
         try {
@@ -310,27 +270,42 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         switch (cursor) {
             case 1:
-                epDescription.setText("Pladipus requires a mySQL database in order to keep track of tasks and their states. Using these settings you can easily connect and automatically import the Pladipus database scheme"
-                        + "<br><br>If there is no mySQL service reachable, click <a href='https://dev.mysql.com/doc/'>here</a> for a tutorial on how to set one up. "
+                epDescription.setText("<h2>Step 1 of 3 - MySQL</h2>"
+                        + "<br>"
+                        + "Pladipus requires a MySQL database in order to keep track of tasks and their states."
+                        + "<br><br>"
+                        + "By using the default settings you can easily connect and automatically import the Pladipus database scheme."
+                        + "<br><br>"
+                        + "If there is no MySQL service reachable, click <a href='https://compomics.github.io/pladipus/wiki/installingmysql.html'>here</a> for more help."
                 );
                 break;
             case 2:
-                epDescription.setText("Pladipus requires a running <a href='http://activemq.apache.org/'>ActiveMQ</a> server in order to distribute tasks and system updates. Using these settings you can easily create a connection."
-                        + "<br><br>If no ActiveMQ service is reachable, please click the install button to automatically set up a prepackaged version."
+                epDescription.setText("<h2>Step 2 of 3 - ActiveMQ</h2>"
+                        + "<br>"
+                        + "Pladipus requires a running <a href='http://activemq.apache.org/'>ActiveMQ</a> server in order to distribute tasks and system updates."
+                        + "<br><br>"
+                        + "By using the default settings you can easily set up an ActiveMQ connection."
+                        + "<br><br>"
+                        + "If no ActiveMQ service is reachable, please click the install button to automatically set up a prepackaged version."
+                        + "<br><br>"
+                        + "Click <a href='https://compomics.github.io/pladipus/wiki/installingactivemq.html'>here</a> for more help."
                 );
                 break;
             case 3:
-                epDescription.setText(
-                        "In order to submit and manage new tasks, you need a<strong> registered Pladipus account</strong>"
+                epDescription.setText("<h2>Step 3 of 3 - Pladipus</h2>"
                         + "<br>"
-                        + "<br>"
-                        + "Pladipus can be installed as : <br>"
+                        + "In order to submit and manage new tasks, you need a registered Pladipus account."
+                        + "<br><br>"
+                        + "Pladipus can be installed as: <br>"
                         + "<ul>"
-                        + "<li>Console-mode (manage tasks using a graphical user interface)</li> "
-                        + "<li>Worker-mode, (execute tasks on this machine)</li>"
+                        + "<li>Manager - for managing tasks</li> "
+                        + "<li>Worker - for executing tasks</li>"
                         + "</ul>"
-                        + "<br>"
-                        + "<br>It is also possible to <strong>automatically install <a href='http://www.ncbi.nlm.nih.gov/pubmed/21337703'>SearchGUI</a> and <a href='http://www.ncbi.nlm.nih.gov/pubmed/25574629'>PeptideShaker</a></strong> if you want to set up a demo-worker. "
+                        + "It is also possible to automatically install <a href='http://www.ncbi.nlm.nih.gov/pubmed/21337703'>SearchGUI</a>, "
+                        + "<a href='http://www.ncbi.nlm.nih.gov/pubmed/24295440'>DeNovoGUI</a> "
+                        + "and <a href='http://www.ncbi.nlm.nih.gov/pubmed/25574629'>PeptideShaker</a> to quickly set up a demo worker."
+                        + "<br><br>"
+                        + "Click <a href='http://compomics.github.io/pladipus/wiki/installingpladipus.html'>here</a> for more help."
                 );
                 break;
         }
@@ -338,7 +313,6 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnHelp;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
     private javax.swing.JEditorPane epDescription;
