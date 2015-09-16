@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.view.util.menu;
 
+import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
@@ -18,6 +19,7 @@ import com.compomics.pladipus.view.panels.impl.UserPanel;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,11 +27,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
@@ -80,6 +86,39 @@ public class RunPopupMenu extends JPopupMenu {
                         stopRun(selectedRows);
                     }
 
+                }
+            }
+        });
+        add(launchAction);
+    }
+
+    private void addAttachJobsAction() {
+        JMenuItem launchAction = new JMenuItem("Attach jobs");
+        launchAction.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                fileChooser.setFileFilter(new FileNameExtensionFilter("Job configuration", "tsv"));
+                int result = fileChooser.showOpenDialog(userPanel);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File jobConfigFile = fileChooser.getSelectedFile();
+                    System.out.println("Selected file: " + jobConfigFile.getAbsolutePath());
+                    int[] selectedRows = runTable.getSelectedRows();
+                    if (selectedRows.length == 1) {
+                        try {
+                            PladipusProcessingTemplate templateForRun = RunService.getInstance().getTemplateForRun(Integer.parseInt(String.valueOf(runTable.getValueAt(selectedRows[0], 1))));
+                            executeUpload(templateForRun, jobConfigFile);
+                        } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+                            Logger.getLogger(RunPopupMenu.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(RunPopupMenu.this,
+                                "Please select a single run to attach jobs to",
+                                "Multiple selection of runs not allowed",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
         });
@@ -246,6 +285,62 @@ public class RunPopupMenu extends JPopupMenu {
                     }
                 }
                 progressDialog.setRunFinished();
+            }
+        }.start();
+    }
+
+    private void executeUpload(PladipusProcessingTemplate processingTemplate, File config) {
+        progressDialog = new ProgressDialogX(true);
+        progressDialog.setPrimaryProgressCounterIndeterminate(true);
+        progressDialog.setTitle("Adding jobs to run. Please Wait...");
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    progressDialog.setVisible(true);
+                } catch (IndexOutOfBoundsException e) {
+                    // ignore
+                }
+            }
+        }, "ProgressDialog").start();
+
+        new Thread("SaveThread") {
+            @Override
+            public void run() {
+                try {
+                    XMLTemplateInterpreter xmlInterpreter = XMLTemplateInterpreter.getInstance();
+                    //store in the database
+                    LinkedList<HashMap<String, String>> readLocalProcessingParameters = xmlInterpreter.readLocalProcessingParameters(processingTemplate, config);
+                    RunDAO rInstance = RunDAO.getInstance();
+                    int runID = rInstance.createRun(processingTemplate);
+                    rInstance.addToRun(runID, readLocalProcessingParameters);
+                    progressDialog.setRunFinished();
+                    try {
+                        userPanel.updateRunTable();
+                    } catch (Exception ex) {
+                        progressDialog.setRunFinished();
+                            JOptionPane.showMessageDialog(userPanel,
+                                ex.getMessage(),
+                                "Run Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                    try {
+                        userPanel.updateProcessTable();
+                    } catch (Exception ex) {
+                        progressDialog.setRunFinished();
+                        JOptionPane.showMessageDialog(userPanel,
+                                ex.getMessage(),
+                                "Run Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    progressDialog.setRunFinished();
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null,
+                            "Could not create run" + System.lineSeparator() + e,
+                            "Run Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         }.start();
     }
