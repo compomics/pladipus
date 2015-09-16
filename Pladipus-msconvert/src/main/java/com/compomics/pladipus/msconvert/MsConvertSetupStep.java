@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pladipus.denovo.processsteps;
+package com.compomics.pladipus.msconvert;
 
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
@@ -14,15 +14,16 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Kenneth Verheggen
  */
-public class DenovoGUISetupStep extends ProcessingStep {
+public class MsConvertSetupStep extends ProcessingStep {
 
     /**
      * the temp folder for the entire processing
      */
-    private final File tempResources;
+    private final File         tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/resources");
 
-    public DenovoGUISetupStep() {
-        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/resources");
+    
+    public MsConvertSetupStep() {
+
     }
 
     @Override
@@ -47,26 +48,18 @@ public class DenovoGUISetupStep extends ProcessingStep {
 
     private void initialiseInputFiles() throws Exception {
         //original
-        String inputPath = parameters.get("spectrum_files");
-        String paramPath = parameters.get("id_params");
+        String inputPath = parameters.get("f");
 
-        if (inputPath.toLowerCase().endsWith(".mgf")) {
-            parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
-        } else {
-            parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFolder(inputPath, tempResources).getAbsolutePath());
-        }
-
-        parameters.put("id_params", PladipusFileDownloadingService.downloadFile(paramPath, tempResources).getAbsolutePath());
+        parameters.put("f", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
 
         //output
-        File outputFolder = new File(parameters.get("output_folder") + "/" + parameters.get("title"));
+        File outputFolder = new File(parameters.get("o"));
         outputFolder.mkdirs();
-        parameters.put("output_folder", outputFolder.getAbsolutePath());
     }
 
     @Override
     public String getDescription() {
-        return "Initialisation of the search process";
+        return "Initialisation of the MsConvert process";
     }
 
 }

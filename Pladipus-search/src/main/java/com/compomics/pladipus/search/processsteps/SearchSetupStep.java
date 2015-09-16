@@ -22,7 +22,7 @@ public class SearchSetupStep extends ProcessingStep {
     private final File tempResources;
 
     public SearchSetupStep() {
-        tempResources = new File(System.getProperty("user.home") + "/.compomics/temp");
+        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/resources");
     }
 
     @Override
@@ -47,29 +47,24 @@ public class SearchSetupStep extends ProcessingStep {
 
     private void initialiseInputFiles() throws Exception {
         //original
-        String inputPath = parameters.get("input");
-        String paramPath = parameters.get("parameterFile");
-        String fastaPath = parameters.get("fastaFile");
+        String inputPath = parameters.get("spectrum_files");
+        String paramPath = parameters.get("id_params");
+        String fastaPath = parameters.get("fasta_file");
 
         if (inputPath.toLowerCase().endsWith(".mgf")) {
-            parameters.put("tempInput", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
+            parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
         } else {
-            parameters.put("tempInput", PladipusFileDownloadingService.downloadFolder(inputPath, tempResources).getAbsolutePath());
+            parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFolder(inputPath, tempResources).getAbsolutePath());
         }
 
-        parameters.put("tempParameterFile", PladipusFileDownloadingService.downloadFile(paramPath, tempResources).getAbsolutePath());
+        parameters.put("id_params", PladipusFileDownloadingService.downloadFile(paramPath, tempResources).getAbsolutePath());
 
-        parameters.put("tempFastaFile", PladipusFileDownloadingService.downloadFile(fastaPath, tempResources, "temp.fasta").getAbsolutePath());
+        parameters.put("fasta_file", PladipusFileDownloadingService.downloadFile(fastaPath, tempResources, "temp.fasta").getAbsolutePath());
 
         //output
-        File outputFolder = new File(parameters.get("outputFolder") + "/" + parameters.get("assay"));
+        File outputFolder = new File(parameters.get("output_folder") + "/" + parameters.get("title"));
         outputFolder.mkdirs();
-        File tempFolder =new File(System.getProperty("user.home")+"/.compomics/pladipus/temp/SearchGUI");
-        tempFolder.mkdirs();
-        parameters.put("outputfolder", outputFolder.getAbsolutePath());
-        parameters.put("temp", tempFolder.getAbsolutePath());
-        
-        System.out.println(parameters);
+        parameters.put("output_folder", outputFolder.getAbsolutePath());
     }
 
     @Override

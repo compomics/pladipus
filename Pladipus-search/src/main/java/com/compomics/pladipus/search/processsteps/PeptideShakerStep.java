@@ -9,12 +9,12 @@ import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
-import com.compomics.pladipus.search.processbuilder.PeptideShakerProcess;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -23,8 +23,28 @@ import org.apache.commons.io.FileUtils;
  */
 public class PeptideShakerStep extends ProcessingStep {
 
+    private final File temp_output_folder = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/PeptideShaker/result");
+
     public PeptideShakerStep() {
 
+    }
+
+    private List<String> constructArguments() throws IOException {
+        File peptideShakerJar = getJar();
+        ArrayList<String> cmdArgs = new ArrayList<>();
+        cmdArgs.add("java");
+        cmdArgs.add("-cp");
+        cmdArgs.add(peptideShakerJar.getAbsolutePath());
+        cmdArgs.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
+        for (AllowedPeptideShakerParams aParameter : AllowedPeptideShakerParams.values()) {
+            if (parameters.containsKey(aParameter.getId())) {
+                cmdArgs.add("-" + aParameter.getId());
+                cmdArgs.add(parameters.get(aParameter.getId()));
+            } else if (aParameter.isMandatory()) {
+                throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
+            }
+        }
+        return cmdArgs;
     }
 
     @Override
@@ -32,18 +52,29 @@ public class PeptideShakerStep extends ProcessingStep {
         System.out.println("Running " + this.getClass().getName());
         File peptideShakerJar = getJar();
 
-        File parameterFile = new File(parameters.get("tempParameterFile"));
-        File input = new File(parameters.get("input"));
+        if (temp_output_folder.exists()) {
+            temp_output_folder.delete();
+        }
+        temp_output_folder.mkdirs();
 
-        File temp = new File(parameters.get("temp"));
+        String experiment = "output";
 
-        PeptideShakerProcess process = new PeptideShakerProcess(parameters.get("assay"), input, parameterFile, peptideShakerJar);
-        parameters.put("cps", process.getResultingCpsFile().getAbsolutePath());
+        if (parameters.containsKey("experiment")) {
+            experiment = parameters.get("experiment");
+        }
+
+        if (parameters.containsKey("output_folder")) {
+            parameters.put("out", new File(parameters.get("output_folder") + "/" + experiment + ".cps").getAbsolutePath());
+            parameters.remove("output_folder");
+        }
+
+        File real_output_folder = new File(parameters.get("out")).getParentFile();
+
+        List<String> constructArguments = constructArguments();
         //TODO REPLACE THIS WITH THE ACTUAL OUTPUTFOLDER OR WAIT TILL THE VERY END IN THE CLEANING STEP?
-        process.setOutputFolder(temp);
-        ProcessingEngine.startProcess(peptideShakerJar, process.generateCommand());
+        ProcessingEngine.startProcess(peptideShakerJar, constructArguments);
         //run peptideShaker with the existing files
-        cleanupAndSave();
+        cleanupAndSave(real_output_folder);
         return true;
     }
 
@@ -67,37 +98,24 @@ public class PeptideShakerStep extends ProcessingStep {
         return true;
     }
 
-    private void cleanupAndSave() throws IOException {
+    private void cleanupAndSave(File realTargetFolder) throws IOException {
 
         System.out.println("Running " + this.getClass().getName());
-        //clean all the file-extensions that are not in the list to be saved
-        File temp = new File(parameters.get("temp"));
 
-        File[] files = temp.listFiles(new FileFilter() {
-            private final FileNameExtensionFilter filter
-                    = new FileNameExtensionFilter("Result Files", "cps");
-
-            @Override
-            public boolean accept(File file) {
-                return (!file.isDirectory() && filter.accept(file));
-            }
-        });
-
-        File outputFolder = new File(parameters.get("outputFolder")+"/"+parameters.get("assay"));
+        File outputFolder = new File(parameters.get("out")).getParentFile();
         outputFolder.mkdirs();
-        for (File aFile : files) {
-            File dest = new File(outputFolder, aFile.getName());
+        for (File aFile : temp_output_folder.listFiles()) {
+            File dest = new File(realTargetFolder, aFile.getName());
             if (aFile.isDirectory()) {
                 FileUtils.copyDirectory(aFile, dest, true);
             } else {
                 FileUtils.copyFile(aFile, dest, true);
             }
         }
-        FileUtils.deleteDirectory(temp);
-        
+        FileUtils.deleteDirectory(temp_output_folder);
         //remove searchGUI input
         File input = new File(parameters.get("input"));
-        if(input.exists()){
+        if (input.exists()) {
             input.delete();
         }
     }

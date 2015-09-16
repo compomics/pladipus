@@ -1,0 +1,15 @@
+ <template run='Example_MsConvert' user='pladmin' priority='4'>
+    <steps>
+        <step class="com.compomics.pladipus.msconvert.MsConvertSetupStep"/> 
+        <step class="com.compomics.pladipus.msconvert.MsConvertStep"/> 
+    </steps> 
+    <parameters>
+        <run>
+            <param name='f' value ='' descr='The input file for the process (RAW,MGF,etc)'/>
+            <param name='o' value ='' descr='The output folder for all conversion results'/>
+        </run>
+        <job>
+        </job>
+    </parameters>
+</template> 
+ 

@@ -9,13 +9,15 @@ import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import com.compomics.pladipus.core.model.enums.AllowedSearchGUIParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
-import com.compomics.pladipus.search.processbuilder.SearchGuiProcess;
-import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -23,63 +25,59 @@ import java.util.ArrayList;
  */
 public class SearchGUIStep extends ProcessingStep {
 
+    private static final Logger LOGGER = Logger.getLogger(SearchGUIStep.class);
+    private static final File temp_searchGUI_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/result");
+
     public SearchGUIStep() {
 
     }
 
+    private List<String> constructArguments() throws IOException {
+        File searchGuiJar = getJar();
+        ArrayList<String> cmdArgs = new ArrayList<>();
+        cmdArgs.add("java");
+        cmdArgs.add("-cp");
+        cmdArgs.add(searchGuiJar.getAbsolutePath());
+        cmdArgs.add("eu.isas.searchgui.cmd.SearchCLI");
+        for (AllowedSearchGUIParams aParameter : AllowedSearchGUIParams.values()) {
+            if (parameters.containsKey(aParameter.getId())) {
+                cmdArgs.add("-" + aParameter.getId());
+                cmdArgs.add(parameters.get(aParameter.getId()));
+            } else if (aParameter.isMandatory()) {
+                throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
+            }
+        }
+        return cmdArgs;
+    }
+
     @Override
     public boolean doAction() throws Exception, Exception {
-        System.out.println("Running " + this.getClass().getName());
-        //check if searchgui is local, if not download it
-        if (!aVersionExistsLocal()) {
-            //  downloadSearchGUI();
-        }
-        File input = new File(parameters.get("tempInput"));
-        File parameterFile = new File(parameters.get("tempParameterFile"));
-        File fastaFile = new File(parameters.get("tempFastaFile"));
+        LOGGER.info("Running " + this.getClass().getName());
+        File parameterFile = new File(parameters.get("id_params"));
+        File fastaFile = new File(parameters.get("fasta_file"));
+        File real_outputFolder = new File(parameters.get("output_folder"));
         //update the fasta
-        System.out.println("Getting parameterFile : " + parameterFile);
+        LOGGER.info("Updating parameters...");
         SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
         identificationParameters.setFastaFile(fastaFile);
-        //update other parameters or keep defaults for now?
-        //update mods ---> fixed / var
-        PtmSettings ptmSettings = identificationParameters.getPtmSettings();
-        ArrayList<String> tempMods = new ArrayList<>();
-        tempMods.addAll(ptmSettings.getFixedModifications());
-        for (String aPTM : tempMods) {
-            //special case...itraq on y
-            if (aPTM.toLowerCase().contains("itraq114 on y")) {
-                ptmSettings.addVariableModification(ptmSettings.getPtm(aPTM));
-                ptmSettings.removeFixedModification(aPTM);
-            }
-            //all other fixed...
-            if (!aPTM.toLowerCase().contains("itraq")
-                    && !aPTM.toLowerCase().contains("tmt")
-                    && !aPTM.toLowerCase().contains("carbamidomethyl")) {
-                ptmSettings.addVariableModification(ptmSettings.getPtm(aPTM));
-                ptmSettings.removeFixedModification(aPTM);
-            }
-        }
-        //
-        identificationParameters.setPtmSettings(ptmSettings);
-        System.out.println("Setting searchparameter settings location [FIX]");
+        //fix the location
         identificationParameters.setParametersFile(parameterFile);
         SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
 
-        //get requested search engines
-        String searchEngines = parameters.get("searchEngines").toLowerCase();
-        if (searchEngines == null || searchEngines.isEmpty()) {
-            System.out.println("No search engines requested, defaulting to xTandem, Tide and MSGF+");
-            searchEngines = "xtandem,tide,msgf";
+        if (temp_searchGUI_output.exists()) {
+            temp_searchGUI_output.delete();
         }
-        System.out.println("Selected engines : " + searchEngines);
-        SearchGuiProcess process = new SearchGuiProcess(input, parameterFile, getJar(), searchEngines.split(","));
-        File temp = new File(parameters.get("temp"));
-        process.setOutputFolder(temp);
-        process.finalizeBuild();
-        System.out.println("Starting process !");
-        ProcessingEngine.startProcess(getJar(), process.generateCommand());
-        parameters.put("input", temp.getAbsolutePath());
+        temp_searchGUI_output.mkdirs();
+
+        LOGGER.info("Starting searchGUI...");
+        //use this variable if you'd run peptideshaker following this classs
+        parameters.put("output_folder", temp_searchGUI_output.getAbsolutePath());
+        ProcessingEngine.startProcess(getJar(), constructArguments());
+        //storing intermediate results
+        LOGGER.info("Storing results in " + real_outputFolder);
+        FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
+        //in case of future peptideShaker searches : 
+        parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
         return true;
     }
 

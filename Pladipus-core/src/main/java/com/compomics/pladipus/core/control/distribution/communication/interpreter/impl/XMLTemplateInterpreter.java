@@ -139,6 +139,13 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
                 boolean isRunParameter = eElement.getParentNode().getNodeName().equalsIgnoreCase("run");
                 if (eElement.hasAttribute("value")) {
                     param.setValue(eElement.getAttribute("value"));
+                }
+                //check if the XML has a description for the parameter
+                if (eElement.hasAttribute("descr")) {
+                    param.setDescription(eElement.getAttribute("descr"));
+                }
+                if (eElement.hasAttribute("value")) {
+                    param.setValue(eElement.getAttribute("value"));
                 } else if (eElement.hasAttribute("default")) {
                     param.setValue(eElement.getAttribute("default"));
                 }

@@ -1,22 +1,30 @@
-<template run='Example_SearchGUI_PeptideShaker' user='pladmin' priority='4'>
- 	<steps>
-		<step class="com.compomics.pladipus.search.processsteps.SearchSetupStep"/> 
-		<step class="com.compomics.pladipus.search.processsteps.SearchGUIStep"/> 
-		<step class="com.compomics.pladipus.search.processsteps.PeptideShakerStep"/> 
-  	</steps> 
- 	<parameters>
- 		<run>
- 			<param name='fastaFile' value =''/>
-			<param name='outputFolder' value =''/>
-			<param name='SearchGUI' value=''/>
-			<param name='PeptideShaker' value=''/>
-			<param name='searchEngines' value=''/>
-  		</run>
-   		<job>
- 			<param name ='input' default='default'/>
-			<param name ='parameterFile' default='default'/>
-			<param name ='assay' default ='default'/>
- 		</job>
- 	</parameters>
- </template> 
+ <template run='Example_SearchGUI' user='pladmin' priority='4'>
+    <steps>
+        <step class="com.compomics.pladipus.search.processsteps.SearchSetupStep"/> 
+        <step class="com.compomics.pladipus.search.processsteps.SearchGUIStep"/> 
+        <step class="com.compomics.pladipus.search.processsteps.PeptideShakerStep"/> 
+    </steps> 
+    <parameters>
+        <run>
+            <param name='fasta_file' value ='' descr='The fasta file to be used for all searches'/>
+            <param name='output_folder' value ='' descr='The output folder for all search results'/>
+            <param name='msfg' value='1' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='omssa' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='ms_amanda' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='myrimatch' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='comet' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='tide' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='andromeda' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='xtandem' value='1' descr='A search engine (0 = off, 1 = on)'/>
+        </run>
+        <job>
+            <param name ='spectrum_files' default='default' descr='The input spectrum files (.mgf)'/>
+            <param name ='id_params' default='default' descr = 'The identification parameters'/>     
+            <param name ='experiment' default='default' descr='The experiment name'/>
+            <param name ='sample' default='default' descr='The sample name'/>
+            <param name ='out' default='default' descr='PeptideShaker output file'/>
+            <param name ='replicate' default='default' descr='The replicate number'/>
+        </job>
+    </parameters>
+</template> 
  
