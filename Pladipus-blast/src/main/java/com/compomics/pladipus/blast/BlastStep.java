@@ -16,16 +16,16 @@ import java.util.concurrent.ExecutionException;
  *
  * @author Kenneth Verheggen
  */
-public class BlastPStep extends ProcessingStep {
+public class BlastStep extends ProcessingStep {
 
-    public BlastPStep() {
+    public BlastStep() {
 
     }
 
     @Override
     public boolean doAction() throws Exception {
-        File queryFasta = new File(parameters.get("tempQueryFasta"));
-        File dbFasta = new File(parameters.get("tempDbFasta"));
+        File queryFasta = new File(parameters.get("query"));
+        File dbFasta = new File(parameters.get("db"));
         File outputFile = new File(parameters.get("output"));
         executeProteinBlast(queryFasta, dbFasta, outputFile, getBlastExecutable());
         return true;
@@ -33,7 +33,7 @@ public class BlastPStep extends ProcessingStep {
 //blastp -query C:\Users\Kenneth\Desktop\PladipusFTP\data\fasta\HUMAN_concatenated_target_decoy.fasta -db C:\Users\Kenneth\Desktop\PladipusFTP\data\fasta\HUMAN_concatenated_target_decoy.fasta
 
     public File getBlastExecutable() {
-        return new File(parameters.get("blastFolder"), "blastp");
+        return new File(parameters.get("blastFolder"), parameters.get("blastType").toLowerCase());
     }
 
     private void executeProteinBlast(File queryFasta, File dbFasta, File outputFile, File executable) throws IOException, InterruptedException, ExecutionException {
@@ -47,6 +47,7 @@ public class BlastPStep extends ProcessingStep {
         commands.add("-out");
         commands.add(outputFile.getAbsolutePath());
         ProcessingEngine.startProcess(executable, commands);
+        //copy the output to the correct folder?--> text files are fast, no need
     }
 
     @Override

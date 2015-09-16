@@ -16,26 +16,26 @@ import java.util.concurrent.ExecutionException;
  *
  * @author Kenneth Verheggen
  */
-public class BlastPrepareDbStep extends ProcessingStep {
+public class MakeBlastDbStep extends ProcessingStep {
 
-    public BlastPrepareDbStep() {
+    public MakeBlastDbStep() {
 
     }
 
     @Override
     public boolean doAction() throws Exception {
-        File queryFasta = new File(parameters.get("tempQueryFasta"));
-        File dbFasta = new File(parameters.get("tempDbFasta"));
-        String blastType = parameters.get("blastType");
+        File queryFasta = new File(parameters.get("query"));
+        File dbFasta = new File(parameters.get("db"));
+        String blastType = parameters.get("dbtype");
         makeBlastDb(blastType, queryFasta, getBlastExecutable());
         makeBlastDb(blastType, dbFasta, getBlastExecutable());
         return true;
     }
 
     private File getBlastExecutable() {
-        File makeBlastDb = new File(parameters.get("blastFolder"), "makeblastdb");
+        File makeBlastDb = new File(parameters.get("blast_folder"), "makeblastdb");
         if (!makeBlastDb.exists()) {
-            makeBlastDb = new File(parameters.get("blastFolder"), "makeblastdb.exe");
+            makeBlastDb = new File(parameters.get("blast_folder"), "makeblastdb.exe");
         }
         return makeBlastDb;
     }
@@ -53,7 +53,7 @@ public class BlastPrepareDbStep extends ProcessingStep {
 
     @Override
     public String getDescription() {
-        return "Initialisation of the blast process";
+        return "Creating a blast db out of the provided input...";
     }
 
 }
