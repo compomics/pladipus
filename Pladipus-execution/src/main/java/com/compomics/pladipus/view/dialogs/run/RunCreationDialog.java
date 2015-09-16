@@ -213,7 +213,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         presets = new LinkedHashMap<>();
         interpeter = XMLTemplateInterpreter.getInstance();
         setTemplateFromResource("None", "Empty_Template.xml");
-        setTemplateFromResource("DenovoGUI", "DenovoGUI_Template.xml");
+        setTemplateFromResource("DeNovoGUI", "DeNovoGUI_Template.xml");
         setTemplateFromResource("PeptideShaker", "PeptideShaker_Template.xml");
         setTemplateFromResource("SearchGUI", "SearchGUI_Template.xml");
         setTemplateFromResource("SearchGUI + PeptideShaker", "SearchGUI_PeptideShaker_Template.xml");
