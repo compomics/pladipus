@@ -155,11 +155,10 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnAddProcess = new javax.swing.JButton();
-        btnNewRun = new javax.swing.JButton();
         pnlRun = new javax.swing.JPanel();
         spnlRun = new javax.swing.JScrollPane();
         tblRunInfo = new javax.swing.JTable();
+        btnNewRun = new javax.swing.JButton();
         pnlPagination = new javax.swing.JPanel();
         pnlPaginationInput = new javax.swing.JPanel();
         tfCurrentPage = new javax.swing.JTextField();
@@ -169,24 +168,9 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         pnlProcess = new javax.swing.JPanel();
         spnlProcess = new javax.swing.JScrollPane();
         tblProcessInfo = new javax.swing.JTable();
+        btnAddProcess = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-
-        btnAddProcess.setText("+");
-        btnAddProcess.setToolTipText("Add processes to an existing run");
-        btnAddProcess.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddProcessActionPerformed(evt);
-            }
-        });
-
-        btnNewRun.setText("+");
-        btnNewRun.setToolTipText("Create a new run");
-        btnNewRun.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewRunActionPerformed(evt);
-            }
-        });
 
         pnlRun.setBackground(new java.awt.Color(255, 255, 255));
         pnlRun.setBorder(javax.swing.BorderFactory.createTitledBorder("My Runs"));
@@ -202,9 +186,16 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 "", "R_ID", "Name", "Progress"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, true, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -227,21 +218,36 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             tblRunInfo.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
+        btnNewRun.setText("+");
+        btnNewRun.setToolTipText("Create a new run");
+        btnNewRun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewRunActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlRunLayout = new javax.swing.GroupLayout(pnlRun);
         pnlRun.setLayout(pnlRunLayout);
         pnlRunLayout.setHorizontalGroup(
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRunLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+                .addComponent(spnlRun)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNewRun)
                 .addContainerGap())
         );
         pnlRunLayout.setVerticalGroup(
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRunLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
-                .addGap(15, 15, 15))
+                .addGroup(pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlRunLayout.createSequentialGroup()
+                        .addComponent(btnNewRun)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlRunLayout.createSequentialGroup()
+                        .addComponent(spnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                        .addGap(15, 15, 15))))
         );
 
         pnlPagination.setBackground(new java.awt.Color(255, 255, 255));
@@ -258,7 +264,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
         });
 
-        lbPages.setText("/1");
+        lbPages.setText("/ 1");
 
         javax.swing.GroupLayout pnlPaginationInputLayout = new javax.swing.GroupLayout(pnlPaginationInput);
         pnlPaginationInput.setLayout(pnlPaginationInputLayout);
@@ -335,9 +341,16 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 "", "P_ID", "Name", "Progress"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, true, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -360,6 +373,14 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             tblProcessInfo.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
+        btnAddProcess.setText("+");
+        btnAddProcess.setToolTipText("Add processes to an existing run");
+        btnAddProcess.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddProcessActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlProcessLayout = new javax.swing.GroupLayout(pnlProcess);
         pnlProcess.setLayout(pnlProcessLayout);
         pnlProcessLayout.setHorizontalGroup(
@@ -367,13 +388,19 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             .addGroup(pnlProcessLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddProcess)
                 .addContainerGap())
         );
         pnlProcessLayout.setVerticalGroup(
             pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlProcessLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                .addGroup(pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlProcessLayout.createSequentialGroup()
+                        .addComponent(btnAddProcess)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -382,31 +409,26 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlPagination, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNewRun)
-                    .addComponent(btnAddProcess))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(pnlPagination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlProcess, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNewRun)
-                    .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAddProcess)
-                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlPagination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(pnlPagination, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -504,7 +526,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
 
     private void promptErrorMessage() {
         JOptionPane.showMessageDialog(null,
-                "Error: Please enter number between 1 and " + pagesNeeded, "Error Massage",
+                "Please enter number between 1 and " + pagesNeeded + ".", "Input Error",
                 JOptionPane.ERROR_MESSAGE);
     }
 

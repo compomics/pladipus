@@ -100,6 +100,7 @@ public class AdminConsole extends javax.swing.JFrame {
         setTitle("Admin Settings");
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jTabbedPane1.setOpaque(true);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
