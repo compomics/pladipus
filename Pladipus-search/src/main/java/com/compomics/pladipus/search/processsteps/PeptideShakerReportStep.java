@@ -9,7 +9,7 @@ import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
-import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
+import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerReportParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +21,11 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Kenneth Verheggen
  */
-public class PeptideShakerStep extends ProcessingStep {
+public class PeptideShakerReportStep extends ProcessingStep {
 
     private final File temp_output_folder = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/PeptideShaker/result");
 
-    public PeptideShakerStep() {
+    public PeptideShakerReportStep() {
 
     }
 
@@ -35,8 +35,8 @@ public class PeptideShakerStep extends ProcessingStep {
         cmdArgs.add("java");
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
-        cmdArgs.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
-        for (AllowedPeptideShakerParams aParameter : AllowedPeptideShakerParams.values()) {
+        cmdArgs.add("eu.isas.peptideshaker.cmd.ReportCLI");
+        for (AllowedPeptideShakerReportParams aParameter : AllowedPeptideShakerReportParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
                 cmdArgs.add(parameters.get(aParameter.getId()));
