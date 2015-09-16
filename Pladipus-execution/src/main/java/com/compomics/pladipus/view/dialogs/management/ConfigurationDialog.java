@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.management;
 
 import com.compomics.pladipus.core.model.properties.PladipusProperties;
@@ -25,10 +20,11 @@ public class ConfigurationDialog extends javax.swing.JDialog {
     private PladipusProperties properties;
 
     /**
-     * Creates new form NetworkConfigurationDialog
+     * Creates a new NetworkConfigurationDialog.
      */
     public ConfigurationDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        setLocationRelativeTo(parent);
 
         // try to set the look and feel
         try {
@@ -78,16 +74,28 @@ public class ConfigurationDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
+        btnSave = new javax.swing.JButton();
+        settingsPanel = new javax.swing.JPanel();
         spTable = new javax.swing.JScrollPane();
         tblProperties = new javax.swing.JTable();
-        btnSave = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Network Settings");
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
+
+        btnSave.setText("Apply");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        settingsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
+        settingsPanel.setOpaque(false);
 
         spTable.setBackground(new java.awt.Color(255, 255, 255));
-        spTable.setBorder(null);
         spTable.setOpaque(false);
 
         tblProperties.setModel(new javax.swing.table.DefaultTableModel(
@@ -112,10 +120,27 @@ public class ConfigurationDialog extends javax.swing.JDialog {
         spTable.setViewportView(tblProperties);
         tblProperties.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        btnSave.setText("Apply");
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
+        settingsPanel.setLayout(settingsPanelLayout);
+        settingsPanelLayout.setHorizontalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spTable, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        settingsPanelLayout.setVerticalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
@@ -123,18 +148,31 @@ public class ConfigurationDialog extends javax.swing.JDialog {
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spTable)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSave)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                        .addGap(0, 292, Short.MAX_VALUE)
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton)
+                        .addGap(4, 4, 4)))
                 .addContainerGap())
         );
+
+        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnSave, cancelButton});
+
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSave))
+                .addContainerGap()
+                .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSave)
+                    .addComponent(cancelButton))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -145,9 +183,7 @@ public class ConfigurationDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -164,15 +200,15 @@ public class ConfigurationDialog extends javax.swing.JDialog {
         try {
             properties.store(new FileWriter(properties.getPropertiesFile()), null);
             JOptionPane.showMessageDialog(this,
-                    "Saving successful",
-                    "Updated properties",
+                    "Saving successful.",
+                    "Properties Updated ",
                     JOptionPane.INFORMATION_MESSAGE
             );
 
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this,
-                    "Could not save the properties file ; " + System.lineSeparator() + ex,
-                    "Inane error",
+                    "Could not save the properties file: " + System.lineSeparator() + ex,
+                    "Save Error",
                     JOptionPane.ERROR_MESSAGE);
         } finally {
             this.setVisible(false);
@@ -180,10 +216,20 @@ public class ConfigurationDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    /**
+     * Close the dialog without saving.
+     *
+     * @param evt
+     */
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel settingsPanel;
     private javax.swing.JScrollPane spTable;
     private javax.swing.JTable tblProperties;
     // End of variables declaration//GEN-END:variables

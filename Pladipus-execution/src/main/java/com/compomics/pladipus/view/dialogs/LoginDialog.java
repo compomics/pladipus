@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs;
 
 import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
@@ -119,7 +114,6 @@ public class LoginDialog extends javax.swing.JDialog {
         lbLogo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setAlwaysOnTop(true);
         setModal(true);
         setResizable(false);
 
@@ -129,12 +123,14 @@ public class LoginDialog extends javax.swing.JDialog {
 
         lblPass.setText("Password");
 
-        tfUsername.setText("pladmin");
+        tfUsername.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfUsernameActionPerformed(evt);
             }
         });
+
+        pfPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         btnLogin.setText("Login");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -152,45 +148,46 @@ public class LoginDialog extends javax.swing.JDialog {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGap(30, 30, 30)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblUser)
                     .addComponent(lblPass))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(pfPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(155, 155, 155))
+                .addGap(18, 18, 18)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                    .addComponent(pfPassword)
+                    .addComponent(tfUsername))
+                .addGap(30, 30, 30))
         );
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbLogo, pfPassword, tfUsername});
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblPass, lblUser});
 
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblUser)
                     .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPass)
                     .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLogin)
-                .addContainerGap())
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,8 +228,8 @@ public class LoginDialog extends javax.swing.JDialog {
         try {
             if (!uService.userExists(tfUsername.getText())) {
                 JOptionPane.showMessageDialog(this,
-                        "User not found",
-                        "Inane warning",
+                        "User not found.",
+                        "Login Error",
                         JOptionPane.WARNING_MESSAGE);
             } else if (settingsVerified && (uService.verifyUser(tfUsername.getText(), new String(pfPassword.getPassword())))) {
                 this.user = tfUsername.getText();
@@ -240,21 +237,20 @@ public class LoginDialog extends javax.swing.JDialog {
                 this.setVisible(!authorised);
             } else {
                 JOptionPane.showMessageDialog(this,
-                        "Incorrect authorisation",
-                        "Inane warning",
+                        "Incorrect authorisation.",
+                        "Login Error",
                         JOptionPane.WARNING_MESSAGE);
             }
         } catch (SQLException | UnsupportedEncodingException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                    "Could not contact the login server",
-                    "Inane error",
+                    "Could not contact the login server.",
+                    "Login Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        this.setAlwaysOnTop(false);
         if (verifySettings()) {
             login();
         }

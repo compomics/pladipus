@@ -6,12 +6,14 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="miFile">
           <Properties>
+            <Property name="mnemonic" type="int" value="70"/>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="miCreateRun">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Create new run"/>
+                <Property name="mnemonic" type="int" value="78"/>
+                <Property name="text" type="java.lang.String" value="New Run..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miCreateRunActionPerformed"/>
@@ -19,11 +21,14 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miImportRun">
               <Properties>
+                <Property name="mnemonic" type="int" value="73"/>
                 <Property name="text" type="java.lang.String" value="Import Run..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miImportRunActionPerformed"/>
               </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miExit">
               <Properties>
@@ -37,48 +42,58 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="miEdit">
           <Properties>
+            <Property name="mnemonic" type="int" value="69"/>
             <Property name="text" type="java.lang.String" value="Edit"/>
           </Properties>
           <SubComponents>
-            <Menu class="javax.swing.JMenu" name="miSettings">
+            <MenuItem class="javax.swing.JMenuItem" name="miAccountSettings">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Configuration"/>
+                <Property name="mnemonic" type="int" value="65"/>
+                <Property name="text" type="java.lang.String" value="Account Details"/>
               </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="miAccountSettings">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="My Account"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miAccountSettingsActionPerformed"/>
-                  </Events>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="miPladipusSettings">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Network"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miPladipusSettingsActionPerformed"/>
-                  </Events>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miAccountSettingsActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miPladipusSettings">
+              <Properties>
+                <Property name="mnemonic" type="int" value="78"/>
+                <Property name="text" type="java.lang.String" value="Network Settings"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miPladipusSettingsActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miLaunchAdmin">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Launch Admin Console"/>
+                <Property name="mnemonic" type="int" value="77"/>
+                <Property name="text" type="java.lang.String" value="Admin Settings"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miLaunchAdminActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JPopupMenu$Separator" name="sprEdit">
-            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="miHelp">
           <Properties>
+            <Property name="mnemonic" type="int" value="72"/>
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="helpMenuItem">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="F1"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="72"/>
+                <Property name="text" type="java.lang.String" value="Help"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="helpMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
         </Menu>
       </SubComponents>
     </Menu>

@@ -1,14 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.user;
 
 import com.compomics.pladipus.core.control.distribution.service.UserService;
+import com.compomics.util.gui.renderers.AlignedListCellRenderer;
 import java.sql.SQLException;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 /**
@@ -27,6 +24,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
      */
     public UserPriviledgeDialog(java.awt.Frame parent, boolean modal) throws SQLException {
         super(parent, modal);
+        setLocationRelativeTo(parent);
         // try to set the look and feel
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -39,6 +37,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
             // ignore error, use default look and feel
         }
         initComponents();
+        cbUserRoles.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
         initComboBox();
     }
 
@@ -61,22 +60,19 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        lblUser = new javax.swing.JLabel();
-        tfUsername = new javax.swing.JTextField();
-        lblRole = new javax.swing.JLabel();
-        cbUserRoles = new javax.swing.JComboBox();
         btnUpdateRole = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        tfUsername = new javax.swing.JTextField();
+        lblRole = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        cbUserRoles = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("User Privileges");
+        setResizable(false);
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-
-        lblUser.setText("Username");
-
-        lblRole.setText("User Role");
-
-        cbUserRoles.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         btnUpdateRole.setText("OK");
         btnUpdateRole.addActionListener(new java.awt.event.ActionListener() {
@@ -92,25 +88,59 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Details"));
+        jPanel1.setOpaque(false);
+
+        tfUsername.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        lblRole.setText("User Role");
+
+        lblUser.setText("Username");
+
+        cbUserRoles.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblRole)
+                    .addComponent(lblUser))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfUsername)
+                    .addComponent(cbUserRoles, 0, 339, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUser)
+                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRole)
+                    .addComponent(cbUserRoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnUpdateRole)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCancel))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblUser)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblRole)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbUserRoles, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)))
                 .addContainerGap())
         );
 
@@ -120,13 +150,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblUser)
-                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblRole)
-                    .addComponent(cbUserRoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnUpdateRole)
@@ -138,7 +162,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,7 +183,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
             if (userRoles1 == -1) {
                 JOptionPane.showMessageDialog(this,
                         tfUsername.getText() + " does not exist",
-                        "Inane error", JOptionPane.ERROR_MESSAGE);
+                        "User Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -167,7 +191,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
                 if (userRoles.get(userRoleKey).equals(userRole)) {
                     try {
                         uService.setUserRole(tfUsername.getText(), userRoleKey);
-                        JOptionPane.showMessageDialog(this, "Succesfully update user role");
+                        JOptionPane.showMessageDialog(this, "Succesfully update user role.", "Role Updated", JOptionPane.INFORMATION_MESSAGE);
                         this.dispose();
                         return;
                     } catch (SQLException ex) {
@@ -177,13 +201,13 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
                 }
             }
             JOptionPane.showMessageDialog(this,
-                    "Failed to update user role for " + tfUsername.getText(),
-                    "Inane error", JOptionPane.ERROR_MESSAGE);
+                    "Failed to update user role for " + tfUsername.getText() + ".",
+                    "Role Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,
-                    "Can not retrieve user information for " + tfUsername.getText(),
-                    "Inane error", JOptionPane.ERROR_MESSAGE);
+                    "Can not retrieve user information for " + tfUsername.getText() + ".",
+                    "Role Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnUpdateRoleActionPerformed
 
@@ -196,6 +220,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnUpdateRole;
     private javax.swing.JComboBox cbUserRoles;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblRole;
     private javax.swing.JLabel lblUser;
     private javax.swing.JPanel pnlMain;

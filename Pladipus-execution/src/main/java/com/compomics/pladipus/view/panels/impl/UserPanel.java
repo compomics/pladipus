@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.panels.impl;
 
 import com.compomics.pladipus.core.control.distribution.service.ProcessService;
@@ -197,7 +192,6 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         pnlRun.setBorder(javax.swing.BorderFactory.createTitledBorder("My Runs"));
 
         spnlRun.setBackground(new java.awt.Color(255, 255, 255));
-        spnlRun.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         tblRunInfo.setAutoCreateRowSorter(true);
         tblRunInfo.setModel(new javax.swing.table.DefaultTableModel(
@@ -216,10 +210,8 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 return canEdit [columnIndex];
             }
         });
-        tblRunInfo.setCellSelectionEnabled(false);
         tblRunInfo.setGridColor(new java.awt.Color(255, 255, 255));
         tblRunInfo.setOpaque(false);
-        tblRunInfo.setRowSelectionAllowed(true);
         tblRunInfo.getTableHeader().setReorderingAllowed(false);
         spnlRun.setViewportView(tblRunInfo);
         tblRunInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -248,8 +240,8 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRunLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlRun, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(spnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
         );
 
         pnlPagination.setBackground(new java.awt.Color(255, 255, 255));
@@ -322,10 +314,10 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             pnlPaginationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPaginationLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlPaginationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnNextPage)
+                .addGroup(pnlPaginationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(btnPrevPage)
                     .addComponent(pnlPaginationInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPrevPage))
+                    .addComponent(btnNextPage))
                 .addContainerGap())
         );
 
@@ -333,7 +325,6 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         pnlProcess.setBorder(javax.swing.BorderFactory.createTitledBorder("My Processes"));
 
         spnlProcess.setBackground(new java.awt.Color(255, 255, 255));
-        spnlProcess.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         tblProcessInfo.setAutoCreateRowSorter(true);
         tblProcessInfo.setModel(new javax.swing.table.DefaultTableModel(
@@ -382,7 +373,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlProcessLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -408,13 +399,11 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNewRun)
-                    .addComponent(pnlRun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAddProcess)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(btnAddProcess)
+                    .addComponent(pnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlPagination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -445,8 +434,8 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         int[] selectedRows = tblRunInfo.getSelectedRows();
         if (selectedRows.length <= 0) {
             JOptionPane.showMessageDialog(this,
-                    "Please select a single run to add processes to",
-                    "Inane error",
+                    "Please select a Run to add the Processes to.",
+                    "Input Error",
                     JOptionPane.WARNING_MESSAGE);
         } else {
             Integer runID = Integer.parseInt(String.valueOf(tblRunInfo.getValueAt(tblRunInfo.getSelectedRow(), 1)));

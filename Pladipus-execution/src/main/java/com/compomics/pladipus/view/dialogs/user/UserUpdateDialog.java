@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.user;
 
 import com.compomics.pladipus.core.control.distribution.service.UserService;
@@ -50,11 +45,11 @@ public class UserUpdateDialog extends javax.swing.JDialog {
             this.eMail = service.getUserContactAddress(user);
             tfUser.setText(user);
             tfEmail.setText(eMail);
-            setTitle("Update my settings");
+            setTitle("Update Account Details");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this,
                     "Could not load user data...",
-                    "Inane error", JOptionPane.ERROR_MESSAGE);
+                    "Update Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -69,32 +64,19 @@ public class UserUpdateDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        lblUser = new javax.swing.JLabel();
-        lblEmail = new javax.swing.JLabel();
-        lblPass = new javax.swing.JLabel();
-        tfUser = new javax.swing.JTextField();
-        tfEmail = new javax.swing.JTextField();
         btnCancel = new javax.swing.JButton();
         btnConfirm = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         btnConfirm1 = new javax.swing.JButton();
+        tfUser = new javax.swing.JTextField();
+        lblEmail = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        lblPass = new javax.swing.JLabel();
+        tfEmail = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-
-        lblUser.setText("Username");
-
-        lblEmail.setText("E-mail");
-
-        lblPass.setText("Password");
-
-        tfUser.setEnabled(false);
-
-        tfEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfEmailActionPerformed(evt);
-            }
-        });
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -110,12 +92,71 @@ public class UserUpdateDialog extends javax.swing.JDialog {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Account"));
+        jPanel1.setOpaque(false);
+
         btnConfirm1.setText("Change Password");
         btnConfirm1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConfirm1ActionPerformed(evt);
             }
         });
+
+        tfUser.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tfUser.setEnabled(false);
+
+        lblEmail.setText("E-mail");
+
+        lblUser.setText("Username");
+
+        lblPass.setText("Password");
+
+        tfEmail.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tfEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfEmailActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEmail)
+                    .addComponent(lblUser)
+                    .addComponent(lblPass))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(tfUser, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(btnConfirm1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblEmail, lblUser});
+
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUser)
+                    .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEmail)
+                    .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnConfirm1)
+                    .addComponent(lblPass))
+                .addContainerGap())
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lblEmail, lblUser});
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
@@ -124,29 +165,14 @@ public class UserUpdateDialog extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblEmail)
-                    .addComponent(lblUser)
-                    .addComponent(lblPass))
-                .addGap(28, 28, 28)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlMainLayout.createSequentialGroup()
-                                .addComponent(btnConfirm1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnConfirm)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnConfirm)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel))
-                    .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblEmail, lblUser});
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {tfEmail, tfUser});
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCancel, btnConfirm});
 
@@ -154,31 +180,19 @@ public class UserUpdateDialog extends javax.swing.JDialog {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblUser)
-                    .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblEmail)
-                    .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnConfirm1)
-                    .addComponent(lblPass))
-                .addGap(2, 2, 2)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
                     .addComponent(btnConfirm))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lblEmail, lblUser});
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,8 +215,8 @@ public class UserUpdateDialog extends javax.swing.JDialog {
                     service.updatePassword(user, tfEmail.getText());
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this,
-                            "Could not update user data...",
-                            "Inane error", JOptionPane.ERROR_MESSAGE);
+                            "Could not update user data.",
+                            "Update Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -214,7 +228,8 @@ public class UserUpdateDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnConfirm1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirm1ActionPerformed
-        ResetPasswordDialog resetPasswordDialog = new ResetPasswordDialog(null, true, tfUser.getText());
+        ResetPasswordDialog resetPasswordDialog = new ResetPasswordDialog(this, true, tfUser.getText());
+        resetPasswordDialog.setLocationRelativeTo(this);
         resetPasswordDialog.setVisible(true);
     }//GEN-LAST:event_btnConfirm1ActionPerformed
 
@@ -223,6 +238,7 @@ public class UserUpdateDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnConfirm1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblPass;
     private javax.swing.JLabel lblUser;

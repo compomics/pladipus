@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.core.control.distribution.service.UserService;
@@ -14,9 +9,15 @@ import com.compomics.pladipus.view.dialogs.run.RunCreationDialog;
 import com.compomics.pladipus.view.dialogs.run.RunImportDialog;
 import com.compomics.pladipus.view.dialogs.user.UserUpdateDialog;
 import com.compomics.pladipus.view.panels.UpdatingPanel;
+import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.xml.parsers.ParserConfigurationException;
@@ -56,6 +57,8 @@ public class MainGUI extends javax.swing.JFrame {
         } catch (Exception e) {
             // ignore error, use default look and feel
         }
+
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
 
         //show the login dialog
         LoginDialog loginDialog = new LoginDialog(null, true);
@@ -112,20 +115,22 @@ public class MainGUI extends javax.swing.JFrame {
         miFile = new javax.swing.JMenu();
         miCreateRun = new javax.swing.JMenuItem();
         miImportRun = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         miExit = new javax.swing.JMenuItem();
         miEdit = new javax.swing.JMenu();
-        miSettings = new javax.swing.JMenu();
         miAccountSettings = new javax.swing.JMenuItem();
         miPladipusSettings = new javax.swing.JMenuItem();
         miLaunchAdmin = new javax.swing.JMenuItem();
-        sprEdit = new javax.swing.JPopupMenu.Separator();
         miHelp = new javax.swing.JMenu();
+        helpMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        miFile.setMnemonic('F');
         miFile.setText("File");
 
-        miCreateRun.setText("Create new run");
+        miCreateRun.setMnemonic('N');
+        miCreateRun.setText("New Run...");
         miCreateRun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miCreateRunActionPerformed(evt);
@@ -133,6 +138,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
         miFile.add(miCreateRun);
 
+        miImportRun.setMnemonic('I');
         miImportRun.setText("Import Run...");
         miImportRun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,6 +146,7 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
         miFile.add(miImportRun);
+        miFile.add(jSeparator1);
 
         miExit.setText("Exit");
         miExit.addActionListener(new java.awt.event.ActionListener() {
@@ -151,40 +158,51 @@ public class MainGUI extends javax.swing.JFrame {
 
         mnbMain.add(miFile);
 
+        miEdit.setMnemonic('E');
         miEdit.setText("Edit");
 
-        miSettings.setText("Configuration");
-
-        miAccountSettings.setText("My Account");
+        miAccountSettings.setMnemonic('A');
+        miAccountSettings.setText("Account Details");
         miAccountSettings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miAccountSettingsActionPerformed(evt);
             }
         });
-        miSettings.add(miAccountSettings);
+        miEdit.add(miAccountSettings);
 
-        miPladipusSettings.setText("Network");
+        miPladipusSettings.setMnemonic('N');
+        miPladipusSettings.setText("Network Settings");
         miPladipusSettings.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miPladipusSettingsActionPerformed(evt);
             }
         });
-        miSettings.add(miPladipusSettings);
+        miEdit.add(miPladipusSettings);
 
-        miEdit.add(miSettings);
-
-        miLaunchAdmin.setText("Launch Admin Console");
+        miLaunchAdmin.setMnemonic('M');
+        miLaunchAdmin.setText("Admin Settings");
         miLaunchAdmin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miLaunchAdminActionPerformed(evt);
             }
         });
         miEdit.add(miLaunchAdmin);
-        miEdit.add(sprEdit);
 
         mnbMain.add(miEdit);
 
+        miHelp.setMnemonic('H');
         miHelp.setText("Help");
+
+        helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        helpMenuItem.setMnemonic('H');
+        helpMenuItem.setText("Help");
+        helpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpMenuItemActionPerformed(evt);
+            }
+        });
+        miHelp.add(helpMenuItem);
+
         mnbMain.add(miHelp);
 
         setJMenuBar(mnbMain);
@@ -229,7 +247,9 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void miLaunchAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miLaunchAdminActionPerformed
         if (isAdmin) {
-            AdminConsole.main(new String[0]);
+            AdminConsole adminConsole = new AdminConsole(loggedInUser);
+            adminConsole.setLocationRelativeTo(this);
+            adminConsole.setVisible(true);
         } else {
 
         }
@@ -239,11 +259,21 @@ public class MainGUI extends javax.swing.JFrame {
         showCreateNewRunDialog();
     }//GEN-LAST:event_miCreateRunActionPerformed
 
+    private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
+        try {
+            Desktop.getDesktop().browse(new URI("http://compomics.github.io/pladipus/wiki/home.html"));
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_helpMenuItemActionPerformed
+
     private void showCreateNewRunDialog() {
         try {
             RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
             dialog.setVisible(true);
-        } catch (NullPointerException|ParserConfigurationException | IOException | SAXException e) {
+        } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
@@ -285,6 +315,8 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem helpMenuItem;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JMenuItem miAccountSettings;
     private javax.swing.JMenuItem miCreateRun;
     private javax.swing.JMenu miEdit;
@@ -294,9 +326,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem miImportRun;
     private javax.swing.JMenuItem miLaunchAdmin;
     private javax.swing.JMenuItem miPladipusSettings;
-    private javax.swing.JMenu miSettings;
     private javax.swing.JMenuBar mnbMain;
-    private javax.swing.JPopupMenu.Separator sprEdit;
     private com.compomics.pladipus.view.panels.impl.UserPanel userPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.user;
 
 import com.compomics.pladipus.core.control.distribution.service.UserService;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -28,7 +24,7 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
     /**
      * Creates new form ResetPasswordDialog
      */
-    public ResetPasswordDialog(java.awt.Frame parent, boolean modal, String user) {
+    public ResetPasswordDialog(JDialog parent, boolean modal, String user) {
         super(parent, modal);
         initComponents();
         this.user = user;
@@ -45,26 +41,20 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        pfOldPass = new javax.swing.JPasswordField();
-        pfNewPass = new javax.swing.JPasswordField();
-        lblOldPass = new javax.swing.JLabel();
-        lblNewPass = new javax.swing.JLabel();
         btnConfirm = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        lblRepeatPass = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        pfOldPass = new javax.swing.JPasswordField();
         pfRepeatPass = new javax.swing.JPasswordField();
+        pfNewPass = new javax.swing.JPasswordField();
+        lblNewPass = new javax.swing.JLabel();
+        lblOldPass = new javax.swing.JLabel();
+        lblRepeatPass = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("New Password");
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-
-        pfOldPass.setText("jPasswordField1");
-
-        pfNewPass.setText("jPasswordField2");
-
-        lblOldPass.setText("Old password");
-
-        lblNewPass.setText("New password");
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         btnConfirm.setText("OK");
         btnConfirm.addActionListener(new java.awt.event.ActionListener() {
@@ -80,9 +70,65 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Password"));
+        jPanel1.setOpaque(false);
+
+        pfOldPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        pfOldPass.setText("jPasswordField1");
+
+        pfRepeatPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        pfRepeatPass.setText("jPasswordField2");
+
+        pfNewPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        pfNewPass.setText("jPasswordField2");
+
+        lblNewPass.setText("New Password");
+
+        lblOldPass.setText("Old Password");
+
         lblRepeatPass.setText("Repeat");
 
-        pfRepeatPass.setText("jPasswordField2");
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblOldPass)
+                            .addComponent(lblNewPass))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pfNewPass, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pfOldPass, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblRepeatPass)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(pfRepeatPass)))
+                .addContainerGap())
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblNewPass, lblOldPass, lblRepeatPass});
+
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pfOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblOldPass))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pfNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNewPass))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pfRepeatPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblRepeatPass))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
@@ -92,27 +138,13 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblOldPass)
-                            .addComponent(lblNewPass))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pfNewPass, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(pfOldPass, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblRepeatPass)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pfRepeatPass))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnConfirm)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel)))
+                        .addComponent(btnCancel))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblNewPass, lblOldPass, lblRepeatPass});
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCancel, btnConfirm});
 
@@ -120,18 +152,8 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pfOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblOldPass))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pfNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNewPass))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pfRepeatPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblRepeatPass))
-                .addGap(18, 18, 18)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
                     .addComponent(btnConfirm))
@@ -142,7 +164,7 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,19 +185,19 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
                     uService.updatePassword(user, newPass);
                     JOptionPane.showMessageDialog(this,
                             "Password was updated",
-                            "Password updated",
-                            JOptionPane.OK_OPTION);
+                            "Password Ipdated",
+                            JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(this,
                             "The new passwords do not match",
-                            "Inane warning",
+                            "Password Error",
                             JOptionPane.WARNING_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(this,
-                        "Please input your current password correctly",
-                        "Inane warning",
+                        "Please input your current password correctly.",
+                        "Password Error",
                         JOptionPane.WARNING_MESSAGE);
             }
         } catch (SQLException | UnsupportedEncodingException ex) {
@@ -195,6 +217,7 @@ public class ResetPasswordDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConfirm;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblNewPass;
     private javax.swing.JLabel lblOldPass;
     private javax.swing.JLabel lblRepeatPass;

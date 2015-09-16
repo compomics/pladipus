@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.user;
 
 import com.compomics.pladipus.core.control.distribution.service.UserService;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -23,19 +19,20 @@ public class UserCreationDialog extends javax.swing.JDialog {
      */
     public UserCreationDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-             // try to set the look and feel
-            try {
-                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                    if ("Nimbus".equals(info.getName())) {
-                        UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
+        // try to set the look and feel
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
                 }
-            } catch (Exception e) {
-                // ignore error, use default look and feel
             }
-        
+        } catch (Exception e) {
+            // ignore error, use default look and feel
+        }
+
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
     }
 
     /**
@@ -48,34 +45,21 @@ public class UserCreationDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
+        btnCancel = new javax.swing.JButton();
+        btnConfirm = new javax.swing.JButton();
+        detailsPanel = new javax.swing.JPanel();
         lblUser = new javax.swing.JLabel();
         lblEmail = new javax.swing.JLabel();
+        tfPass1 = new javax.swing.JPasswordField();
         lblPass = new javax.swing.JLabel();
+        tfPass2 = new javax.swing.JPasswordField();
         lblRepeatPass = new javax.swing.JLabel();
         tfUser = new javax.swing.JTextField();
         tfEmail = new javax.swing.JTextField();
-        tfPass1 = new javax.swing.JPasswordField();
-        tfPass2 = new javax.swing.JPasswordField();
-        btnCancel = new javax.swing.JButton();
-        btnConfirm = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-
-        lblUser.setText("Username");
-
-        lblEmail.setText("E-mail");
-
-        lblPass.setText("Password");
-
-        lblRepeatPass.setText("Repeat Password");
-
-        tfEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfEmailActionPerformed(evt);
-            }
-        });
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         btnCancel.setText("Cancel");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -91,6 +75,76 @@ public class UserCreationDialog extends javax.swing.JDialog {
             }
         });
 
+        detailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("User Details"));
+        detailsPanel.setOpaque(false);
+
+        lblUser.setText("Username");
+
+        lblEmail.setText("E-mail");
+
+        tfPass1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        lblPass.setText("Password");
+
+        tfPass2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        lblRepeatPass.setText("Repeat Password");
+
+        tfUser.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        tfEmail.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tfEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfEmailActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout detailsPanelLayout = new javax.swing.GroupLayout(detailsPanel);
+        detailsPanel.setLayout(detailsPanelLayout);
+        detailsPanelLayout.setHorizontalGroup(
+            detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(detailsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEmail)
+                    .addComponent(lblPass)
+                    .addComponent(lblRepeatPass)
+                    .addComponent(lblUser))
+                .addGap(28, 28, 28)
+                .addGroup(detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfPass2, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(tfPass1, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(tfEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(tfUser, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        detailsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblEmail, lblPass, lblRepeatPass, lblUser});
+
+        detailsPanelLayout.setVerticalGroup(
+            detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(detailsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblUser)
+                    .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEmail)
+                    .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPass)
+                    .addComponent(tfPass1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(detailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblRepeatPass)
+                    .addComponent(tfPass2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        detailsPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lblEmail, lblPass, lblRepeatPass, lblUser});
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
@@ -98,28 +152,13 @@ public class UserCreationDialog extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(detailsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addComponent(btnConfirm)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCancel))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblEmail)
-                            .addComponent(lblPass)
-                            .addComponent(lblRepeatPass)
-                            .addComponent(lblUser))
-                        .addGap(28, 28, 28)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfPass2)
-                            .addComponent(tfPass1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)))
                 .addContainerGap())
         );
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblEmail, lblPass, lblRepeatPass, lblUser});
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {tfEmail, tfPass1, tfPass2, tfUser});
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCancel, btnConfirm});
 
@@ -127,35 +166,19 @@ public class UserCreationDialog extends javax.swing.JDialog {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblUser)
-                    .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblEmail)
-                    .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblPass)
-                    .addComponent(tfPass1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblRepeatPass)
-                    .addComponent(tfPass2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addComponent(detailsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancel)
                     .addComponent(btnConfirm))
                 .addContainerGap())
         );
 
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lblEmail, lblPass, lblRepeatPass, lblUser});
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,35 +202,35 @@ public class UserCreationDialog extends javax.swing.JDialog {
         String pass2 = new String(tfPass2.getPassword());
         if (user.isEmpty() || email.isEmpty() || pass1.isEmpty() || pass2.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                                    "Some fields were left blank...",
-                                    "Inane error", JOptionPane.ERROR_MESSAGE);
+                    "All fields are mandatory.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (pass1.equals(pass2)) {
                 EmailValidator validator = EmailValidator.getInstance();
                 if (validator.isValid(email)) {
                     try {
                         if (service.registerNewUser(user, pass1, email)) {
-                            JOptionPane.showMessageDialog(this, "Succesfully created user");
+                            JOptionPane.showMessageDialog(this, "Succesfully created user.", "User Created", JOptionPane.INFORMATION_MESSAGE);
                             this.dispose();
                         } else {
                             JOptionPane.showMessageDialog(this,
-                                    "User already exists !",
-                                    "Inane error", JOptionPane.ERROR_MESSAGE);
+                                    "The user already exists!",
+                                    "Input Error", JOptionPane.ERROR_MESSAGE);
                         }
                     } catch (SQLException | IOException ex) {
                         JOptionPane.showMessageDialog(this,
-                                "Could not create user : " + System.lineSeparator() + ex,
-                                "Inane error", JOptionPane.ERROR_MESSAGE);
+                                "Could not create user: " + System.lineSeparator() + ex,
+                                "Input Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(this,
-                            "Invalid e-mail address",
-                            "Inane error", JOptionPane.ERROR_MESSAGE);
+                            "Invalid e-mail address.",
+                            "Input Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(this,
-                        "Passwords are not matching up !",
-                        "Inane error", JOptionPane.ERROR_MESSAGE);
+                        "The passwords are not the same!",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnConfirmActionPerformed
@@ -219,6 +242,7 @@ public class UserCreationDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConfirm;
+    private javax.swing.JPanel detailsPanel;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblPass;
     private javax.swing.JLabel lblRepeatPass;

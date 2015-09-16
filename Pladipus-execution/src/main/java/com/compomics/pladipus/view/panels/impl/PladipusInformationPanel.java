@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.panels.impl;
 
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.QueryOperation;
@@ -31,6 +26,7 @@ public class PladipusInformationPanel extends javax.swing.JPanel implements Upda
     public PladipusInformationPanel() {
         initComponents();
         spnlMain.getViewport().setOpaque(false);
+        tblPladipusInfo.getTableHeader().setReorderingAllowed(false);
     }
 
     @Override
@@ -39,7 +35,6 @@ public class PladipusInformationPanel extends javax.swing.JPanel implements Upda
         updateWorker.execute();
     }
 
-  
     @Override
     public void deactivate() {
         if (updateWorker != null) {
@@ -90,7 +85,7 @@ public class PladipusInformationPanel extends javax.swing.JPanel implements Upda
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(spnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

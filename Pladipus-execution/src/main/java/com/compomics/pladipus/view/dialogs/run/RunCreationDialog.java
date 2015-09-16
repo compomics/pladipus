@@ -779,8 +779,8 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 confirmed = true;
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this,
-                        "An error occurred during exporting : " + ex.getMessage(),
-                        "Inane error",
+                        "An error occurred during exporting: " + ex.getMessage(),
+                        "Export error",
                         JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -790,8 +790,8 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 int runID = rInstance.createRun(template);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this,
-                        "An error occurred during run storage in database  : " + ex.getMessage(),
-                        "Inane error",
+                        "An error occurred during run storage in database: " + ex.getMessage(),
+                        "Database Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         }

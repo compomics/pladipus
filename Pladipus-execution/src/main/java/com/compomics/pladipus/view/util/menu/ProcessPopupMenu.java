@@ -56,7 +56,8 @@ public class ProcessPopupMenu extends JPopupMenu {
             public void actionPerformed(ActionEvent e) {
                 int[] selectedRows = processTable.getSelectedRows();
                 if (selectedRows.length > 0) {
-                    int dialogResult = JOptionPane.showConfirmDialog(ProcessPopupMenu.this, "Are you sure you want to stop the selected process(es)?" + System.lineSeparator() + "Stopping a job will lose all current progress...");
+                    int dialogResult = JOptionPane.showConfirmDialog(ProcessPopupMenu.this, "Are you sure you want to stop the selected process(es)?" 
+                            + System.lineSeparator() + "Stopping a job will lose all current progress...");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         try {
                             ProcessDAO pDAO = ProcessDAO.getInstance();
@@ -70,8 +71,8 @@ public class ProcessPopupMenu extends JPopupMenu {
                             pDAO.resetProcesses(processesToCancel);
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(ProcessPopupMenu.this,
-                                    "Could not cancel the selection : " + ex,
-                                    "Inane error",
+                                    "Could not cancel the selection: " + ex,
+                                    "Error",
                                     JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -101,8 +102,8 @@ public class ProcessPopupMenu extends JPopupMenu {
                         userPanel.activate();
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(ProcessPopupMenu.this,
-                                "Could not modify the selection : " + ex,
-                                "Inane error",
+                                "Could not modify the selection: " + ex,
+                                "Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -139,8 +140,8 @@ public class ProcessPopupMenu extends JPopupMenu {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(null,
-                                "Could not start the task(s) " + System.lineSeparator() + ex,
-                                "Inane error",
+                                "Could not start the task(s): " + System.lineSeparator() + ex,
+                                "Task Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -175,8 +176,8 @@ public class ProcessPopupMenu extends JPopupMenu {
                             processTable.setModel(model);
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(ProcessPopupMenu.this,
-                                    "Could not delete the selection : " + ex,
-                                    "Inane error",
+                                    "Could not delete the selection: " + ex,
+                                    "Error",
                                     JOptionPane.ERROR_MESSAGE);
                         }
                     }

@@ -194,7 +194,7 @@ public class ProcessImportDialog extends javax.swing.JDialog {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,
                     "Could not merge the selected configuration to " + runID + System.lineSeparator() + ex,
-                    "Inane error",
+                    "Mege Error",
                     JOptionPane.ERROR_MESSAGE);
         }
         this.dispose();

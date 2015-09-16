@@ -132,8 +132,8 @@ public class RunPopupMenu extends JPopupMenu {
                             processModel.setRowCount(0);
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(RunPopupMenu.this,
-                                    "Could not delete the selection : " + ex,
-                                    "Inane error",
+                                    "Could not delete the selection: " + ex,
+                                    "Error",
                                     JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -190,8 +190,8 @@ public class RunPopupMenu extends JPopupMenu {
                     } catch (JMSException | NumberFormatException | SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(RunPopupMenu.this,
-                                "Could not launch the selection : " + ex,
-                                "Inane error",
+                                "Could not launch the selection: " + ex,
+                                "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         progressDialog.setRunFinished();
                         return;
@@ -205,7 +205,7 @@ public class RunPopupMenu extends JPopupMenu {
     private void stopRun(int[] selectedRows) {
         progressDialog = new ProgressDialogX(true);
         progressDialog.setPrimaryProgressCounterIndeterminate(false);
-        progressDialog.setTitle("Cancelling jobs. Please Wait...");
+        progressDialog.setTitle("Canceling jobs. Please Wait...");
 
         new Thread(new Runnable() {
             public void run() {
@@ -238,8 +238,8 @@ public class RunPopupMenu extends JPopupMenu {
                         dao.setQueued(queuedProcess, false);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(RunPopupMenu.this,
-                                "Could not launch the selection : " + ex,
-                                "Inane error",
+                                "Could not launch the selection: " + ex,
+                                "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         progressDialog.setRunFinished();
                         return;

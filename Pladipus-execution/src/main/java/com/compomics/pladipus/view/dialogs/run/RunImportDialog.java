@@ -260,7 +260,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                         ex.getMessage(),
-                        "Inane error",
+                        "Template Error",
                         JOptionPane.ERROR_MESSAGE);
                 allowCreation = false;
             }
@@ -310,7 +310,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(RunImportDialog.this,
                                 ex.getMessage(),
-                                "Inane error",
+                                "Run Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                     try {
@@ -318,7 +318,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(RunImportDialog.this,
                                 ex.getMessage(),
-                                "Inane error",
+                                "Run Error",
                                 JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
@@ -326,7 +326,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(null,
                             "Could not create run" + System.lineSeparator() + e,
-                            "Inane error",
+                            "Run Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
