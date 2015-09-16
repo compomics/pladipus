@@ -8,6 +8,8 @@
     <bean id="SearchGUIStep" class="com.compomics.pladipus.search.processsteps.SearchGUIStep" lazy-init="true"/>  
   
     <bean id="PeptideShakerStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerStep" lazy-init="true"/>    
+    
+    <bean id="PeptideShakerReportStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerReportStep" lazy-init="true"/>    
                                                         
     <!--Denovo Search beans -->
     
