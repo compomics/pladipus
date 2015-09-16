@@ -23,13 +23,36 @@ import org.apache.commons.io.IOUtils;
  */
 public class Disclaimer extends javax.swing.JDialog {
 
+    private void countDown() {
+        new Thread(new Runnable() {
+ 
+            @Override
+            public void run() {
+                int seconds = 30;
+                while (seconds > 0) {
+                    try {
+                        Thread.sleep(1000);
+                        Disclaimer.this.setTitle("Continuing in " + seconds + " seconds...");
+                        seconds--;
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Disclaimer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                Disclaimer.this.dispose();
+            }
+        }).start();
+    }
+
     /**
      * Creates a new Disclaimer.
      */
     public Disclaimer(java.awt.Frame parent, boolean modal) throws IOException {
         super(parent, modal);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        this.getRootPane().setDefaultButton(btnInstall);
         initComponents();
+        countDown();
         setTitle("Pladipus Disclaimer");
 
         ImageIcon image = new ImageIcon(
@@ -105,14 +128,15 @@ public class Disclaimer extends javax.swing.JDialog {
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbLogo)
-                    .addComponent(spnlDisclaimer, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-            .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(921, 921, 921)
-                .addComponent(btnInstall)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(lbLogo)
+                            .addComponent(spnlDisclaimer, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGap(921, 921, 921)
+                        .addComponent(btnInstall)))
                 .addGap(10, 10, 10))
         );
         pnlMainLayout.setVerticalGroup(
