@@ -142,11 +142,11 @@ public class PladipusPanel extends javax.swing.JPanel {
             public void run() {
                 try {
                     new InstallPladipus().installConsole();
-                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus console");
+                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Manager.", "Pladipus Manager", JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
-                            "Could not install Pladipus console : " + System.lineSeparator() + ex.getMessage(),
-                            "Console error",
+                            "Could not install Pladipus Manager: " + System.lineSeparator() + ex.getMessage(),
+                            "Manager Error",
                             JOptionPane.ERROR_MESSAGE);
                 } finally {
                     dialog.setRunFinished();
@@ -157,7 +157,7 @@ public class PladipusPanel extends javax.swing.JPanel {
         }).start();
         dialog.setLocationRelativeTo(null);
         dialog.setPrimaryProgressCounterIndeterminate(true);
-        dialog.setTitle("Installing Pladipus console");
+        dialog.setTitle("Installing Pladipus Manager");
         dialog.setVisible(true);
     }//GEN-LAST:event_btnInstallGUIActionPerformed
 
@@ -169,11 +169,11 @@ public class PladipusPanel extends javax.swing.JPanel {
             public void run() {
                 try {
                     new InstallPladipus().installWorker();
-                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus executor");
+                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.");
                 } catch (SecurityException | IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
-                            "Could not install Pladipus executor : " + System.lineSeparator() + ex.getMessage(),
-                            "Executor error",
+                            "Could not install Pladipus Worker: " + System.lineSeparator() + ex.getMessage(),
+                            "Worker Error",
                             JOptionPane.ERROR_MESSAGE);
                 } finally {
                     dialog.setRunFinished();

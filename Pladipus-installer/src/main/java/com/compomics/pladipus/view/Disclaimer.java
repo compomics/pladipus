@@ -32,9 +32,8 @@ public class Disclaimer extends javax.swing.JDialog {
                 while (seconds > 0) {
                     try {
                         Thread.sleep(1000);
-                        Disclaimer.this.setTitle("Continuing in " + seconds + " seconds...");
+                        Disclaimer.this.setTitle("Pladipus Disclaimer - Continuing in " + seconds + " seconds..."); // @TODO: remove..?
                         seconds--;
-
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Disclaimer.class.getName()).log(Level.SEVERE, null, ex);
                     }

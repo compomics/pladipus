@@ -148,7 +148,7 @@ public class InstallPladipus {
 
         panel.add(controls, BorderLayout.CENTER);
 
-        JOptionPane.showMessageDialog(null, panel, "login", JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(null, panel, "Pladipus Login", JOptionPane.OK_OPTION);
 
         String user = username.getText();
         String pass = new String(password.getPassword());
@@ -156,9 +156,8 @@ public class InstallPladipus {
         if (login(user, pass)) {
             writeWorkerBash(user, pass);
         } else {
-            throw new SecurityException("Credentials are not correct !");
+            throw new SecurityException("User credentials are incorrect!");
         }
-
     }
 
     private static boolean login(String user, String password) {
@@ -205,5 +204,4 @@ public class InstallPladipus {
             FileUtils.copyURLToFile(inputUrl, dest);
         }
     }
-
 }
