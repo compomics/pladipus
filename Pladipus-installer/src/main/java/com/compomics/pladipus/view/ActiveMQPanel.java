@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.controller.setup.InstallActiveMQ;
@@ -24,7 +19,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
     private final InstallActiveMQ setup;
 
     /**
-     * Creates new form MySQLPanel
+     * Creates a new ActiveMQPanel.
      */
     public ActiveMQPanel() {
         initComponents();
@@ -68,8 +63,10 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         lblJMXPort.setBackground(new java.awt.Color(255, 255, 255));
         lblJMXPort.setText("Port (jmx)");
 
+        tfHost.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfHost.setText("localhost");
 
+        tfAmqPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfAmqPort.setText("3389");
         tfAmqPort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -77,9 +74,9 @@ public class ActiveMQPanel extends javax.swing.JPanel {
             }
         });
 
+        tfJmxPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfJmxPort.setText("1099");
 
-        btnTestConnection.setBackground(new java.awt.Color(255, 255, 255));
         btnTestConnection.setText("Test Connection");
         btnTestConnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -87,8 +84,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
             }
         });
 
-        btnInstallAmq.setBackground(new java.awt.Color(255, 255, 255));
-        btnInstallAmq.setText("Install server");
+        btnInstallAmq.setText("Install Server");
         btnInstallAmq.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInstallAmqActionPerformed(evt);
@@ -110,12 +106,11 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         );
         pnlLogoLayout.setVerticalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 116, Short.MAX_VALUE)
+            .addGap(0, 140, Short.MAX_VALUE)
             .addGroup(pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE))
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        btnApply.setBackground(new java.awt.Color(255, 255, 255));
         btnApply.setText("Apply");
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,38 +127,31 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblHost)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfHost))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblAMQPort)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfAmqPort))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblJMXPort)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfJmxPort))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 69, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTestConnection, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnInstallAmq, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblJMXPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblAMQPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblHost, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnTestConnection, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnInstallAmq, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnApply)))))
+                                .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
+                            .addComponent(tfJmxPort)
+                            .addComponent(tfAmqPort, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tfHost, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblAMQPort, lblHost, lblJMXPort});
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnApply, btnInstallAmq});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblHost)
                     .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -171,11 +159,11 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblAMQPort)
                     .addComponent(tfAmqPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblJMXPort)
                     .addComponent(tfJmxPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnInstallAmq)
                     .addComponent(btnApply))
@@ -214,11 +202,11 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 try {
 
                     setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
-                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Installation completed. Please launch the server using the generated executable on the desktop.");
+                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Installation completed. Please launch the server using the generated shortcut on the desktop.");
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(ActiveMQPanel.this,
-                            "Could not install activeMQ : " + System.lineSeparator() + ex.getMessage(),
-                            "Installation failed",
+                            "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
+                            "Installation Failed",
                             JOptionPane.ERROR_MESSAGE);
                 } finally {
                     dialog.setRunFinished();
@@ -231,7 +219,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         dialog.setPrimaryProgressCounterIndeterminate(true);
         dialog.setTitle("Installing ActiveMQ Server");
         dialog.setVisible(true);
-        
+
     }//GEN-LAST:event_btnInstallAmqActionPerformed
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
@@ -250,7 +238,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(ActiveMQPanel.this,
                     "Could not update settings : " + System.lineSeparator() + ex.getMessage(),
-                    "Inane error",
+                    "Settings Error",
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnApplyActionPerformed
@@ -258,11 +246,11 @@ public class ActiveMQPanel extends javax.swing.JPanel {
     private void testConnection() {
         try {
             PladipusTrafficManager.getInstance().isSystemOnline();
-            JOptionPane.showMessageDialog(this, "Succesfully connected to the ActiveMQ Server");
+            JOptionPane.showMessageDialog(this, "Succesfully connected to the ActiveMQ Server.");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
                     "ActiveMQ could not be reached: " + System.lineSeparator() + ex.getMessage(),
-                    "Connection failed",
+                    "Connection Failed",
                     JOptionPane.ERROR_MESSAGE);
         }
     }

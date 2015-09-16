@@ -115,13 +115,15 @@ public class MySQLPanel extends javax.swing.JPanel {
         lblPass.setBackground(new java.awt.Color(255, 255, 255));
         lblPass.setText("Password");
 
+        tfHost.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfHost.setText("localhost");
 
+        tfPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfPort.setText("3306");
 
+        tfUser.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfUser.setText("root");
 
-        btnApply.setBackground(new java.awt.Color(255, 255, 255));
         btnApply.setText("Apply");
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -129,8 +131,9 @@ public class MySQLPanel extends javax.swing.JPanel {
             }
         });
 
-        btnTestConnection.setBackground(new java.awt.Color(255, 255, 255));
-        btnTestConnection.setText("Test Connection");
+        pfPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        btnTestConnection.setText("Test");
         btnTestConnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTestConnectionActionPerformed(evt);
@@ -142,42 +145,37 @@ public class MySQLPanel extends javax.swing.JPanel {
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(lblPass, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblHost)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfHost))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblPort)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfPort))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblUser)
-                        .addGap(18, 18, 18)
-                        .addComponent(tfUser))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lblPass)
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlMainLayout.createSequentialGroup()
-                                .addComponent(btnTestConnection)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                                .addComponent(btnApply))
-                            .addComponent(pfPass, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))))
+                        .addComponent(btnTestConnection, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
+                    .addComponent(pfPass)))
             .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addComponent(lblHost, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tfHost))
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfPort)
+                    .addComponent(tfUser)))
         );
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblHost, lblPass, lblPort, lblUser});
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnApply, btnTestConnection});
 
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblHost)
                     .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -185,19 +183,19 @@ public class MySQLPanel extends javax.swing.JPanel {
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPort)
                     .addComponent(tfPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblUser)
                     .addComponent(tfUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPass)
                     .addComponent(pfPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnTestConnection)
                     .addComponent(btnApply))
-                .addGap(29, 29, 29))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -220,8 +218,8 @@ public class MySQLPanel extends javax.swing.JPanel {
             mySQLSetup.updateProperties(host, port, user, password);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this,
-                    "Could not update properties",
-                    "Failed to update properties", JOptionPane.ERROR_MESSAGE);
+                    "Could not update properties.",
+                    "Update Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnApplyActionPerformed
 
@@ -237,7 +235,7 @@ public class MySQLPanel extends javax.swing.JPanel {
 
         String url = "jdbc:mysql://" + host + ":" + port;
 
-        System.out.println("Connecting database...");
+        System.out.println("Connecting to database...");
         //1. check if db exists
         boolean connected = false;
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
@@ -246,15 +244,15 @@ public class MySQLPanel extends javax.swing.JPanel {
                 ResultSet executeQuery = connection.createStatement().executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'pladipus'");
                 executeQuery.next();
                 dbExists = (!executeQuery.getString("SCHEMA_NAME").isEmpty());
-                JOptionPane.showMessageDialog(this, "Succesfully contacted the pladipus database.");
+                JOptionPane.showMessageDialog(this, "Succesfully contacted the Pladipus database.");
             } catch (SQLException theDatabaseIsNotThere) {
                 if (connected) {
                     //2. prompt user if he/she wants to attempt to initialize the database?
-                    int dialogResult = JOptionPane.showConfirmDialog(this, "Would you like to automatically import the pladipus database?");
+                    int dialogResult = JOptionPane.showConfirmDialog(this, "Would you like to automatically import the Pladipus database?");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         mySQLSetup.setupMySql(connection);
                         dbExists = true;
-                        JOptionPane.showMessageDialog(this, "Succesfully created the pladipus database.");
+                        JOptionPane.showMessageDialog(this, "Succesfully created the Pladipus database.");
                     }
                 }
             } finally {
@@ -266,18 +264,17 @@ public class MySQLPanel extends javax.swing.JPanel {
             if (!connected) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this,
-                        "Could not connect to the database :"+System.lineSeparator()+e.getMessage(),
-                        "Failed to connect",
+                        "Could not connect to the database: " + System.lineSeparator() + e.getMessage(),
+                        "Connection Failed",
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (IOException ex) {
             //custom title, error icon
             JOptionPane.showMessageDialog(this,
-                    "Could not import SQL init script",
-                    "Database creation error",
+                    "Could not import SQL init script.",
+                    "Database Creation Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.controller.setup.InstallExample;
@@ -20,7 +15,7 @@ import javax.swing.JOptionPane;
 public class PladipusPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form MySQLPanel
+     * Creates a new MySQLPanel.
      */
     public PladipusPanel() {
         initComponents();
@@ -49,8 +44,7 @@ public class PladipusPanel extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        btnRegister.setBackground(new java.awt.Color(255, 255, 255));
-        btnRegister.setText("Register new user");
+        btnRegister.setText("Register New User");
         btnRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegisterActionPerformed(evt);
@@ -73,29 +67,25 @@ public class PladipusPanel extends javax.swing.JPanel {
         );
         pnlLogoLayout.setVerticalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlLogoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLogoLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
         );
 
-        btnInstallGUI.setBackground(new java.awt.Color(255, 255, 255));
-        btnInstallGUI.setText("Install Management-mode");
+        btnInstallGUI.setText("Install Manager");
         btnInstallGUI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInstallGUIActionPerformed(evt);
             }
         });
 
-        btnInstallWorker.setBackground(new java.awt.Color(255, 255, 255));
-        btnInstallWorker.setText("Install Execution-mode");
+        btnInstallWorker.setText("Install Worker");
         btnInstallWorker.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInstallWorkerActionPerformed(evt);
             }
         });
 
-        btnInstallExample.setBackground(new java.awt.Color(255, 255, 255));
         btnInstallExample.setText("Install Example Tools");
         btnInstallExample.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,37 +98,36 @@ public class PladipusPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRegister)
-                    .addComponent(btnInstallGUI)
-                    .addComponent(btnInstallWorker)
-                    .addComponent(btnInstallExample))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(btnRegister, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnInstallGUI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnInstallWorker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnInstallExample, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))))
+                .addGap(20, 20, 20))
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnInstallExample, btnInstallGUI, btnInstallWorker, btnRegister});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(btnRegister)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnInstallGUI)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnInstallWorker)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnInstallExample)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-
         UserCreationDialog userCreationDialog = new UserCreationDialog(null, true);
         userCreationDialog.setLocationRelativeTo(this);
         userCreationDialog.setTitle("New Pladipus user");
@@ -173,7 +162,7 @@ public class PladipusPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnInstallGUIActionPerformed
 
     private void btnInstallWorkerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallWorkerActionPerformed
-         ProgressDialogX dialog = new ProgressDialogX(true);
+        ProgressDialogX dialog = new ProgressDialogX(true);
 
         new Thread(new Runnable() {
             @Override
@@ -181,7 +170,7 @@ public class PladipusPanel extends javax.swing.JPanel {
                 try {
                     new InstallPladipus().installWorker();
                     JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus executor");
-                } catch (SecurityException|IOException ex) {
+                } catch (SecurityException | IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
                             "Could not install Pladipus executor : " + System.lineSeparator() + ex.getMessage(),
                             "Executor error",
@@ -202,7 +191,6 @@ public class PladipusPanel extends javax.swing.JPanel {
     private void btnInstallExampleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallExampleActionPerformed
         new InstallExample().install();
     }//GEN-LAST:event_btnInstallExampleActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnInstallExample;

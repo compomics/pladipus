@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view;
 
 import java.awt.Desktop;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,14 +24,14 @@ import org.apache.commons.io.IOUtils;
 public class Disclaimer extends javax.swing.JDialog {
 
     /**
-     * Creates new form Splash
+     * Creates a new Disclaimer.
      */
     public Disclaimer(java.awt.Frame parent, boolean modal) throws IOException {
         super(parent, modal);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         initComponents();
         setTitle("Pladipus Disclaimer");
-        
+
         ImageIcon image = new ImageIcon(
                 getClass().getResource(
                         "/images/Compomics_logo.jpg"));
@@ -58,6 +54,7 @@ public class Disclaimer extends javax.swing.JDialog {
                 }
             }
         });
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
         readDisclaimer();
         this.setLocationRelativeTo(parent);
     }
@@ -73,26 +70,26 @@ public class Disclaimer extends javax.swing.JDialog {
 
         pnlMain = new javax.swing.JPanel();
         btnInstall = new javax.swing.JButton();
-        btnContact = new javax.swing.JLabel();
         spnlDisclaimer = new javax.swing.JScrollPane();
         epDisclaimer = new javax.swing.JEditorPane();
         lbLogo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setAlwaysOnTop(true);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         pnlMain.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnInstall.setBackground(new java.awt.Color(255, 255, 255));
         btnInstall.setText("Install");
         btnInstall.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnInstallActionPerformed(evt);
             }
         });
-
-        btnContact.setBackground(new java.awt.Color(255, 255, 255));
-        btnContact.setText("kenneth.verheggen@ugent.be");
 
         spnlDisclaimer.setBackground(new java.awt.Color(255, 255, 255));
         spnlDisclaimer.setBorder(null);
@@ -111,12 +108,10 @@ public class Disclaimer extends javax.swing.JDialog {
                 .addGap(14, 14, 14)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbLogo)
-                    .addComponent(spnlDisclaimer))
+                    .addComponent(spnlDisclaimer, javax.swing.GroupLayout.PREFERRED_SIZE, 641, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(btnContact)
-                .addGap(762, 762, 762)
+                .addGap(921, 921, 921)
                 .addComponent(btnInstall)
                 .addGap(10, 10, 10))
         );
@@ -125,12 +120,10 @@ public class Disclaimer extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(lbLogo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(spnlDisclaimer, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnContact)
-                    .addComponent(btnInstall))
+                .addComponent(btnInstall)
                 .addGap(15, 15, 15))
         );
 
@@ -154,6 +147,10 @@ public class Disclaimer extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_btnInstallActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        System.exit(0);
+    }//GEN-LAST:event_formWindowClosing
+
     private void readDisclaimer() throws IOException {
         epDisclaimer.setContentType("text/html");//set content as html
         File tempFile = File.createTempFile("disclaimer", ".html");
@@ -165,7 +162,6 @@ public class Disclaimer extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel btnContact;
     private javax.swing.JButton btnInstall;
     private javax.swing.JEditorPane epDisclaimer;
     private javax.swing.JLabel lbLogo;

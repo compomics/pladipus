@@ -46,7 +46,7 @@ public class InstallExample {
     }
 
     /**
-     * Downloads and installs searchgui and peptideshaker to the local folders
+     * Downloads and installs SearchGUI, DeNovoGUI and PeptideShaker to the local folders
      */
     public void install() {
         installSearchGUI();
