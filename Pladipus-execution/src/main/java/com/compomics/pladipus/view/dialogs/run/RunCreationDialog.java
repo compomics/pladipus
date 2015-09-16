@@ -217,9 +217,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         setTemplateFromResource("PeptideShaker", "PeptideShaker_Template.xml");
         setTemplateFromResource("SearchGUI", "SearchGUI_Template.xml");
         setTemplateFromResource("SearchGUI + PeptideShaker", "SearchGUI_PeptideShaker_Template.xml");
-        setTemplateFromResource("BLASTn", "BLAST_N_Template.xml");
-        setTemplateFromResource("BLASTp", "BLAST_P_Template.xml");
-        setTemplateFromResource("BLASTx", "BLAST_X_Template.xml");
+        setTemplateFromResource("BLAST", "BLAST_Template.xml");
         setTemplateFromResource("MsConvert", "MsConvert_Template.xml");
 
         DefaultComboBoxModel model = (DefaultComboBoxModel) cbPresets.getModel();
