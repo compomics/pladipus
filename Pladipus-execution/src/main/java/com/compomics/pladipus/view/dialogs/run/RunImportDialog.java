@@ -57,7 +57,7 @@ public class RunImportDialog extends javax.swing.JDialog {
         super(parent, modal);
         this.userPanel = userPanel;
         setLocationRelativeTo(parent);
-        setTitle("Create a new run");
+        setTitle("New Run");
 
         // try to set the look and feel
         try {
@@ -99,35 +99,21 @@ public class RunImportDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        lblTemplate = new javax.swing.JLabel();
-        lblConfig = new javax.swing.JLabel();
-        slPriority = new javax.swing.JSlider();
-        lblPriority = new javax.swing.JLabel();
         btnCreate = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        tfTemplate = new javax.swing.JTextField();
-        tfConfig = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        lblConfig = new javax.swing.JLabel();
+        slPriority = new javax.swing.JSlider();
         btnTemplateChooser = new javax.swing.JButton();
         btnConfigChooser = new javax.swing.JButton();
+        lblTemplate = new javax.swing.JLabel();
+        lblPriority = new javax.swing.JLabel();
+        tfConfig = new javax.swing.JTextField();
+        tfTemplate = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-
-        lblTemplate.setText("Run Template File");
-
-        lblConfig.setText("Run Configuration File");
-
-        slPriority.setBackground(new java.awt.Color(255, 255, 255));
-        slPriority.setForeground(new java.awt.Color(102, 204, 255));
-        slPriority.setMaximum(9);
-        slPriority.setMinimum(1);
-        slPriority.setMinorTickSpacing(1);
-        slPriority.setPaintLabels(true);
-        slPriority.setPaintTicks(true);
-        slPriority.setSnapToTicks(true);
-
-        lblPriority.setText("Run Priority");
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         btnCreate.setText("Create");
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +129,23 @@ public class RunImportDialog extends javax.swing.JDialog {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
+        jPanel1.setOpaque(false);
+
+        lblConfig.setText("Configuration File");
+
+        slPriority.setBackground(new java.awt.Color(255, 255, 255));
+        slPriority.setForeground(new java.awt.Color(102, 204, 255));
+        slPriority.setMaximum(9);
+        slPriority.setMinimum(1);
+        slPriority.setMinorTickSpacing(1);
+        slPriority.setPaintLabels(true);
+        slPriority.setPaintTicks(true);
+        slPriority.setSnapToTicks(true);
+        slPriority.setOpaque(false);
+
         btnTemplateChooser.setText("...");
+        btnTemplateChooser.setToolTipText("Click to locate file");
         btnTemplateChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTemplateChooserActionPerformed(evt);
@@ -151,11 +153,68 @@ public class RunImportDialog extends javax.swing.JDialog {
         });
 
         btnConfigChooser.setText("...");
+        btnConfigChooser.setToolTipText("Click to locate file");
         btnConfigChooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConfigChooserActionPerformed(evt);
             }
         });
+
+        lblTemplate.setText("Template File");
+
+        lblPriority.setText("Run Priority");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTemplate)
+                    .addComponent(lblConfig)
+                    .addComponent(lblPriority))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(tfConfig, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                            .addComponent(tfTemplate, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnTemplateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnConfigChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(slPriority, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblConfig, lblPriority, lblTemplate});
+
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTemplate)
+                    .addComponent(tfTemplate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTemplateChooser))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblConfig)
+                    .addComponent(tfConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConfigChooser))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblPriority)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(slPriority, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
@@ -165,53 +224,18 @@ public class RunImportDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblTemplate)
-                            .addComponent(lblConfig)
-                            .addComponent(lblPriority))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(tfConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(tfTemplate, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnConfigChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnTemplateChooser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCreate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(110, 110, 110)
-                        .addComponent(slPriority, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(26, 26, 26)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnConfigChooser, btnTemplateChooser});
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblConfig, lblPriority, lblTemplate});
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {tfConfig, tfTemplate});
-
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTemplate)
-                    .addComponent(tfTemplate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTemplateChooser))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblConfig)
-                    .addComponent(tfConfig, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnConfigChooser))
-                .addGap(18, 18, 18)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(slPriority, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPriority))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCreate)
@@ -308,6 +332,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                     try {
                         userPanel.updateRunTable();
                     } catch (Exception ex) {
+                        progressDialog.setRunFinished();
                         JOptionPane.showMessageDialog(RunImportDialog.this,
                                 ex.getMessage(),
                                 "Run Error",
@@ -316,6 +341,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                     try {
                         userPanel.updateProcessTable();
                     } catch (Exception ex) {
+                        progressDialog.setRunFinished();
                         JOptionPane.showMessageDialog(RunImportDialog.this,
                                 ex.getMessage(),
                                 "Run Error",
@@ -363,6 +389,7 @@ public class RunImportDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnConfigChooser;
     private javax.swing.JButton btnCreate;
     private javax.swing.JButton btnTemplateChooser;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblConfig;
     private javax.swing.JLabel lblPriority;
     private javax.swing.JLabel lblTemplate;

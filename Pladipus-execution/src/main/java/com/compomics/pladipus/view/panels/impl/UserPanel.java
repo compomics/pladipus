@@ -442,6 +442,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             try {
                 PladipusProcessingTemplate templateForRun = rService.getTemplateForRun(runID);
                 ProcessCreationDialog processCreationDialog = new ProcessCreationDialog(null, true, templateForRun);
+                processCreationDialog.setLocationRelativeTo(this);
                 processCreationDialog.setVisible(true);
             } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
                 ex.printStackTrace();

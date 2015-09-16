@@ -228,6 +228,7 @@ public class MainGUI extends javax.swing.JFrame {
     private void miImportRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportRunActionPerformed
         RunImportDialog runImportDialog = new RunImportDialog(this, userPanel, true);
         runImportDialog.setUser(loggedInUser);
+        runImportDialog.setLocationRelativeTo(this);
         runImportDialog.setVisible(true);
     }//GEN-LAST:event_miImportRunActionPerformed
 
@@ -256,7 +257,14 @@ public class MainGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_miLaunchAdminActionPerformed
 
     private void miCreateRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCreateRunActionPerformed
-        showCreateNewRunDialog();
+        try {
+            RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+        } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
+            JOptionPane.showMessageDialog(this, "An error occurred loading a preset template: " + e.getMessage(), "Template Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
     }//GEN-LAST:event_miCreateRunActionPerformed
 
     private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
@@ -268,16 +276,6 @@ public class MainGUI extends javax.swing.JFrame {
             Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_helpMenuItemActionPerformed
-
-    private void showCreateNewRunDialog() {
-        try {
-            RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
-            dialog.setVisible(true);
-        } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "An error occurred loading a preset template", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        }
-    }
 
     /**
      * @param args the command line arguments

@@ -96,7 +96,7 @@ public class AdminConsole extends javax.swing.JFrame {
         miCreateUser = new javax.swing.JMenuItem();
         miPrivilegeUser = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Admin Settings");
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));

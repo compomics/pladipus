@@ -232,7 +232,7 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
     }
 
     /**
-     * Checks wether the configuration file is compatible, throws an error if it
+     * Checks whether the configuration file is compatible, throws an error if it
      * doesn't match the given template
      *
      * @param template the processing template

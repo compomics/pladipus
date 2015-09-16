@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
@@ -15,6 +10,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.jms.JMSException;
 import javax.naming.AuthenticationException;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -30,7 +26,7 @@ import org.xml.sax.SAXException;
 public class ProcessImportDialog extends javax.swing.JDialog {
 
     /**
-     * The traffic maanger
+     * The traffic manger
      */
     private PladipusTrafficManager trafficManager = PladipusTrafficManager.getInstance();
     /**
@@ -46,6 +42,30 @@ public class ProcessImportDialog extends javax.swing.JDialog {
      */
     private int runID;
 
+    /**
+     * Creates new form RunCreationDialog
+     */
+    public ProcessImportDialog(JDialog parent, boolean modal) {
+        super(parent, modal);
+
+        // try to set the look and feel
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // ignore error, use default look and feel
+        }
+
+        setLocationRelativeTo(parent);
+        setTitle("New Run");
+        initComponents();
+        initFileChoosers();
+    }
+    
     /**
      * Creates new form RunCreationDialog
      */
@@ -102,7 +122,7 @@ public class ProcessImportDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         lbConfig.setText("Run Configuration File");
 
@@ -132,18 +152,18 @@ public class ProcessImportDialog extends javax.swing.JDialog {
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(lbConfig)
+                        .addGap(18, 18, 18)
+                        .addComponent(tfConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnConfigChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addComponent(btnAddToRun)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCancel))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(lbConfig)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(8, 8, 8)
-                        .addComponent(btnConfigChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCancel)))
                 .addContainerGap())
         );
 
@@ -168,7 +188,7 @@ public class ProcessImportDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

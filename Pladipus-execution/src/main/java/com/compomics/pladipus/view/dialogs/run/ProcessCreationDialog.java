@@ -1,12 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
+import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -33,6 +30,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
         super(parent, modal);
         this.template = template;
         initComponents();
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
         initTable();
         spnlParameters.getViewport().setOpaque(false);
     }
@@ -78,6 +76,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
 
         pnlMain = new javax.swing.JPanel();
         btnCreate = new javax.swing.JButton();
+        parametersPanel = new javax.swing.JPanel();
         spnlParameters = new javax.swing.JScrollPane();
         tblParameters = new javax.swing.JTable();
         mnBar = new javax.swing.JMenuBar();
@@ -86,8 +85,9 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
         miExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Processing Parameters");
 
-        pnlMain.setBackground(java.awt.Color.white);
+        pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
         btnCreate.setBackground(java.awt.Color.white);
         btnCreate.setText("Create");
@@ -97,8 +97,10 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
             }
         });
 
+        parametersPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Parameters"));
+        parametersPanel.setOpaque(false);
+
         spnlParameters.setBackground(new java.awt.Color(255, 255, 255));
-        spnlParameters.setBorder(null);
         spnlParameters.setOpaque(false);
 
         tblParameters.setModel(new javax.swing.table.DefaultTableModel(
@@ -121,20 +123,41 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
         tblParameters.setSelectionBackground(new java.awt.Color(255, 255, 255));
         spnlParameters.setViewportView(tblParameters);
 
+        javax.swing.GroupLayout parametersPanelLayout = new javax.swing.GroupLayout(parametersPanel);
+        parametersPanel.setLayout(parametersPanelLayout);
+        parametersPanelLayout.setHorizontalGroup(
+            parametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(parametersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spnlParameters)
+                .addContainerGap())
+        );
+        parametersPanelLayout.setVerticalGroup(
+            parametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(parametersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(spnlParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                .addContainerGap(537, Short.MAX_VALUE)
-                .addComponent(btnCreate)
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                        .addGap(0, 551, Short.MAX_VALUE)
+                        .addComponent(btnCreate))
+                    .addComponent(parametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(spnlParameters)
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                .addComponent(spnlParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(parametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCreate)
                 .addContainerGap())
@@ -142,7 +165,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
 
         miFile.setText("File");
 
-        miImport.setText("Import job(s)...");
+        miImport.setText("Import Job(s)...");
         miImport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miImportActionPerformed(evt);
@@ -151,6 +174,11 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
         miFile.add(miImport);
 
         miExit.setText("Exit");
+        miExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miExitActionPerformed(evt);
+            }
+        });
         miFile.add(miExit);
 
         mnBar.add(miFile);
@@ -184,9 +212,14 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCreateActionPerformed
 
     private void miImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportActionPerformed
-        ProcessImportDialog dialog = new ProcessImportDialog(null, true);
+        ProcessImportDialog dialog = new ProcessImportDialog(this, true);
+        dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_miImportActionPerformed
+
+    private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
+        dispose();
+    }//GEN-LAST:event_miExitActionPerformed
 
     private HashMap<String, String> readParametersFromTable() {
         HashMap<String, String> parameterMap = new HashMap<>();
@@ -204,6 +237,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
     private javax.swing.JMenu miFile;
     private javax.swing.JMenuItem miImport;
     private javax.swing.JMenuBar mnBar;
+    private javax.swing.JPanel parametersPanel;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane spnlParameters;
     private javax.swing.JTable tblParameters;
