@@ -5,16 +5,16 @@
  */
 package com.compomics.pladipus.msconvert;
 
-import com.compomics.pladipus.core.control.engine.ProcessingEngine;
-import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import com.compomics.pladipus.core.model.enums.AllowedMsConvertParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import org.apache.log4j.Level;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -24,71 +24,62 @@ import org.apache.log4j.Logger;
 public class MsConvertStep extends ProcessingStep {
 
     private static final Logger LOGGER = Logger.getLogger(MsConvertStep.class);
+    private final File tempResults = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/results");
 
     public MsConvertStep() {
 
+    }
+
+    private List<String> constructArguments() throws IOException {
+        ArrayList<String> cmdArgs = new ArrayList<>();
+        cmdArgs.add(parameters.get("pwiz_folder") + "/msconvert");
+        for (AllowedMsConvertParams aParameter : AllowedMsConvertParams.values()) {
+            if (parameters.containsKey(aParameter.getId())) {
+                cmdArgs.add("-" + aParameter.getId());
+                cmdArgs.add(parameters.get(aParameter.getId()));
+            } else if (aParameter.isMandatory()) {
+                throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
+            }
+        }
+        return cmdArgs;
     }
 
     @Override
     public boolean doAction() throws Exception {
         System.out.println("Running " + this.getClass().getName());
         boolean success = false;
-        Level level = LOGGER.getLevel();
-        LOGGER.setLevel(Level.INFO);
-        File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/msconvert");
-        if (tempResources.exists()) {
-            try {
-                LOGGER.info("Cleaning temp folder");
-                deleteFolder(tempResources);
-            } catch (Exception e) {
-                LOGGER.error("Could not clean directory : ");
-                e.printStackTrace();
-            }
-        }
-        tempResources.mkdirs();
         try {
             if (checkOS()) {
-                //check if searchgui is local, if not download it
-                File input = new File(parameters.get("raw_input"));
-                File output = new File(parameters.get("mgf_output"));
-                File executable = new File(parameters.get("pwiz_folder"), "msconvert");
-
-                //download the input to a temp folder?
-                LOGGER.info("Downloading...");
-                File tempRAW = new File(PladipusFileDownloadingService.downloadFile(input.getAbsolutePath(), tempResources).getAbsolutePath());
-                File tempMGF = new File(tempRAW.getParentFile(), "temp_" + System.currentTimeMillis());
-                System.out.println("Done downloading !");
-                System.out.println("tempRAW = " + tempRAW.getAbsolutePath());
-                System.out.println("tempMGF = " + tempMGF.getAbsolutePath());
+                File input = new File("f");
+                File tempMGF = new File(input.getParentFile(), "temp_" + System.currentTimeMillis());
                 //convert the RAW file
-                MsConvertProcess process = new MsConvertProcess(tempRAW, tempMGF, executable);
-                ProcessingEngine.startProcess(executable, process.generateCommand());
-                File resultFile = tempMGF.listFiles()[0];
+                File real_outputFolder = new File(parameters.get("o"));
+                parameters.put("o", tempResults.getAbsolutePath());
+                constructArguments();
+                File[] resultFiles = tempMGF.listFiles();
 
                 LOGGER.info("Processing complete...Zipping result MGF...");
-                String fileName = resultFile.getName().substring(0, resultFile.getName().indexOf(".")) + ".zip";
-                File zippedOutput = new File(resultFile.getParentFile(), fileName);
-                ZipUtils.zipFile(resultFile, zippedOutput);
-                //deliver the file to the correct location
-                if (!output.getName().toLowerCase().endsWith(".zip")) {
-                    output = new File(output.getAbsolutePath() + ".zip");
+                for (File aResultFile : resultFiles) {
+                    String fileName = aResultFile.getName().substring(0, aResultFile.getName().indexOf(".")) + ".zip";
+                    File zippedOutput = new File(aResultFile.getParentFile(), fileName);
+                    ZipUtils.zipFile(aResultFile, zippedOutput);
+                    //deliver the file to the correct location
+                    File output = new File(real_outputFolder, zippedOutput.getName());
+                    if (!output.getName().toLowerCase().endsWith(".zip")) {
+                        output = new File(output.getAbsolutePath() + ".zip");
+                    }
+                    copyFile(zippedOutput, output);
                 }
-                copyFile(zippedOutput, output);
-                LOGGER.info("DONE");
             }
+            LOGGER.info("DONE");
             success = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            LOGGER.setLevel(level);
+            deleteFolder(tempResults.getParentFile());
             return success;
         }
-    }
-
-    public boolean aVersionExistsLocal() {
-        //TODO insert installer code here in case PWIZ was not installed???
-        return true;
     }
 
     @Override
@@ -115,6 +106,9 @@ public class MsConvertStep extends ProcessingStep {
         }
     }
 
+    
+   
+    
     private boolean deleteFolder(File path) {
         if (path.exists()) {
             File[] files = path.listFiles();

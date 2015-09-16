@@ -25,6 +25,7 @@ public class ProcessingParameterTemplate {
      * The value of the parameter
      */
     private String value;
+    private String description="";
 
     public ProcessingParameterTemplate(String name, String value) {
         this.name = name;
@@ -47,6 +48,14 @@ public class ProcessingParameterTemplate {
         return name;
     }
 
+    public String getDescription(){
+        return description;
+    }
+    
+    public void setDescription(String description){
+        this.description=description;
+    }
+    
     public String getValue() {
         return value;
     }

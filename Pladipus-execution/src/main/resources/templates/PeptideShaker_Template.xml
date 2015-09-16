@@ -1,0 +1,18 @@
+<template run='Example_PeptideShaker' user='pladmin' priority='4'>
+    <steps>
+        <step class="com.compomics.pladipus.search.processsteps.PeptideShakerStep"/> 
+    </steps> 
+    <parameters>
+        <run>
+        </run>
+        <job>
+            <param name ='spectrum_files' default='default' descr='Spectrum files'/>
+            <param name ='id_params' default='default' descr='Identification parameters file (see SearchGUI)'/>
+            <param name ='identification_files' default='default' descr='Search engine identification files' />
+            <param name ='experiment' default='default' descr='The experiment name'/>
+            <param name ='sample' default='default' descr='The sample name'/>
+            <param name ='out' default='default' descr='PeptideShaker output file'/>
+            <param name ='replicate' default='default' descr='The replicate number'/>
+        </job>
+    </parameters>
+</template> 
