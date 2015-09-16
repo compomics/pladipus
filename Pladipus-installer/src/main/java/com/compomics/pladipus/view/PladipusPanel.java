@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 public class PladipusPanel extends javax.swing.JPanel {
 
     /**
-     * Creates a new MySQLPanel.
+     * Creates a new PladipusPanel.
      */
     public PladipusPanel() {
         initComponents();
@@ -129,8 +129,8 @@ public class PladipusPanel extends javax.swing.JPanel {
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
         UserCreationDialog userCreationDialog = new UserCreationDialog(null, true);
-        userCreationDialog.setLocationRelativeTo(this);
-        userCreationDialog.setTitle("New Pladipus user");
+        userCreationDialog.setLocationRelativeTo(null);
+        userCreationDialog.setTitle("New Pladipus User");
         userCreationDialog.setVisible(true);
     }//GEN-LAST:event_btnRegisterActionPerformed
 
