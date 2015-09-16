@@ -16,13 +16,12 @@
             <param name='tide' value='0' descr='A search engine (0 = off, 1 = on)'/>
             <param name='andromeda' value='0' descr='A search engine (0 = off, 1 = on)'/>
             <param name='xtandem' value='1' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='experiment' default='default' descr='The experiment name'/>
         </run>
         <job>
             <param name ='spectrum_files' default='default' descr='The input spectrum files (.mgf)'/>
             <param name ='id_params' default='default' descr = 'The identification parameters'/>     
-            <param name ='experiment' default='default' descr='The experiment name'/>
             <param name ='sample' default='default' descr='The sample name'/>
-            <param name ='out' default='default' descr='PeptideShaker output file'/>
             <param name ='replicate' default='default' descr='The replicate number'/>
         </job>
     </parameters>

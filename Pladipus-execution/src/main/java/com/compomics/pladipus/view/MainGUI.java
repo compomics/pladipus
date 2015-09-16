@@ -3,6 +3,7 @@ package com.compomics.pladipus.view;
 import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.core.model.properties.PladipusProperties;
+import com.compomics.pladipus.util.JobAttacher;
 import com.compomics.pladipus.view.dialogs.LoginDialog;
 import com.compomics.pladipus.view.dialogs.management.ConfigurationDialog;
 import com.compomics.pladipus.view.dialogs.run.RunCreationDialog;
@@ -115,6 +116,7 @@ public class MainGUI extends javax.swing.JFrame {
         miFile = new javax.swing.JMenu();
         miCreateRun = new javax.swing.JMenuItem();
         miImportRun = new javax.swing.JMenuItem();
+        miImportJobs = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         miExit = new javax.swing.JMenuItem();
         miEdit = new javax.swing.JMenu();
@@ -146,6 +148,15 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
         miFile.add(miImportRun);
+
+        miImportJobs.setMnemonic('I');
+        miImportJobs.setText("Import Job(s)...");
+        miImportJobs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miImportJobsActionPerformed(evt);
+            }
+        });
+        miFile.add(miImportJobs);
         miFile.add(jSeparator1);
 
         miExit.setText("Exit");
@@ -217,9 +228,7 @@ public class MainGUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(userPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(userPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -264,6 +273,14 @@ public class MainGUI extends javax.swing.JFrame {
         } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
             JOptionPane.showMessageDialog(this, "An error occurred loading a preset template: " + e.getMessage(), "Template Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
+        } finally {
+            try {
+                userPanel.updateProcessTable();
+                userPanel.updateRunTable();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                //ignore for now...
+            }
         }
     }//GEN-LAST:event_miCreateRunActionPerformed
 
@@ -276,6 +293,10 @@ public class MainGUI extends javax.swing.JFrame {
             Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_helpMenuItemActionPerformed
+
+    private void miImportJobsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportJobsActionPerformed
+        JobAttacher.queryUserForJobs(userPanel);
+    }//GEN-LAST:event_miImportJobsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -321,6 +342,7 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem miExit;
     private javax.swing.JMenu miFile;
     private javax.swing.JMenu miHelp;
+    private javax.swing.JMenuItem miImportJobs;
     private javax.swing.JMenuItem miImportRun;
     private javax.swing.JMenuItem miLaunchAdmin;
     private javax.swing.JMenuItem miPladipusSettings;

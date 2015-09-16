@@ -19,9 +19,8 @@ public class MsConvertSetupStep extends ProcessingStep {
     /**
      * the temp folder for the entire processing
      */
-    private final File         tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/resources");
+    private final File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/resources");
 
-    
     public MsConvertSetupStep() {
 
     }

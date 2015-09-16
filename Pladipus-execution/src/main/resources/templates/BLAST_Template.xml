@@ -1,0 +1,18 @@
+<template run='Example_Blast' user='pladmin' priority='4'>
+    <steps>
+        <step class="com.compomics.pladipus.blast.BlastSetupStep"/> 
+        <step class="com.compomics.pladipus.blast.MakeBlastDbStep"/> 
+        <step class="com.compomics.pladipus.blast.BlastStep"/> 
+    </steps> 
+    <parameters>
+        <run>
+            <param name='db' value ='' descr='The sequence library (fasta)'/>
+            <param name='blastType' value='' descr ='The type of BLAST to be executed (blastN,blastP or blastX)'/>
+            <param name='blastFolder' value ='' descr='The bin folder of the BLAST installation'/>
+        </run>
+        <job>
+            <param name ='query' default='default' descr='A file containing one or more sequences to query'/>
+            <param name ='output' default='default' descr='The result output folder'/>
+        </job>
+    </parameters>
+</template> 

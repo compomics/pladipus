@@ -14,6 +14,7 @@ import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingExcepti
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
+import com.compomics.pladipus.util.JobAttacher;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.awt.event.ActionEvent;
@@ -62,6 +63,7 @@ public class RunPopupMenu extends JPopupMenu {
         this.userPanel = userPanel;
         this.runTable = userPanel.getRunTable();
         this.processTable = userPanel.getProcessTable();
+        addAttachJobsAction();
         addStartAction();
         addCancelAction();
         addDeleteAction();
@@ -81,6 +83,18 @@ public class RunPopupMenu extends JPopupMenu {
                     }
 
                 }
+            }
+        });
+        add(launchAction);
+    }
+
+    private void addAttachJobsAction() {
+        JMenuItem launchAction = new JMenuItem("Attach jobs");
+        launchAction.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+             JobAttacher.queryUserForJobs(userPanel);
             }
         });
         add(launchAction);
@@ -249,5 +263,7 @@ public class RunPopupMenu extends JPopupMenu {
             }
         }.start();
     }
+
+
 
 }

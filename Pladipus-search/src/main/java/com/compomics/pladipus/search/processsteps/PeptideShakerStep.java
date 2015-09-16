@@ -113,11 +113,6 @@ public class PeptideShakerStep extends ProcessingStep {
             }
         }
         FileUtils.deleteDirectory(temp_output_folder);
-        //remove searchGUI input
-        File input = new File(parameters.get("input"));
-        if (input.exists()) {
-            input.delete();
-        }
     }
 
     @Override

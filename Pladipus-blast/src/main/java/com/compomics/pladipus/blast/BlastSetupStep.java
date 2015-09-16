@@ -6,7 +6,6 @@
 package com.compomics.pladipus.blast;
 
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
-import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
@@ -21,15 +20,15 @@ public class BlastSetupStep extends ProcessingStep {
     /**
      * the temp folder for the entire processing
      */
-    private final File tempResources;
+    private final File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/blast");
 
     public BlastSetupStep() {
-        tempResources = new File(System.getProperty("user.home") + "/.compomics/temp");
+        
     }
 
     @Override
     public boolean doAction() throws Exception {
-        //cleanTempFolder();
+        cleanTempFolder();
         initialize();
         return true;
     }
@@ -51,33 +50,11 @@ public class BlastSetupStep extends ProcessingStep {
     }
 
     private void initialize() throws Exception {
-        parameters.put("temp", tempResources.getAbsolutePath());
         //original
-        String queryFasta = parameters.get("queryFasta");
-        String dbFasta = parameters.get("dbFasta");
-
-        //download these to the temp folder
-        parameters.put("tempQueryFasta", PladipusFileDownloadingService.downloadFile(queryFasta, tempResources).getAbsolutePath());
-        parameters.put("tempDbFasta", PladipusFileDownloadingService.downloadFile(dbFasta, tempResources).getAbsolutePath());
-        parameters.put("blastFolder", getExecutable().getAbsolutePath());
-
+        parameters.put("query", PladipusFileDownloadingService.downloadFile(parameters.get("query"), tempResources).getAbsolutePath());
+        parameters.put("db", PladipusFileDownloadingService.downloadFile(parameters.get("db"), tempResources).getAbsolutePath());
     }
 
-    public File getExecutable() throws IOException {
-        //check if this is possible in another way...
-        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools/BLAST");
-        toolFolder.mkdirs();
-        //check if searchGUI already exists?
-        String blastFolderAddress = parameters.get("blastFolder");
-        File BLASTFolder = PladipusFileDownloadingService.downloadFile(blastFolderAddress, toolFolder);
-
-        if (BLASTFolder.getName().endsWith(".zip")) {
-            File temp = new File(toolFolder, BLASTFolder.getName().replace(".zip", ""));
-            ZipUtils.unzipArchive(BLASTFolder, temp);
-            BLASTFolder = temp;
-        }
-        return BLASTFolder;
-    }
 
     @Override
     public String getDescription() {

@@ -62,7 +62,7 @@ public class SearchSetupStep extends ProcessingStep {
         parameters.put("fasta_file", PladipusFileDownloadingService.downloadFile(fastaPath, tempResources, "temp.fasta").getAbsolutePath());
 
         //output
-        File outputFolder = new File(parameters.get("output_folder") + "/" + parameters.get("title"));
+        File outputFolder = new File(parameters.get("output_folder"));
         outputFolder.mkdirs();
         parameters.put("output_folder", outputFolder.getAbsolutePath());
     }

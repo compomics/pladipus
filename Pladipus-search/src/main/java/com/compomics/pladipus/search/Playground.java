@@ -23,11 +23,11 @@ public class Playground {
         parameters.put("spectrum_files", "http://genesis.ugent.be/pladipus/examples/sequence_database_search/mgf/Adult_CD8Tcells_bRP_Elite_77_f23.mgf");
         parameters.put("fasta_file", "http://genesis.ugent.be/pladipus/examples/sequence_database_search/fasta/example_with_decoys.fasta");
         parameters.put("id_params", "http://genesis.ugent.be/pladipus/examples/sequence_database_search/parameters/Adult_CD8Tcells_bRP_Elite_77_f23.par");
-        parameters.put("output_folder","C:/Users/Kenneth/Documents/Output");
+        parameters.put("output_folder","C:/Users/Kenneth/Documents/Output/searches_test");
         //turn off all search engines?
         parameters.put("xtandem", "0");
-        parameters.put("msfg", "0");
-        parameters.put("omssa", "1");
+        parameters.put("msfg", "1");
+        parameters.put("omssa", "0");
         parameters.put("ms_amanda", "0");
         parameters.put("myrimatch", "0");
         parameters.put("comet", "0");
