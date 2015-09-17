@@ -1,0 +1,28 @@
+  <template run='Pladipus_demo' user='pladmin' priority='4'>
+    <steps>
+        <step class="com.compomics.pladipus.search.processsteps.SearchSetupStep"/> 
+        <step class="com.compomics.pladipus.search.processsteps.SearchGUIStep"/> 
+        <step class="com.compomics.pladipus.search.processsteps.PeptideShakerStep"/> 
+    </steps> 
+    <parameters>
+        <run>
+            <param name='fasta_file' value ='http://genesis.ugent.be/pladipus/examples/sequence_database_search/fasta/example_with_decoys.fasta'/>
+            <param name='msfg' value='1' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='omssa' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='ms_amanda' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='myrimatch' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='comet' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='tide' value='1' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='andromeda' value='0' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='xtandem' value='1' descr='A search engine (0 = off, 1 = on)'/>
+            <param name='experiment' default='Pladipus_demo' descr='The experiment name'/>
+        </run>
+        <job>
+            <param name ='spectrum_files' default='default'/>
+            <param name ='id_params' default='default'/>     
+            <param name ='sample' default='default'/>
+            <param name ='replicate' default='default'/>
+            <param name='output_folder' default ='/mnt/pladipus/Pladipus/GENESIS_OUTPUT'/>
+        </job>
+    </parameters>
+</template> 

@@ -6,15 +6,12 @@
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
-import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
+import com.compomics.pladipus.util.RunUploader;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
-import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -41,10 +38,7 @@ public class RunImportDialog extends javax.swing.JDialog {
      * the current user
      */
     private String user;
-    /**
-     * the progressDialog
-     */
-    private ProgressDialogX progressDialog;
+
     /**
      * the parent user panel
      */
@@ -296,68 +290,12 @@ public class RunImportDialog extends javax.swing.JDialog {
         //check the priority
         slPriority.getValue();
         if (processingTemplate != null && allowCreation) {
-            executeUpload(processingTemplate, config);
+            RunUploader.executeUpload(processingTemplate, config, userPanel);
             this.dispose();
         }
 
 
     }//GEN-LAST:event_btnCreateActionPerformed
-
-    private void executeUpload(PladipusProcessingTemplate processingTemplate, File config) {
-        progressDialog = new ProgressDialogX(true);
-        progressDialog.setPrimaryProgressCounterIndeterminate(true);
-        progressDialog.setTitle("Adding jobs to run. Please Wait...");
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    progressDialog.setVisible(true);
-                } catch (IndexOutOfBoundsException e) {
-                    // ignore
-                }
-            }
-        }, "ProgressDialog").start();
-
-        new Thread("SaveThread") {
-            @Override
-            public void run() {
-                try {
-                    XMLTemplateInterpreter xmlInterpreter = XMLTemplateInterpreter.getInstance();
-                    //store in the database
-                    LinkedList<HashMap<String, String>> readLocalProcessingParameters = xmlInterpreter.readLocalProcessingParameters(processingTemplate, config);
-                    RunDAO rInstance = RunDAO.getInstance();
-                    int runID = rInstance.createRun(processingTemplate);
-                    rInstance.addToRun(runID, readLocalProcessingParameters);
-                    progressDialog.setRunFinished();
-                    try {
-                        userPanel.updateRunTable();
-                    } catch (Exception ex) {
-                        progressDialog.setRunFinished();
-                        JOptionPane.showMessageDialog(RunImportDialog.this,
-                                ex.getMessage(),
-                                "Run Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                    try {
-                        userPanel.updateProcessTable();
-                    } catch (Exception ex) {
-                        progressDialog.setRunFinished();
-                        JOptionPane.showMessageDialog(RunImportDialog.this,
-                                ex.getMessage(),
-                                "Run Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    progressDialog.setRunFinished();
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null,
-                            "Could not create run" + System.lineSeparator() + e,
-                            "Run Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }.start();
-    }
 
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
