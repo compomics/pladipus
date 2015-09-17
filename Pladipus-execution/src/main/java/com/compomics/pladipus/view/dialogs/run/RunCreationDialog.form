@@ -523,8 +523,8 @@
                         <Column editable="false" title=" " type="java.lang.Integer"/>
                         <Column editable="true" title="Parameter" type="java.lang.String"/>
                         <Column editable="true" title="Value" type="java.lang.String"/>
-                        <Column editable="true" title="Run*" type="java.lang.Boolean"/>
                         <Column editable="true" title="Description" type="java.lang.String"/>
+                        <Column editable="true" title="Run*" type="java.lang.Boolean"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

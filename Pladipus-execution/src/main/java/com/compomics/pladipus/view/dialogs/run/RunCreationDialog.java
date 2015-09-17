@@ -139,8 +139,8 @@ public class RunCreationDialog extends javax.swing.JDialog {
                                         parameterValue = "";
                                     }
                                     boolean runParameter;
-                                    if (model.getValueAt(i, 3) != null) {
-                                        runParameter = (Boolean) model.getValueAt(i, 3);
+                                    if (model.getValueAt(i, 4) != null) {
+                                        runParameter = (Boolean) model.getValueAt(i, 4);
                                     } else {
                                         runParameter = false;
                                     }
@@ -465,11 +465,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                " ", "Parameter", "Value", "Run*", "Description"
+                " ", "Parameter", "Value", "Description", "Run*"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, true, true, true
@@ -959,7 +959,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 if (parameterDescription.isEmpty()) {
                     parameterDescription = "?";
                 }
-                tbModel.addRow(new Object[]{(tbModel.getRowCount() + 1), aRunParamter.getName(), aRunParamter.getValue(), true, parameterDescription});
+                tbModel.addRow(new Object[]{(tbModel.getRowCount() + 1), aRunParamter.getName(), aRunParamter.getValue(), parameterDescription, true});
             }
             temp.clear();
             temp.putAll(presetTemplate.getJobParameters());
@@ -968,7 +968,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 if (parameterDescription.isEmpty()) {
                     parameterDescription = "?";
                 }
-                tbModel.addRow(new Object[]{(tbModel.getRowCount() + 1), aJobParameter.getName(), aJobParameter.getValue(), true, parameterDescription});
+                tbModel.addRow(new Object[]{(tbModel.getRowCount() + 1), aJobParameter.getName(), aJobParameter.getValue(), parameterDescription, true});
             }
             //also do the prerequisites
             prerequisite = presetTemplate.getMachinePrerequisite();
@@ -1069,7 +1069,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         DefaultTableModel model = (DefaultTableModel) tblParameters.getModel();
         if (model != null) {
             for (int selectedRow : tblParameters.getSelectedRows()) {
-                String parameterName = String.valueOf(model.getValueAt(selectedRow, 0));
+                String parameterName = String.valueOf(model.getValueAt(selectedRow, 1));
                 template.getJobParameters().remove(parameterName);
                 template.getRunParameters().remove(parameterName);
                 model.removeRow(selectedRow);
@@ -1084,7 +1084,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             model = new DefaultTableModel();
             tblParameters.setModel(model);
         }
-        model.addRow(new Object[]{(model.getRowCount() + 1), "", "", true});
+        model.addRow(new Object[]{(model.getRowCount() + 1), "", "", "", true});
     }//GEN-LAST:event_btnAddParameterActionPerformed
 
     private void cbPresetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPresetsActionPerformed
