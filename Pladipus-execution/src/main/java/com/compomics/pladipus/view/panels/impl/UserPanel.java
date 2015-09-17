@@ -203,6 +203,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         });
         tblRunInfo.setGridColor(new java.awt.Color(255, 255, 255));
         tblRunInfo.setOpaque(false);
+        tblRunInfo.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblRunInfo.getTableHeader().setReorderingAllowed(false);
         spnlRun.setViewportView(tblRunInfo);
         tblRunInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -358,6 +359,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         });
         tblProcessInfo.setGridColor(new java.awt.Color(255, 255, 255));
         tblProcessInfo.setOpaque(false);
+        tblProcessInfo.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblProcessInfo.getTableHeader().setReorderingAllowed(false);
         spnlProcess.setViewportView(tblProcessInfo);
         tblProcessInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

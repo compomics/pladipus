@@ -271,8 +271,9 @@ public class MainGUI extends javax.swing.JFrame {
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
         } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this, "An error occurred loading a preset template: " + e.getMessage(), "Template Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
+            //this.dispose();
         } finally {
             try {
                 userPanel.updateProcessTable();

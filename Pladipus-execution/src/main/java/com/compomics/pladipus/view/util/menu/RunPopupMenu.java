@@ -89,7 +89,7 @@ public class RunPopupMenu extends JPopupMenu {
     }
 
     private void addAttachJobsAction() {
-        JMenuItem launchAction = new JMenuItem("Attach jobs");
+        JMenuItem launchAction = new JMenuItem("Attach Jobs");
         launchAction.addActionListener(new ActionListener() {
 
             @Override

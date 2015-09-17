@@ -1,4 +1,4 @@
-package com.compomics.pladipus.search.processsteps;
+package com.compomics.pladipus.denovo.processsteps;
 
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
@@ -9,15 +9,15 @@ import org.apache.commons.io.FileUtils;
  *
  * @author Kenneth Verheggen
  */
-public class SearchSetupStep extends ProcessingStep {
+public class DeNovoGUISetupStep extends ProcessingStep {
 
     /**
      * the temp folder for the entire processing
      */
     private final File tempResources;
 
-    public SearchSetupStep() {
-        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/resources");
+    public DeNovoGUISetupStep() {
+        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/DeNovoGUI/resources");
     }
 
     @Override
@@ -44,7 +44,6 @@ public class SearchSetupStep extends ProcessingStep {
         //original
         String inputPath = parameters.get("spectrum_files");
         String paramPath = parameters.get("id_params");
-        String fastaPath = parameters.get("fasta_file");
 
         if (inputPath.toLowerCase().endsWith(".mgf")) {
             parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
@@ -54,10 +53,8 @@ public class SearchSetupStep extends ProcessingStep {
 
         parameters.put("id_params", PladipusFileDownloadingService.downloadFile(paramPath, tempResources).getAbsolutePath());
 
-        parameters.put("fasta_file", PladipusFileDownloadingService.downloadFile(fastaPath, tempResources, "temp.fasta").getAbsolutePath());
-
         //output
-        File outputFolder = new File(parameters.get("output_folder"));
+        File outputFolder = new File(parameters.get("output_folder") + "/" + parameters.get("title"));
         outputFolder.mkdirs();
         parameters.put("output_folder", outputFolder.getAbsolutePath());
     }

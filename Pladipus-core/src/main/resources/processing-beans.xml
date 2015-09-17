@@ -13,9 +13,9 @@
                                                         
     <!--Denovo Search beans -->
     
-    <bean id="DenovoGUISetupStep" class="com.compomics.pladipus.denovo.processsteps.DenovoGUISetupStep" lazy-init="true"/>    
+    <bean id="DeNovoGUISetupStep" class="com.compomics.pladipus.denovo.processsteps.DeNovoGUISetupStep" lazy-init="true"/>    
 
-    <bean id="DenovoGUIStep" class="com.compomics.pladipus.denovo.processsteps.DenovoGUIStep" lazy-init="true"/>  
+    <bean id="DeNovoGUIStep" class="com.compomics.pladipus.denovo.processsteps.DeNovoGUIStep" lazy-init="true"/>  
            
     <!--Blasting beans-->
     

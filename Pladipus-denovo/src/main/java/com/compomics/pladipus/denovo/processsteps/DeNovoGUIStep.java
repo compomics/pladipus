@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.pladipus.search.processsteps;
+package com.compomics.pladipus.denovo.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
-import com.compomics.pladipus.core.model.enums.AllowedSearchGUIParams;
+import com.compomics.pladipus.core.model.enums.AllowedDenovoGUIParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import java.io.File;
@@ -23,23 +23,23 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth Verheggen
  */
-public class SearchGUIStep extends ProcessingStep {
+public class DeNovoGUIStep extends ProcessingStep {
 
-    private static final Logger LOGGER = Logger.getLogger(SearchGUIStep.class);
-    private static final File temp_searchGUI_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/result");
+    private static final Logger LOGGER = Logger.getLogger(DeNovoGUIStep.class);
+    private static final File temp_deNovoGUI_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/DeNovoGUI/result");
 
-    public SearchGUIStep() {
+    public DeNovoGUIStep() {
 
     }
 
     private List<String> constructArguments() throws IOException {
-        File searchGuiJar = getJar();
+        File deNovoGUIJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
         cmdArgs.add("-cp");
-        cmdArgs.add(searchGuiJar.getAbsolutePath());
-        cmdArgs.add("eu.isas.searchgui.cmd.SearchCLI");
-        for (AllowedSearchGUIParams aParameter : AllowedSearchGUIParams.values()) {
+        cmdArgs.add(deNovoGUIJar.getAbsolutePath());
+        cmdArgs.add("com.compomics.denovogui.cmd.DeNovoCLI");
+        for (AllowedDenovoGUIParams aParameter : AllowedDenovoGUIParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
                 cmdArgs.add(parameters.get(aParameter.getId()));
@@ -54,30 +54,26 @@ public class SearchGUIStep extends ProcessingStep {
     public boolean doAction() throws Exception, Exception {
         LOGGER.info("Running " + this.getClass().getName());
         File parameterFile = new File(parameters.get("id_params"));
-        File fastaFile = new File(parameters.get("fasta_file"));
-        File real_outputFolder = new File(parameters.get("output_folder"));
-        //update the fasta
         LOGGER.info("Updating parameters...");
         SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
-        identificationParameters.setFastaFile(fastaFile);
         //fix the location
         identificationParameters.setParametersFile(parameterFile);
         SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
-
-        if (temp_searchGUI_output.exists()) {
-            temp_searchGUI_output.delete();
+        if (temp_deNovoGUI_output.exists()) {
+            temp_deNovoGUI_output.delete();
         }
-        temp_searchGUI_output.mkdirs();
+        temp_deNovoGUI_output.mkdirs();
 
-        LOGGER.info("Starting SearchGUI...");
-        //use this variable if you'd run peptideshaker following this classs
-        parameters.put("output_folder", temp_searchGUI_output.getAbsolutePath());
+        LOGGER.info("Starting DeNovoGUI...");
+        //use this variable if you'd run following this classs
+        File real_outputFolder = new File(parameters.get("output_folder"));
+        parameters.put("output_folder", temp_deNovoGUI_output.getAbsolutePath());
         ProcessingEngine.startProcess(getJar(), constructArguments());
         //storing intermediate results
         LOGGER.info("Storing results in " + real_outputFolder);
-        FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
+        FileUtils.copyDirectory(temp_deNovoGUI_output, real_outputFolder);
         //in case of future peptideShaker searches : 
-        parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
+        parameters.put("identification_files", temp_deNovoGUI_output.getAbsolutePath());
         return true;
     }
 
@@ -86,23 +82,23 @@ public class SearchGUIStep extends ProcessingStep {
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
-        File temp = new File(toolFolder, "SearchGUI");
+        File temp = new File(toolFolder, "DeNovoGUI");
         if (!temp.exists()) {
-            File searchGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("SearchGUI"), toolFolder);
+            File searchGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("DeNovoGUI"), toolFolder);
             if (searchGUIFile.getName().endsWith(".zip")) {
                 ZipUtils.unzipArchive(searchGUIFile, temp);
             }
         }
-        return JarLookupService.lookupFile("SearchGUI-.*.jar", temp);
+        return JarLookupService.lookupFile("DeNovoGUI-.*.jar", temp);
     }
 
     public boolean aVersionExistsLocal() {
-        //TODO insert installer code here in case searchGUI was not included????
+        //TODO insert installer code here in case DeNovoGUI was not included????
         return true;
     }
 
     @Override
     public String getDescription() {
-        return "Running SearchGUI";
+        return "Running DeNovoGUI";
     }
 }

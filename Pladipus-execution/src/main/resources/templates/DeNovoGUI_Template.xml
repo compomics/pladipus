@@ -1,7 +1,7 @@
 <template run='Example_DenovoGUI' user='pladmin' priority='4'>
     <steps>
-        <step class="com.compomics.pladipus.denovo.processsteps.DenovoGUISetupStep"/> 
-        <step class="com.compomics.pladipus.denovo.processsteps.DenovoGUIStep"/> 
+        <step class="com.compomics.pladipus.denovo.processsteps.DeNovoGUISetupStep"/> 
+        <step class="com.compomics.pladipus.denovo.processsteps.DeNovoGUIStep"/> 
     </steps> 
     <parameters>
         <run>

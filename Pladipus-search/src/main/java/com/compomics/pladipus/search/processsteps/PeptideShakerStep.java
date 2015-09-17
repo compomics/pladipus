@@ -94,7 +94,7 @@ public class PeptideShakerStep extends ProcessingStep {
     }
 
     public boolean aVersionExistsLocal() {
-        //TODO insert installer code here in case searchGUI was not included????
+        //TODO insert installer code here in case PeptideShaker was not included????
         return true;
     }
 
