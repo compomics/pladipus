@@ -296,11 +296,6 @@ public class MainGUI extends javax.swing.JFrame {
             RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
-        } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "An error occurred loading a preset template: " + e.getMessage(), "Template Error", JOptionPane.ERROR_MESSAGE);
-            //this.dispose();
-        } finally {
             try {
                 userPanel.updateProcessTable();
                 userPanel.updateRunTable();
@@ -308,6 +303,10 @@ public class MainGUI extends javax.swing.JFrame {
                 ex.printStackTrace();
                 //ignore for now...
             }
+        } catch (NullPointerException | ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error occurred loading a preset template: " + e.getMessage(), "Template Error", JOptionPane.ERROR_MESSAGE);
+            //this.dispose();
         }
     }//GEN-LAST:event_miCreateRunActionPerformed
 

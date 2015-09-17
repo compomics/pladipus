@@ -149,6 +149,14 @@ public class RunPopupMenu extends JPopupMenu {
                                     "Could not delete the selection: " + ex,
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE);
+                        }finally{
+                            try {
+                                userPanel.updateProcessTable();
+                                userPanel.updateRunTable();
+                            } catch (Exception ex) {
+                              ex.printStackTrace();
+                              //ignore for now?
+                            }
                         }
                     }
 
