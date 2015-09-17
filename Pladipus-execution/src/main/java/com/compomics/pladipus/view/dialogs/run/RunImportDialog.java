@@ -8,7 +8,7 @@ package com.compomics.pladipus.view.dialogs.run;
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
-import com.compomics.pladipus.util.RunUploader;
+import com.compomics.pladipus.util.UploadRunAction;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
 import java.io.File;
 import java.io.IOException;
@@ -290,7 +290,7 @@ public class RunImportDialog extends javax.swing.JDialog {
         //check the priority
         slPriority.getValue();
         if (processingTemplate != null && allowCreation) {
-            RunUploader.executeUpload(processingTemplate, config, userPanel);
+            new UploadRunAction().executeUpload(processingTemplate, config, userPanel);
             this.dispose();
         }
 

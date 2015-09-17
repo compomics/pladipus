@@ -14,7 +14,7 @@ import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingExcepti
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
-import com.compomics.pladipus.util.JobAttacher;
+import com.compomics.pladipus.util.AttachJobAction;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.awt.event.ActionEvent;
@@ -94,7 +94,7 @@ public class RunPopupMenu extends JPopupMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-             JobAttacher.queryUserForJobs(userPanel);
+            new AttachJobAction().queryUserForJobs(userPanel);
             }
         });
         add(launchAction);

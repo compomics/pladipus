@@ -5,6 +5,7 @@ import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
+import com.compomics.pladipus.util.OpenExampleAction;
 import com.compomics.pladipus.view.dialogs.run.ProcessCreationDialog;
 import com.compomics.pladipus.view.dialogs.run.RunCreationDialog;
 import com.compomics.pladipus.view.panels.UpdatingPanel;
@@ -477,7 +478,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
 
     private void showCreateNewRunDialog() {
         try {
-            RunCreationDialog dialog = new RunCreationDialog(null, userName,this, true);
+            RunCreationDialog dialog = new RunCreationDialog(null, userName, this, true);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
             PladipusProcessingTemplate processingTemplate = dialog.getProcessingTemplate();
@@ -560,7 +561,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     }//GEN-LAST:event_openExampleLabelMouseExited
 
     private void openExampleLabelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openExampleLabelMouseReleased
-        // TODO add your handling code here:
+        new OpenExampleAction().openExample(userName, this);
     }//GEN-LAST:event_openExampleLabelMouseReleased
 
     private void checkCurrentPageChange() {
