@@ -69,7 +69,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="miClearPreferences">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Clear all preferences"/>
+                <Property name="text" type="java.lang.String" value="Clear All Preferences"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miClearPreferencesActionPerformed"/>
@@ -121,7 +121,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miSetCores">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Set minimal cores (1)"/>
+                <Property name="text" type="java.lang.String" value="Set Minimal Cores (1)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miSetCoresActionPerformed"/>
@@ -129,7 +129,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miSetMemory">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Set minimal RAM (0 GB)"/>
+                <Property name="text" type="java.lang.String" value="Set Minimal RAM (0 GB)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miSetMemoryActionPerformed"/>
@@ -137,7 +137,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miSetDiskSpace">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Set minimal disk  (0 GB)"/>
+                <Property name="text" type="java.lang.String" value="Set Minimal Disk (0 GB)"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="miSetDiskSpaceActionPerformed"/>

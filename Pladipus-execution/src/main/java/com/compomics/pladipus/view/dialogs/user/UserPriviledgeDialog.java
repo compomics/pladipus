@@ -24,7 +24,6 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
      */
     public UserPriviledgeDialog(java.awt.Frame parent, boolean modal) throws SQLException {
         super(parent, modal);
-        setLocationRelativeTo(parent);
         // try to set the look and feel
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -39,6 +38,7 @@ public class UserPriviledgeDialog extends javax.swing.JDialog {
         initComponents();
         cbUserRoles.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
         initComboBox();
+        setLocationRelativeTo(parent);
     }
 
     private void initComboBox() throws SQLException {

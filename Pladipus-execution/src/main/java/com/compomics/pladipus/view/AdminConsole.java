@@ -11,6 +11,7 @@ import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.compomics.pladipus.view.dialogs.user.UserCreationDialog;
 import com.compomics.pladipus.view.dialogs.user.UserPriviledgeDialog;
 import com.compomics.util.gui.renderers.AlignedListCellRenderer;
+import com.sun.glass.events.KeyEvent;
 import com.sun.mail.iap.ConnectionException;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -225,6 +226,11 @@ public class AdminConsole extends javax.swing.JFrame {
         jLabel1.setText("Username");
 
         tfUserName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tfUserName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfUserNameKeyReleased(evt);
+            }
+        });
 
         btnGetUserRuns.setText("Get Runs");
         btnGetUserRuns.addActionListener(new java.awt.event.ActionListener() {
@@ -404,6 +410,12 @@ public class AdminConsole extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnBroadcastActionPerformed
+
+    private void tfUserNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfUserNameKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            btnGetUserRunsActionPerformed(null);
+        }
+    }//GEN-LAST:event_tfUserNameKeyReleased
 
     /**
      * @param args the command line arguments

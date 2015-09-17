@@ -49,7 +49,7 @@ public class UserTableListSelectionListener implements ListSelectionListener {
 
         progressDialog = new ProgressDialogX(true);
         progressDialog.setPrimaryProgressCounterIndeterminate(true);
-        progressDialog.setTitle("Retrieving process information. Please Wait...");
+        progressDialog.setTitle("Retrieving Process Information. Please Wait...");
 
         new Thread(new Runnable() {
             public void run() {
@@ -79,7 +79,5 @@ public class UserTableListSelectionListener implements ListSelectionListener {
                 }
             }
         }.start();
-
     }
-
 }

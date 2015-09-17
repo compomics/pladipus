@@ -637,7 +637,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
         miPreferences.setText("Preferences");
 
-        miClearPreferences.setText("Clear all preferences");
+        miClearPreferences.setText("Clear All Preferences");
         miClearPreferences.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miClearPreferencesActionPerformed(evt);
@@ -687,7 +687,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         miPreferences.add(rdbNoOs);
         miPreferences.add(jSeparator2);
 
-        miSetCores.setText("Set minimal cores (1)");
+        miSetCores.setText("Set Minimal Cores (1)");
         miSetCores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miSetCoresActionPerformed(evt);
@@ -695,7 +695,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         });
         miPreferences.add(miSetCores);
 
-        miSetMemory.setText("Set minimal RAM (0 GB)");
+        miSetMemory.setText("Set Minimal RAM (0 GB)");
         miSetMemory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miSetMemoryActionPerformed(evt);
@@ -703,7 +703,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         });
         miPreferences.add(miSetMemory);
 
-        miSetDiskSpace.setText("Set minimal disk  (0 GB)");
+        miSetDiskSpace.setText("Set Minimal Disk (0 GB)");
         miSetDiskSpace.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miSetDiskSpaceActionPerformed(evt);
@@ -748,57 +748,75 @@ public class RunCreationDialog extends javax.swing.JDialog {
     }
 
     private void btnCreateRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateRunActionPerformed
-        //save the XML to a file = start a filechooser?
-        fileChooser.setCurrentDirectory(lastSelectedFolder);
-        fileChooser.setDialogTitle("Specify output file");
 
-        int userSelection = fileChooser.showSaveDialog(this);
+        // check that there is at least one job parameter
+        boolean jobParameterFound = false;
 
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            if (!fileToSave.getName().endsWith(".xml")) {
-                fileToSave = new File(fileToSave.getAbsolutePath() + ".xml");
-            }
-            lastSelectedFolder = fileToSave.getParentFile();
-            if (fileToSave.exists()) {
-                int dialogResult = JOptionPane.showConfirmDialog(this, fileToSave.getName() + " already exists, do you want to overwrite the file?");
-                if (dialogResult != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-            try (FileWriter xmlOut = new FileWriter(fileToSave);
-                    FileWriter tsvOut = new FileWriter(new File(fileToSave.getAbsolutePath() + ".tsv"))) {
-                //save the template
-                xmlOut.append(template.toXML().replace(">", ">" + System.lineSeparator())).flush();
-                if (template.getAllProcessingParameters().size() > 0) {
-                    //save the parameter configuration tsv file
-                    StringBuilder headers = new StringBuilder();
-                    for (String aHeader : template.getJobParameters().keySet()) {
-                        headers.append(aHeader).append("\t");
-                    }
-                    //remove the last tab
-                    headers.setLength(headers.length() - 1);
-                    headers.append(System.lineSeparator());
-                    tsvOut.append(headers).flush();
-                }
-                this.setVisible(false);
-                confirmed = true;
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this,
-                        "An error occurred during exporting: " + ex.getMessage(),
-                        "Export error",
-                        JOptionPane.ERROR_MESSAGE);
+        for (int i = 0; i < tblParameters.getRowCount() && !jobParameterFound; i++) {
+            if (((Boolean) tblParameters.getValueAt(i, 4))) {
+                jobParameterFound = true;
             }
         }
-        if (confirmed) {
-            RunDAO rInstance = RunDAO.getInstance();
-            try {
-                int runID = rInstance.createRun(template);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this,
-                        "An error occurred during run storage in database: " + ex.getMessage(),
-                        "Database Error",
-                        JOptionPane.ERROR_MESSAGE);
+
+        if (!jobParameterFound) {
+            JOptionPane.showMessageDialog(this,
+                    "You need to have at least one Job specific parameter.",
+                    "Input Warning",
+                    JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            //save the XML to a file = start a filechooser?
+            fileChooser.setCurrentDirectory(lastSelectedFolder);
+            fileChooser.setDialogTitle("Specify Output File");
+
+            int userSelection = fileChooser.showSaveDialog(this);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                if (!fileToSave.getName().endsWith(".xml")) {
+                    fileToSave = new File(fileToSave.getAbsolutePath() + ".xml");
+                }
+                lastSelectedFolder = fileToSave.getParentFile();
+                if (fileToSave.exists()) {
+                    int dialogResult = JOptionPane.showConfirmDialog(this, fileToSave.getName() + " already exists, do you want to overwrite the file?");
+                    if (dialogResult != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                }
+                try (FileWriter xmlOut = new FileWriter(fileToSave);
+                        FileWriter tsvOut = new FileWriter(new File(fileToSave.getAbsolutePath() + ".tsv"))) {
+                    //save the template
+                    xmlOut.append(template.toXML().replace(">", ">" + System.lineSeparator())).flush();
+                    if (template.getAllProcessingParameters().size() > 0) {
+                        //save the parameter configuration tsv file
+                        StringBuilder headers = new StringBuilder();
+                        for (String aHeader : template.getJobParameters().keySet()) {
+                            headers.append(aHeader).append("\t");
+                        }
+                        //remove the last tab
+                        headers.setLength(headers.length() - 1);
+                        headers.append(System.lineSeparator());
+                        tsvOut.append(headers).flush();
+                    }
+                    this.setVisible(false);
+                    confirmed = true;
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "An error occurred during exporting: " + ex.getMessage(),
+                            "Export Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            if (confirmed) {
+                RunDAO rInstance = RunDAO.getInstance();
+                try {
+                    int runID = rInstance.createRun(template);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this,
+                            "An error occurred during run storage in database: " + ex.getMessage(),
+                            "Database Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }//GEN-LAST:event_btnCreateRunActionPerformed
@@ -867,11 +885,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
             prerequisite.removePrerequisite(PrerequisiteParameter.CORES);
             prerequisite.addPrerequisite(PrerequisiteParameter.CORES, message);
             if (cores == -1) {
-                miSetCores.setText("Set minimal cores");
+                miSetCores.setText("Set Minimal Cores");
             }
-            miSetCores.setText("Set minimal cores (" + cores + ")");
+            miSetCores.setText("Set Minimal Cores (" + cores + ")");
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid number", "Invalid input", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please insert a valid number", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
         refreshPreview();
     }//GEN-LAST:event_miSetCoresActionPerformed
@@ -883,11 +901,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
             prerequisite.removePrerequisite(PrerequisiteParameter.MEMORY);
             prerequisite.addPrerequisite(PrerequisiteParameter.MEMORY, String.valueOf(RAM));
             if (RAM == -1) {
-                miSetMemory.setText("Set minimal RAM");
+                miSetMemory.setText("Set Minimal RAM");
             }
-            miSetMemory.setText("Set minimal RAM (" + message + " GB)");
+            miSetMemory.setText("Set Minimal RAM (" + message + " GB)");
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid number", "Invalid input", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please insert a valid number", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
         refreshPreview();
     }//GEN-LAST:event_miSetMemoryActionPerformed
@@ -899,11 +917,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
             prerequisite.removePrerequisite(PrerequisiteParameter.DISKSPACE);
             prerequisite.addPrerequisite(PrerequisiteParameter.DISKSPACE, String.valueOf(diskSpace));
             if (diskSpace == -1) {
-                miSetDiskSpace.setText("Set minimal disk");
+                miSetDiskSpace.setText("Set Minimal Disk");
             }
-            miSetDiskSpace.setText("Set minimal disk (" + message + " GB)");
+            miSetDiskSpace.setText("Set Minimal Disk (" + message + " GB)");
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please insert a valid number", "Invalid input", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please insert a valid number", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
         refreshPreview();
     }//GEN-LAST:event_miSetDiskSpaceActionPerformed
@@ -912,9 +930,9 @@ public class RunCreationDialog extends javax.swing.JDialog {
         for (PrerequisiteParameter aParamter : PrerequisiteParameter.values()) {
             prerequisite.removePrerequisite(aParamter);
         }
-        miSetDiskSpace.setText("Set minimal disk");
-        miSetMemory.setText("Set minimal RAM");
-        miSetCores.setText("Set minimal cores");
+        miSetDiskSpace.setText("Set Minimal Disk");
+        miSetMemory.setText("Set Minimal RAM");
+        miSetCores.setText("Set Minimal Cores");
         refreshPreview();
     }//GEN-LAST:event_miClearPreferencesActionPerformed
 
@@ -1144,17 +1162,17 @@ public class RunCreationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cbStepsActionPerformed
 
     private void liStepsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_liStepsMouseReleased
-        
+
         int row = liSteps.locationToIndex(evt.getPoint());
-        
+
         if (row != -1) {
             liSteps.setSelectedIndex(row);
         }
-        
+
         moveUpMenuItem.setEnabled(row > 0);
         moveDownMenuItem.setEnabled(row < liSteps.getModel().getSize() - 1);
         removeMenuItem.setEnabled(row != -1);
-        
+
         stepsPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
     }//GEN-LAST:event_liStepsMouseReleased
 

@@ -31,12 +31,13 @@ import org.xml.sax.SAXException;
  * @author Kenneth
  */
 public class JobAttacher {
+
     private static ProgressDialogX progressDialog;
 
     public static void queryUserForJobs(UserPanel userPanel) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Job configuration", "tsv"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Job Configuration File (.tsv)", "tsv"));
         int result = fileChooser.showOpenDialog(userPanel);
         if (result == JFileChooser.APPROVE_OPTION) {
             File jobConfigFile = fileChooser.getSelectedFile();
@@ -45,24 +46,23 @@ public class JobAttacher {
             if (selectedRows.length == 1) {
                 try {
                     PladipusProcessingTemplate templateForRun = RunService.getInstance().getTemplateForRun(Integer.parseInt(String.valueOf(userPanel.getRunTable().getValueAt(selectedRows[0], 1))));
-                    executeUpload(userPanel,templateForRun, jobConfigFile);
+                    executeUpload(userPanel, templateForRun, jobConfigFile);
                 } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
                     Logger.getLogger(RunPopupMenu.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 JOptionPane.showMessageDialog(userPanel,
-                        "Please select a single run to attach jobs to",
-                        "Multiple selection of runs not allowed",
+                        "Multiple selection of runs not allowed. Please select a single run to attach jobs to",
+                        "Job Error",
                         JOptionPane.WARNING_MESSAGE);
             }
         }
     }
 
-    
-        private static void executeUpload(UserPanel userPanel,PladipusProcessingTemplate processingTemplate, File config) {
+    private static void executeUpload(UserPanel userPanel, PladipusProcessingTemplate processingTemplate, File config) {
         progressDialog = new ProgressDialogX(true);
         progressDialog.setPrimaryProgressCounterIndeterminate(true);
-        progressDialog.setTitle("Adding jobs to run. Please Wait...");
+        progressDialog.setTitle("Adding Jobs to Run. Please Wait...");
 
         new Thread(new Runnable() {
             public void run() {
@@ -89,7 +89,7 @@ public class JobAttacher {
                         userPanel.updateRunTable();
                     } catch (Exception ex) {
                         progressDialog.setRunFinished();
-                            JOptionPane.showMessageDialog(userPanel,
+                        JOptionPane.showMessageDialog(userPanel,
                                 ex.getMessage(),
                                 "Run Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -114,5 +114,4 @@ public class JobAttacher {
             }
         }.start();
     }
-    
 }

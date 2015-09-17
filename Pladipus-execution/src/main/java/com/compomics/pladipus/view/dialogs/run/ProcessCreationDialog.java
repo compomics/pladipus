@@ -59,7 +59,6 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
                     }
                     tblParameters.editCellAt(row, 1);
                     tblParameters.requestFocusInWindow();
-
                 }
             }
         });
@@ -79,6 +78,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
         parametersPanel = new javax.swing.JPanel();
         spnlParameters = new javax.swing.JScrollPane();
         tblParameters = new javax.swing.JTable();
+        cancelButton = new javax.swing.JButton();
         mnBar = new javax.swing.JMenuBar();
         miFile = new javax.swing.JMenu();
         miImport = new javax.swing.JMenuItem();
@@ -129,7 +129,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
             parametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parametersPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlParameters)
+                .addComponent(spnlParameters, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
                 .addContainerGap())
         );
         parametersPanelLayout.setVerticalGroup(
@@ -140,6 +140,13 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
@@ -147,19 +154,26 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(parametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                        .addGap(0, 551, Short.MAX_VALUE)
-                        .addComponent(btnCreate))
-                    .addComponent(parametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCreate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton)))
                 .addContainerGap())
         );
+
+        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCreate, cancelButton});
+
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(parametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCreate)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCreate)
+                    .addComponent(cancelButton))
                 .addContainerGap())
         );
 
@@ -221,6 +235,10 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_miExitActionPerformed
 
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
     private HashMap<String, String> readParametersFromTable() {
         HashMap<String, String> parameterMap = new HashMap<>();
         DefaultTableModel model = (DefaultTableModel) tblParameters.getModel();
@@ -233,6 +251,7 @@ public class ProcessCreationDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreate;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JMenuItem miExit;
     private javax.swing.JMenu miFile;
     private javax.swing.JMenuItem miImport;

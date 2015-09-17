@@ -32,6 +32,7 @@ public class UserCreationDialog extends javax.swing.JDialog {
         }
 
         initComponents();
+        setLocationRelativeTo(parent);
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
     }
 
@@ -58,6 +59,7 @@ public class UserCreationDialog extends javax.swing.JDialog {
         tfEmail = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("New User");
 
         pnlMain.setBackground(new java.awt.Color(230, 230, 230));
 
