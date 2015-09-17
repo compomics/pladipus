@@ -159,6 +159,8 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         spnlRun = new javax.swing.JScrollPane();
         tblRunInfo = new javax.swing.JTable();
         btnNewRun = new javax.swing.JButton();
+        runHelpLabel = new javax.swing.JLabel();
+        openExampleLabel = new javax.swing.JLabel();
         pnlPagination = new javax.swing.JPanel();
         pnlPaginationInput = new javax.swing.JPanel();
         tfCurrentPage = new javax.swing.JTextField();
@@ -169,6 +171,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         spnlProcess = new javax.swing.JScrollPane();
         tblProcessInfo = new javax.swing.JTable();
         btnAddProcess = new javax.swing.JButton();
+        processHelpLabel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -227,16 +230,40 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
         });
 
+        runHelpLabel.setFont(runHelpLabel.getFont().deriveFont((runHelpLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        runHelpLabel.setText("Right click in the table to edit a Run.");
+
+        openExampleLabel.setText("<html>\n<a href=\"\">Open Example Run</a>\n</html>");
+        openExampleLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                openExampleLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                openExampleLabelMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                openExampleLabelMouseReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlRunLayout = new javax.swing.GroupLayout(pnlRun);
         pnlRun.setLayout(pnlRunLayout);
         pnlRunLayout.setHorizontalGroup(
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRunLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlRun)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNewRun)
-                .addContainerGap())
+                .addGroup(pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlRunLayout.createSequentialGroup()
+                        .addComponent(spnlRun)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnNewRun)
+                        .addContainerGap())
+                    .addGroup(pnlRunLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(runHelpLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(openExampleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71))))
         );
         pnlRunLayout.setVerticalGroup(
             pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,10 +272,13 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 .addGroup(pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlRunLayout.createSequentialGroup()
                         .addComponent(btnNewRun)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pnlRunLayout.createSequentialGroup()
-                        .addComponent(spnlRun, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-                        .addGap(15, 15, 15))))
+                        .addGap(0, 240, Short.MAX_VALUE))
+                    .addComponent(spnlRun, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlRunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(runHelpLabel)
+                    .addComponent(openExampleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pnlPagination.setBackground(new java.awt.Color(255, 255, 255));
@@ -383,16 +413,25 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             }
         });
 
+        processHelpLabel.setFont(processHelpLabel.getFont().deriveFont((processHelpLabel.getFont().getStyle() | java.awt.Font.ITALIC)));
+        processHelpLabel.setText("Right click in the table to edit a Process.");
+
         javax.swing.GroupLayout pnlProcessLayout = new javax.swing.GroupLayout(pnlProcess);
         pnlProcess.setLayout(pnlProcessLayout);
         pnlProcessLayout.setHorizontalGroup(
             pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlProcessLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAddProcess)
-                .addContainerGap())
+                .addGroup(pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlProcessLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(processHelpLabel)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlProcessLayout.createSequentialGroup()
+                        .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 717, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddProcess)
+                        .addContainerGap())))
         );
         pnlProcessLayout.setVerticalGroup(
             pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -401,8 +440,10 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 .addGroup(pnlProcessLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlProcessLayout.createSequentialGroup()
                         .addComponent(btnAddProcess)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(spnlProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
+                        .addGap(0, 240, Short.MAX_VALUE))
+                    .addComponent(spnlProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(processHelpLabel)
                 .addContainerGap())
         );
 
@@ -510,6 +551,18 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         checkCurrentPageChange();
     }//GEN-LAST:event_tfCurrentPageActionPerformed
 
+    private void openExampleLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openExampleLabelMouseEntered
+        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_openExampleLabelMouseEntered
+
+    private void openExampleLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openExampleLabelMouseExited
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_openExampleLabelMouseExited
+
+    private void openExampleLabelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openExampleLabelMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_openExampleLabelMouseReleased
+
     private void checkCurrentPageChange() {
         try {
             int parseInt = Integer.parseInt(tfCurrentPage.getText());
@@ -542,10 +595,13 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
     private javax.swing.JButton btnNextPage;
     private javax.swing.JButton btnPrevPage;
     private javax.swing.JLabel lbPages;
+    private javax.swing.JLabel openExampleLabel;
     private javax.swing.JPanel pnlPagination;
     private javax.swing.JPanel pnlPaginationInput;
     private javax.swing.JPanel pnlProcess;
     private javax.swing.JPanel pnlRun;
+    private javax.swing.JLabel processHelpLabel;
+    private javax.swing.JLabel runHelpLabel;
     private javax.swing.JScrollPane spnlProcess;
     private javax.swing.JScrollPane spnlRun;
     private javax.swing.JTable tblProcessInfo;
