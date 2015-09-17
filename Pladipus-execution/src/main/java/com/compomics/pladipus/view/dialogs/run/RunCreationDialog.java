@@ -13,6 +13,7 @@ import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.processing.templates.ProcessingParameterTemplate;
+import com.compomics.pladipus.view.panels.impl.UserPanel;
 import com.compomics.pladipus.view.util.renderer.xmlEditorKit.XMLEditorKit;
 import com.compomics.util.gui.renderers.AlignedListCellRenderer;
 import java.awt.Toolkit;
@@ -81,6 +82,10 @@ public class RunCreationDialog extends javax.swing.JDialog {
      */
     private boolean confirmed;
     /**
+     * the active userPanel
+     */
+    private UserPanel userPanel;
+    /**
      * the cached preset templates (XML format)
      */
     private LinkedHashMap<String, File> presets;
@@ -89,10 +94,11 @@ public class RunCreationDialog extends javax.swing.JDialog {
     /**
      * Creates new form RunCreationDialog
      */
-    public RunCreationDialog(java.awt.Frame parent, String user, boolean modal) throws ParserConfigurationException, IOException, SAXException {
+    public RunCreationDialog(java.awt.Frame parent, String user, UserPanel userPanel, boolean modal
+    ) throws ParserConfigurationException, IOException, SAXException {
         super(parent, modal);
         initComponents();
-
+        this.userPanel = userPanel;
         this.user = user;
         this.setTitle("Run Creation Wizard");
 
@@ -811,6 +817,13 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 RunDAO rInstance = RunDAO.getInstance();
                 try {
                     int runID = rInstance.createRun(template);
+                    try {
+                        userPanel.updateRunTable();
+                        userPanel.updateProcessTable();
+                    } catch (Exception e) {
+                        //ignore for now;
+                        e.printStackTrace();
+                    }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(this,
                             "An error occurred during run storage in database: " + ex.getMessage(),
@@ -1298,7 +1311,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
                 try {
                     RunCreationDialog dialog;
-                    dialog = new RunCreationDialog(new javax.swing.JFrame(), "pladmin", true);
+                    dialog = new RunCreationDialog(new javax.swing.JFrame(), "pladmin",new UserPanel(), true);
                     dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {
