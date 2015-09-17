@@ -138,8 +138,8 @@ public class RunPopupMenu extends JPopupMenu {
                             userPanel.activate();
                             //update the table
                             DefaultTableModel model = (DefaultTableModel) runTable.getModel();
-                            for (int i = selectedRows.length - 1; i > 0; i--) {
-                                model.removeRow(selectedRows[i]);
+                            for (int i = selectedRows.length ; i > 0; i--) {
+                                model.removeRow(selectedRows[i-1]);
                             }
                             runTable.setModel(model);
                             DefaultTableModel processModel = (DefaultTableModel) processTable.getModel();

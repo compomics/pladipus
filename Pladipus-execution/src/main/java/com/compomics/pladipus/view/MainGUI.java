@@ -293,7 +293,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void miCreateRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miCreateRunActionPerformed
         try {
-            RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser, true);
+            RunCreationDialog dialog = new RunCreationDialog(this, loggedInUser,userPanel, true);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
             try {
