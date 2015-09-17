@@ -175,7 +175,7 @@ public class MainGUI extends javax.swing.JFrame {
         miFile.add(miImportJobs);
         miFile.add(jSeparator1);
 
-        exampleMenuItem.setMnemonic('O');
+        exampleMenuItem.setMnemonic('E');
         exampleMenuItem.setText("Open Example...");
         exampleMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -327,12 +327,11 @@ public class MainGUI extends javax.swing.JFrame {
     private void exampleMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exampleMenuItemActionPerformed
         try {
             //Custom button text
-            Object[] options = {"Run distributed",
-                "Run locally",};
+            Object[] options = {"Run Distributed",
+                "Run Locally",};
             int n = JOptionPane.showOptionDialog(this,
-                    "This option will load an example run."
-                    + "A result folder needs to be specified. " + System.lineSeparator()
-                    + "It is crucial that this folder is correct and can be reached the entire network!",
+                    "This option will load an example Run. A result folder needs to be specified. " + System.lineSeparator()
+                    + "It is crucial that this folder is correct and can be reached by the entire network!",
                     "Open Example",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -344,7 +343,7 @@ public class MainGUI extends javax.swing.JFrame {
                 //load the template from the user_file to set the output folders?
                 PladipusProcessingTemplate template = getTemplateFromResource();
                 template.setUser(loggedInUser);
-                template.setName("Example Run(" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp(System.currentTimeMillis())) + ")");
+                template.setName("Example Run (" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp(System.currentTimeMillis())) + ")");
                 if (n == 1) {
                     JFileChooser fc = new JFileChooser();
                     fc.setMultiSelectionEnabled(false);
@@ -358,13 +357,13 @@ public class MainGUI extends javax.swing.JFrame {
                         return;
                     }
                 } else {
-                    newOutputParentPath = JOptionPane.showInputDialog(this, "Please provide the (network) path that can be seen from all workers");
+                    newOutputParentPath = JOptionPane.showInputDialog(this, "Please provide the (network) path that can be reached from all workers.");
                 }
                 if (newOutputParentPath != null && !newOutputParentPath.isEmpty()) {
                     File newConfig = overrideOutputFolder(newOutputParentPath);
                     RunUploader.executeUpload(template, newConfig, userPanel);
                     JOptionPane.showMessageDialog(this,
-                            "The run was succesfully posted. To start the run, select the run in the upper panel, right click and \"start run\"",
+                            "The Run was succesfully posted. To start the Run, select the Run in the upper panel, right click and \"Start Run\"",
                             "Run Created", JOptionPane.INFORMATION_MESSAGE);
                 }
             }

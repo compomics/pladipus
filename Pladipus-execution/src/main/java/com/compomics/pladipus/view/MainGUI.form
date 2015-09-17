@@ -41,7 +41,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exampleMenuItem">
               <Properties>
-                <Property name="mnemonic" type="int" value="79"/>
+                <Property name="mnemonic" type="int" value="69"/>
                 <Property name="text" type="java.lang.String" value="Open Example..."/>
               </Properties>
               <Events>
