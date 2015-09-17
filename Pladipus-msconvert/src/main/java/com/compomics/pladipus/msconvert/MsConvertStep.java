@@ -6,7 +6,6 @@
 package com.compomics.pladipus.msconvert;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
-import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedMsConvertParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
@@ -27,6 +26,7 @@ public class MsConvertStep extends ProcessingStep {
     private static final Logger LOGGER = Logger.getLogger(MsConvertStep.class);
     private final File tempResults = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/results");
     private File executable;
+    private File real_outputFolder;
 
     public MsConvertStep() {
 
@@ -37,7 +37,7 @@ public class MsConvertStep extends ProcessingStep {
         executable = new File(parameters.get("pwiz_folder") + "/msconvert");
         cmdArgs.add(parameters.get("pwiz_folder") + "/msconvert");
         for (AllowedMsConvertParams aParameter : AllowedMsConvertParams.values()) {
-            if (parameters.containsKey(aParameter.getId())) {
+                if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
                 String value = parameters.get(aParameter.getId());
                 if (!value.isEmpty()) {
@@ -47,47 +47,52 @@ public class MsConvertStep extends ProcessingStep {
                 throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
             }
         }
+        //cs filters?
+        if(parameters.containsKey("-filter")){
+            String[] filters = parameters.get("-filter").split(";");
+            for(String aFilter:filters){
+                cmdArgs.add("--filter");
+                cmdArgs.add('"'+aFilter+'"');
+            }
+        }    
         return cmdArgs;
+    }
+
+    public void setOutputFolder(File outputFolder) {
+        this.real_outputFolder = outputFolder;
     }
 
     @Override
     public boolean doAction() throws Exception {
         System.out.println("Running " + this.getClass().getName());
         boolean success = false;
+        if (real_outputFolder == null) {
+            real_outputFolder = new File(parameters.get("o"));
+        }
         try {
             if (checkOS()) {
-                File input = new File("f");
-                File tempMGF = new File(input.getParentFile(), "temp_" + System.currentTimeMillis());
                 //convert the RAW file
-                File real_outputFolder = new File(parameters.get("o"));
                 parameters.put("o", tempResults.getAbsolutePath());
                 constructArguments();
 
                 ProcessingEngine.startProcess(executable, constructArguments());
 
-                File[] resultFiles = tempMGF.listFiles();
+                File[] resultFiles = tempResults.listFiles();
 
                 for (File aResultFile : resultFiles) {
-                    String fileName = aResultFile.getName().substring(0, aResultFile.getName().indexOf(".")) + ".zip";
-                    File zippedOutput = new File(aResultFile.getParentFile(), fileName);
-                    ZipUtils.zipFile(aResultFile, zippedOutput);
                     //deliver the file to the correct location
-                    File output = new File(real_outputFolder, zippedOutput.getName());
-                    if (!output.getName().toLowerCase().endsWith(".zip")) {
-                        output = new File(output.getAbsolutePath() + ".zip");
-                    }
-                    copyFile(zippedOutput, output);
+                    File output = new File(real_outputFolder, aResultFile.getName());
+                    copyFile(aResultFile, output);
                 }
             }
+            deleteFolder(tempResults);
             LOGGER.info("DONE");
             success = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
-        } finally {
-            deleteFolder(tempResults.getParentFile());
-            return success;
         }
+        return success;
     }
 
     @Override
