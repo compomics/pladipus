@@ -759,7 +759,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         boolean jobParameterFound = false;
 
         for (int i = 0; i < tblParameters.getRowCount() && !jobParameterFound; i++) {
-            if (((Boolean) tblParameters.getValueAt(i, 4))) {
+            if (!((Boolean) tblParameters.getValueAt(i, 4))) {
                 jobParameterFound = true;
             }
         }
@@ -999,7 +999,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 if (parameterDescription.isEmpty()) {
                     parameterDescription = "?";
                 }
-                tbModel.addRow(new Object[]{(tbModel.getRowCount() + 1), aJobParameter.getName(), aJobParameter.getValue(), parameterDescription, true});
+                tbModel.addRow(new Object[]{(tbModel.getRowCount() + 1), aJobParameter.getName(), aJobParameter.getValue(), parameterDescription, false});
             }
             //also do the prerequisites
             prerequisite = presetTemplate.getMachinePrerequisite();
