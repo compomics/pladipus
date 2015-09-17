@@ -124,4 +124,50 @@ public class ZipUtils {
 
     }
 
+    /**
+     * Zips an entire folder in one go
+     *
+     * @param input the original folder
+     * @param output the destination zip file
+     */
+    static public void zipFolder(File inputFolder, File zipFile) throws Exception {
+        if (zipFile.exists()) {
+            zipFile.delete();
+        }
+        zipFile.getParentFile().mkdirs();
+        zipFile.createNewFile();
+        try (FileOutputStream fileWriter = new FileOutputStream(zipFile); ZipOutputStream zip = new ZipOutputStream(fileWriter)) {
+            addFolderToZip("", inputFolder.getAbsolutePath(), zip);
+            zip.flush();
+        }
+    }
+
+    static private void addFileToZip(String path, String srcFile, ZipOutputStream zip)
+            throws Exception {
+        File folder = new File(srcFile);
+        if (folder.isDirectory()) {
+            addFolderToZip(path, srcFile, zip);
+        } else {
+            byte[] buf = new byte[1024];
+            int len;
+            FileInputStream in = new FileInputStream(srcFile);
+            zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+            while ((len = in.read(buf)) > 0) {
+                zip.write(buf, 0, len);
+            }
+        }
+    }
+
+    static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
+            throws Exception {
+        File folder = new File(srcFolder);
+
+        for (String fileName : folder.list()) {
+            if (path.equals("")) {
+                addFileToZip(folder.getName(), srcFolder + "/" + fileName, zip);
+            } else {
+                addFileToZip(path + "/" + folder.getName(), srcFolder + "/" + fileName, zip);
+            }
+        }
+    }
 }
