@@ -389,7 +389,7 @@ public class MainGUI extends javax.swing.JFrame {
                     RunUploader.executeUpload(template, newConfig, userPanel);
                     JOptionPane.showMessageDialog(this,
                             "To start the run, select the run in the upper panel, right click and \"start run\"",
-                            "The run was succesfully posted. ", JOptionPane.YES_OPTION);
+                            "The run was succesfully posted. ", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         } catch (Exception e) {
