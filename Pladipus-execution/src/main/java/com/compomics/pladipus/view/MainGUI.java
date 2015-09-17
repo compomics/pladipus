@@ -156,7 +156,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
         miFile.add(miCreateRun);
 
-        miImportRun.setMnemonic('I');
+        miImportRun.setMnemonic('R');
         miImportRun.setText("Import Run...");
         miImportRun.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,7 +165,7 @@ public class MainGUI extends javax.swing.JFrame {
         });
         miFile.add(miImportRun);
 
-        miImportJobs.setMnemonic('I');
+        miImportJobs.setMnemonic('J');
         miImportJobs.setText("Import Job(s)...");
         miImportJobs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -175,7 +175,7 @@ public class MainGUI extends javax.swing.JFrame {
         miFile.add(miImportJobs);
         miFile.add(jSeparator1);
 
-        exampleMenuItem.setMnemonic('H');
+        exampleMenuItem.setMnemonic('O');
         exampleMenuItem.setText("Open Example...");
         exampleMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -365,8 +365,8 @@ public class MainGUI extends javax.swing.JFrame {
                     File newConfig = overrideOutputFolder(newOutputParentPath);
                     RunUploader.executeUpload(template, newConfig, userPanel);
                     JOptionPane.showMessageDialog(this,
-                            "To start the run, select the run in the upper panel, right click and \"start run\"",
-                            "The run was succesfully posted. ", JOptionPane.INFORMATION_MESSAGE);
+                            "The run was succesfully posted. To start the run, select the run in the upper panel, right click and \"start run\"",
+                            "Run Created", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         } catch (Exception e) {

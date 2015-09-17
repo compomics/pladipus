@@ -21,7 +21,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miImportRun">
               <Properties>
-                <Property name="mnemonic" type="int" value="73"/>
+                <Property name="mnemonic" type="int" value="82"/>
                 <Property name="text" type="java.lang.String" value="Import Run..."/>
               </Properties>
               <Events>
@@ -30,7 +30,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="miImportJobs">
               <Properties>
-                <Property name="mnemonic" type="int" value="73"/>
+                <Property name="mnemonic" type="int" value="74"/>
                 <Property name="text" type="java.lang.String" value="Import Job(s)..."/>
               </Properties>
               <Events>
@@ -41,7 +41,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exampleMenuItem">
               <Properties>
-                <Property name="mnemonic" type="int" value="72"/>
+                <Property name="mnemonic" type="int" value="79"/>
                 <Property name="text" type="java.lang.String" value="Open Example..."/>
               </Properties>
               <Events>
