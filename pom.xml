@@ -15,6 +15,7 @@
         <module>Pladipus-blast</module>
         <module>Pladipus-denovo</module>
         <module>Pladipus-msconvert</module>
+        <module>com.compomics.pladipus_pride</module>
     </modules>
     
     <properties>

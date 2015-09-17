@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.msconvert;
 
+import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedMsConvertParams;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
@@ -25,6 +26,7 @@ public class MsConvertStep extends ProcessingStep {
 
     private static final Logger LOGGER = Logger.getLogger(MsConvertStep.class);
     private final File tempResults = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/results");
+    private File executable;
 
     public MsConvertStep() {
 
@@ -32,11 +34,15 @@ public class MsConvertStep extends ProcessingStep {
 
     private List<String> constructArguments() throws IOException {
         ArrayList<String> cmdArgs = new ArrayList<>();
+        executable = new File(parameters.get("pwiz_folder") + "/msconvert");
         cmdArgs.add(parameters.get("pwiz_folder") + "/msconvert");
         for (AllowedMsConvertParams aParameter : AllowedMsConvertParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
-                cmdArgs.add(parameters.get(aParameter.getId()));
+                String value = parameters.get(aParameter.getId());
+                if (!value.isEmpty()) {
+                    cmdArgs.add(value);
+                }
             } else if (aParameter.isMandatory()) {
                 throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
             }
@@ -56,9 +62,11 @@ public class MsConvertStep extends ProcessingStep {
                 File real_outputFolder = new File(parameters.get("o"));
                 parameters.put("o", tempResults.getAbsolutePath());
                 constructArguments();
+
+                ProcessingEngine.startProcess(executable, constructArguments());
+
                 File[] resultFiles = tempMGF.listFiles();
 
-                LOGGER.info("Processing complete...Zipping result MGF...");
                 for (File aResultFile : resultFiles) {
                     String fileName = aResultFile.getName().substring(0, aResultFile.getName().indexOf(".")) + ".zip";
                     File zippedOutput = new File(aResultFile.getParentFile(), fileName);
@@ -106,9 +114,6 @@ public class MsConvertStep extends ProcessingStep {
         }
     }
 
-    
-   
-    
     private boolean deleteFolder(File path) {
         if (path.exists()) {
             File[] files = path.listFiles();
