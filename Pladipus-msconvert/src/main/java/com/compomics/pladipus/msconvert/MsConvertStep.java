@@ -85,7 +85,7 @@ public class MsConvertStep extends ProcessingStep {
                     copyFile(aResultFile, output);
                 }
             }
-            deleteFolder(tempResults);
+            //deleteFolder(tempResults);
             LOGGER.info("DONE");
             success = true;
         } catch (Exception e) {
