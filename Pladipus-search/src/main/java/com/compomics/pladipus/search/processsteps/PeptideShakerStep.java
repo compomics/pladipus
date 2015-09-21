@@ -6,6 +6,7 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
@@ -33,6 +34,7 @@ public class PeptideShakerStep extends ProcessingStep {
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
+        cmdArgs.add("-Xmx" + MemoryWarningSystem.getAllowedRam() + "M");
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
         cmdArgs.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
