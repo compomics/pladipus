@@ -26,20 +26,16 @@ public class InstallerGUI extends javax.swing.JFrame {
      * the collection of card names that can be displayed
      */
     private HashMap<Integer, String> cards = new HashMap<>();
-    /**
-     * the disclaimer dialog
-     */
-    private Disclaimer disclaimer;
 
     /**
      * Creates a new InstallerGUI.
      */
     public InstallerGUI() {
-        showDisclaimer();
         initComponents();
-        cards.put(1, "mySQLCard");
-        cards.put(2, "activeMQCard");
-        cards.put(3, "pladipusCard");
+        cards.put(1, "splashCard");
+        cards.put(2, "mySQLCard");
+        cards.put(3, "activeMQCard");
+        cards.put(4, "pladipusCard");
 
         epDescription.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
         epDescription.setEditable(false);
@@ -77,6 +73,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
         pnlCards = new javax.swing.JPanel();
+        pnlSplash = new com.compomics.pladipus.view.SplashPanel();
         pnlMySQL = new com.compomics.pladipus.view.MySQLPanel();
         pnlActiveMQ = new com.compomics.pladipus.view.ActiveMQPanel();
         pnlPladipus = new com.compomics.pladipus.view.PladipusPanel();
@@ -106,6 +103,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         pnlCards.setBackground(new java.awt.Color(255, 255, 255));
         pnlCards.setLayout(new java.awt.CardLayout());
+        pnlCards.add(pnlSplash, "splashCard");
         pnlCards.add(pnlMySQL, "mySQLCard");
         pnlCards.add(pnlActiveMQ, "activeMQCard");
         pnlCards.add(pnlPladipus, "pladipusCard");
@@ -125,7 +123,8 @@ public class InstallerGUI extends javax.swing.JFrame {
             pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDescriptionLayout.createSequentialGroup()
                 .addGap(0, 29, Short.MAX_VALUE)
-                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         pnlDescriptionLayout.setVerticalGroup(
             pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,7 +140,7 @@ public class InstallerGUI extends javax.swing.JFrame {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addComponent(btnPrev)
@@ -216,17 +215,6 @@ public class InstallerGUI extends javax.swing.JFrame {
         btnNext.setText("Next");
     }//GEN-LAST:event_btnPrevActionPerformed
 
-    private void showDisclaimer() {
-        try {
-            if (disclaimer == null) {
-                disclaimer = new Disclaimer(this, true);
-            }
-            disclaimer.setVisible(true);
-        } catch (IOException ex) {
-            Logger.getLogger(InstallerGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -269,7 +257,17 @@ public class InstallerGUI extends javax.swing.JFrame {
         epDescription.setContentType("text/html");//set content as html
 
         switch (cursor) {
-            case 1:
+                case 1:
+                epDescription.setText("<h2>Welcome To Pladipus</h2>"
+                        + "<br>"
+                        + "Pladipus is a user friendly tool designed to manage distributed computational biology across a GRID of computers."
+                        + "This wizard will guide you through the installation process."
+                        + "<br><br>"
+                        + "If any problem occurs, please visit the <a href='http://compomics.github.io/projects/pladipus.html'>website</a> for more help."
+                        + "Additionally, you can contact the developers at <b>kenneth.verheggen@ugent.be</b> for more help"
+                );
+                break;
+            case 2:
                 epDescription.setText("<h2>Step 1 of 3 - MySQL</h2>"
                         + "<br>"
                         + "Pladipus requires a MySQL database in order to keep track of tasks and their states."
@@ -279,7 +277,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                         + "If there is no MySQL service reachable, click <a href='https://compomics.github.io/pladipus/wiki/installingmysql.html'>here</a> for more help."
                 );
                 break;
-            case 2:
+            case 3:
                 epDescription.setText("<h2>Step 2 of 3 - ActiveMQ</h2>"
                         + "<br>"
                         + "Pladipus requires a running <a href='http://activemq.apache.org/'>ActiveMQ</a> server in order to distribute tasks and system updates."
@@ -291,7 +289,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                         + "Click <a href='https://compomics.github.io/pladipus/wiki/installingactivemq.html'>here</a> for more help."
                 );
                 break;
-            case 3:
+            case 4:
                 epDescription.setText("<h2>Step 3 of 3 - Pladipus</h2>"
                         + "<br>"
                         + "In order to submit and manage new tasks, you need a registered Pladipus account."
@@ -322,6 +320,7 @@ public class InstallerGUI extends javax.swing.JFrame {
     private javax.swing.JPanel pnlMain;
     private com.compomics.pladipus.view.MySQLPanel pnlMySQL;
     private com.compomics.pladipus.view.PladipusPanel pnlPladipus;
+    private com.compomics.pladipus.view.SplashPanel pnlSplash;
     private javax.swing.JScrollPane spnlDescription;
     // End of variables declaration//GEN-END:variables
 }
