@@ -16,4 +16,16 @@ To start using Pladipus please see the [Pladipus wiki](https://github.com/compom
 
 ----
 
+
+## Download
+
+
+[ ![Image](https://raw.githubusercontent.com/wiki/compomics/pladipus/Download_Installer_Button.png)](http://genesis.ugent.be/pladipus/download/Pladipus-installer-0.3.1.jar)  * recommended
+
+[ ![Image](https://raw.githubusercontent.com/wiki/compomics/pladipus/Download_Pladipus_Windows_Button.png)](http://genesis.ugent.be/pladipus/download/pladipus-windows.zip)
+
+[ ![Image](https://raw.githubusercontent.com/wiki/compomics/pladipus/Download_Pladipus_Linux_Button.png)](http://genesis.ugent.be/pladipus/download/pladipus-linux.zip)
+
+
+
 <sub>The pladipus logo was created by Elodie Adam</sub>
