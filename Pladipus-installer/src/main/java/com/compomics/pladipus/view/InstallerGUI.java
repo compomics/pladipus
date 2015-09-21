@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -56,6 +58,15 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
 
+        //add listener to the index
+        ListSelectionListener listSelectionListener = new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                cursor = liSteps.getSelectedIndex() + 1;
+                showCard();
+            }
+        };
+        liSteps.addListSelectionListener(listSelectionListener);
+
         setDescriptingText();
 
     }
@@ -77,9 +88,11 @@ public class InstallerGUI extends javax.swing.JFrame {
         pnlMySQL = new com.compomics.pladipus.view.MySQLPanel();
         pnlActiveMQ = new com.compomics.pladipus.view.ActiveMQPanel();
         pnlPladipus = new com.compomics.pladipus.view.PladipusPanel();
+        pnlSteps = new javax.swing.JPanel();
         pnlDescription = new javax.swing.JPanel();
         spnlDescription = new javax.swing.JScrollPane();
         epDescription = new javax.swing.JEditorPane();
+        liSteps = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -108,6 +121,8 @@ public class InstallerGUI extends javax.swing.JFrame {
         pnlCards.add(pnlActiveMQ, "activeMQCard");
         pnlCards.add(pnlPladipus, "pladipusCard");
 
+        pnlSteps.setBackground(new java.awt.Color(255, 255, 255));
+
         pnlDescription.setBackground(new java.awt.Color(255, 255, 255));
 
         spnlDescription.setBackground(new java.awt.Color(255, 255, 255));
@@ -117,20 +132,53 @@ public class InstallerGUI extends javax.swing.JFrame {
         epDescription.setBorder(null);
         spnlDescription.setViewportView(epDescription);
 
+        liSteps.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "-", "1. Installing MySQL", "2. Installing ActiveMQ", "3. Installing Pladipus" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        liSteps.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        liSteps.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        liSteps.setFocusable(false);
+        liSteps.setRequestFocusEnabled(false);
+        liSteps.setSelectionBackground(new java.awt.Color(0, 102, 204));
+        liSteps.setVerifyInputWhenFocusTarget(false);
+
         javax.swing.GroupLayout pnlDescriptionLayout = new javax.swing.GroupLayout(pnlDescription);
         pnlDescription.setLayout(pnlDescriptionLayout);
         pnlDescriptionLayout.setHorizontalGroup(
             pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDescriptionLayout.createSequentialGroup()
-                .addGap(0, 29, Short.MAX_VALUE)
-                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(pnlDescriptionLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(liSteps))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         pnlDescriptionLayout.setVerticalGroup(
             pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDescriptionLayout.createSequentialGroup()
-                .addGap(0, 109, Short.MAX_VALUE)
-                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(pnlDescriptionLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(liSteps)
+                .addGap(22, 22, 22)
+                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout pnlStepsLayout = new javax.swing.GroupLayout(pnlSteps);
+        pnlSteps.setLayout(pnlStepsLayout);
+        pnlStepsLayout.setHorizontalGroup(
+            pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStepsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlStepsLayout.setVerticalGroup(
+            pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(pnlDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
@@ -139,8 +187,8 @@ public class InstallerGUI extends javax.swing.JFrame {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addComponent(btnPrev)
@@ -150,25 +198,21 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {pnlCards, pnlDescription});
-
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnNext, btnPrev});
 
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNext)
                     .addComponent(btnPrev))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {pnlCards, pnlDescription});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -178,7 +222,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -189,6 +233,16 @@ public class InstallerGUI extends javax.swing.JFrame {
         String cardName = cards.get(cursor);
         card.show(pnlCards, cardName);
         setDescriptingText();
+        if (cursor == cards.size()) {
+            btnNext.setText("Finish");
+        } else {
+            btnNext.setText("Next");
+        }
+        if (cursor == 1) {
+            btnPrev.setEnabled(false);
+        } else {
+            btnPrev.setEnabled(true);
+        }
     }
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
@@ -199,7 +253,9 @@ public class InstallerGUI extends javax.swing.JFrame {
         cursor++;
         cursor = Math.min(cards.size(), cursor);
         showCard();
-        if (cursor == cards.size()) {
+        if (cursor == 1) {
+            btnPrev.setEnabled(false);
+        } else if (cursor == cards.size()) {
             btnNext.setText("Finish");
         }
         btnPrev.setEnabled(true);
@@ -255,9 +311,9 @@ public class InstallerGUI extends javax.swing.JFrame {
 
     private void setDescriptingText() {
         epDescription.setContentType("text/html");//set content as html
-
+        liSteps.setSelectedIndex(cursor - 1);
         switch (cursor) {
-                case 1:
+            case 1:
                 epDescription.setText("<h2>Welcome To Pladipus</h2>"
                         + "<br>"
                         + "Pladipus is a user friendly tool designed to manage distributed computational biology across a GRID of computers."
@@ -314,6 +370,7 @@ public class InstallerGUI extends javax.swing.JFrame {
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
     private javax.swing.JEditorPane epDescription;
+    private javax.swing.JList liSteps;
     private com.compomics.pladipus.view.ActiveMQPanel pnlActiveMQ;
     private javax.swing.JPanel pnlCards;
     private javax.swing.JPanel pnlDescription;
@@ -321,6 +378,7 @@ public class InstallerGUI extends javax.swing.JFrame {
     private com.compomics.pladipus.view.MySQLPanel pnlMySQL;
     private com.compomics.pladipus.view.PladipusPanel pnlPladipus;
     private com.compomics.pladipus.view.SplashPanel pnlSplash;
+    private javax.swing.JPanel pnlSteps;
     private javax.swing.JScrollPane spnlDescription;
     // End of variables declaration//GEN-END:variables
 }
