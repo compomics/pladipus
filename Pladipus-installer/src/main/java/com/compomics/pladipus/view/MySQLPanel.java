@@ -263,8 +263,12 @@ public class MySQLPanel extends javax.swing.JPanel {
                 }
             }
             mySQLSetup.setupMySql(connection);
+            if(mySQLSetup.pladipusExists(connection)){
             JOptionPane.showMessageDialog(null, "Succesfully initiated database.");
             dbExists = true;
+            }else{
+                throw new IOException("Could not create database schema. Are the privileges set correctly for the specified account?");
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this,
                     "Could not connect to the database: " + System.lineSeparator() + ex.getMessage(),

@@ -8,6 +8,7 @@ package com.compomics.pladipus.controller.setup;
 import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
@@ -62,15 +63,23 @@ public class InstallPladipus {
 
     }
 
+    private void setClassPath() throws IOException {
+        NetworkProperties properties = NetworkProperties.getInstance();
+        properties.setProperty("app.classpath", System.getProperty("user.home") + "/.compomics/pladipus/external");
+        properties.save();
+    }
+
     /**
      * Installs a pladipus worker
      *
      * @throws IOException
      */
-    public void installWorker() throws IOException,SecurityException {
+    public void installWorker() throws IOException, SecurityException {
+        validateUser();
+        setupPladipus();
         installPladipusModules();
         installProcessingBeanProperties();
-        validateUser();
+        setClassPath();
     }
 
     /**
@@ -83,6 +92,7 @@ public class InstallPladipus {
         installPladipusModules();
         installProcessingBeanProperties();
         createDesktopIcon("Pladipus-" + version);
+        setClassPath();
     }
 
     private void createDesktopIcon(String linkName) {
@@ -132,7 +142,7 @@ public class InstallPladipus {
      * @throws IOException
      */
     public void validateUser() throws IOException {
-       
+
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
         JPanel label = new JPanel(new GridLayout(0, 1, 2, 2));
