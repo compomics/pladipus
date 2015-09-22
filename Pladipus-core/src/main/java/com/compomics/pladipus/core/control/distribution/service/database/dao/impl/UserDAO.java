@@ -43,7 +43,7 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
 
     }
 
-    // USER RELATED METHODS
+    // user RELATED METHODS
     /**
      *
      * @param user the users login name
@@ -55,9 +55,9 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
     public boolean createUser(String user, String passWord, String contactAddress) throws SQLException {
         boolean created;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement queryUser = c.prepareStatement("SELECT USER_NAME FROM USERS WHERE USER_NAME=?");
-                PreparedStatement updateUser = c.prepareStatement("INSERT INTO USERS(USER_NAME,PASSWORD,CONTACT) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-                PreparedStatement updateUserRole = c.prepareStatement("INSERT INTO USER_ROLES(USER_ID,ROLE_ID) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement queryUser = c.prepareStatement("SELECT user_name FROM users WHERE user_name=?");
+                PreparedStatement updateUser = c.prepareStatement("INSERT INTO users(user_name,password,contact) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement updateUserRole = c.prepareStatement("INSERT INTO user_roles(user_id,role_id) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS)) {
             
             queryUser.setString(1, user);
 
@@ -90,14 +90,14 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public void setUserRole(String user, int user_role_id) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement selectUser = c.prepareStatement("SELECT USER_ID FROM USERS WHERE USER_NAME=?");
-                PreparedStatement updateUser = c.prepareStatement("UPDATE USER_ROLES SET ROLE_ID=? WHERE USER_ID=?")) {
+                PreparedStatement selectUser = c.prepareStatement("SELECT user_id FROM users WHERE user_name=?");
+                PreparedStatement updateUser = c.prepareStatement("UPDATE user_roles SET role_id=? WHERE user_id=?")) {
             
             selectUser.setString(1, user);
             ResultSet rs = selectUser.executeQuery();
             if (rs.next()) {
                 updateUser.setInt(1, user_role_id);
-                updateUser.setInt(2, rs.getInt("USER_ID"));
+                updateUser.setInt(2, rs.getInt("user_id"));
                 updateUser.executeUpdate();
             }
             c.commit();
@@ -112,12 +112,12 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public String getUserContactAddress(String user) throws SQLException {
         String contactInfo = null;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement selectUser = c.prepareStatement("SELECT CONTACT FROM USERS WHERE USER_NAME=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement selectUser = c.prepareStatement("SELECT contact FROM users WHERE user_name=?")) {
             
             selectUser.setString(1, user);
             try (ResultSet executeQuery = selectUser.executeQuery()) {
                 if (executeQuery.next()) {
-                    contactInfo = executeQuery.getString("CONTACT");
+                    contactInfo = executeQuery.getString("contact");
                 }
             }
         }
@@ -132,12 +132,12 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public String getUserPassWord(String user) throws SQLException {
         String passWord = null;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement selectUser = c.prepareStatement("SELECT PASSWORD FROM USERS WHERE USER_NAME=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement selectUser = c.prepareStatement("SELECT password FROM users WHERE user_name=?")) {
             
             selectUser.setString(1, user);
             try (ResultSet executeQuery = selectUser.executeQuery()) {
                 if (executeQuery.next()) {
-                    passWord = executeQuery.getString("PASSWORD");
+                    passWord = executeQuery.getString("password");
                 }
             }
         }
@@ -151,10 +151,10 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public HashMap<Integer, String> getUserRoles() throws SQLException {
         HashMap<Integer, String> roles = new HashMap<>();
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT DISTINCT ROLE_ID,ROLE FROM ROLES"); ResultSet executeQuery = retrieveStatement.executeQuery()) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT DISTINCT role_id,role FROM roles"); ResultSet executeQuery = retrieveStatement.executeQuery()) {
             
             while (executeQuery.next()) {
-                roles.put(executeQuery.getInt("ROLE_ID"), executeQuery.getString("ROLE"));
+                roles.put(executeQuery.getInt("role_id"), executeQuery.getString("role"));
             }
         }
         return roles;
@@ -168,12 +168,12 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public int getUserRole(String user) throws SQLException {
         int userRole = -1;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT ROLE_ID FROM USERS INNER JOIN USER_ROLES WHERE USERS.USER_NAME=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT role_id FROM users INNER JOIN user_roles WHERE users.user_name=?")) {
             
             retrieveStatement.setString(1, user);
             ResultSet executeQuery = retrieveStatement.executeQuery();
             if (executeQuery.next()) {
-                userRole = executeQuery.getInt("ROLE_ID");
+                userRole = executeQuery.getInt("role_id");
             }
         }
         return userRole;
@@ -187,7 +187,7 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public void updatePassword(String user, String encryptPassword) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateUser = c.prepareStatement("UPDATE USERS SET PASSWORD=? WHERE USER_NAME=?")) {
+                PreparedStatement updateUser = c.prepareStatement("UPDATE users SET password=? WHERE user_name=?")) {
             
             updateUser.setString(1, encryptPassword);
             updateUser.setString(2, user);
@@ -206,7 +206,7 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
      */
     public void updateContactInfo(String user, String newEmail) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateUser = c.prepareStatement("UPDATE USERS SET CONTACT=? WHERE USER_NAME=?")) {
+                PreparedStatement updateUser = c.prepareStatement("UPDATE users SET contact=? WHERE user_name=?")) {
             
             updateUser.setString(1, newEmail);
             updateUser.setString(2, user);
@@ -224,7 +224,7 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
     public boolean userExists(String user) throws SQLException {
         boolean exists = true;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement selectUser = c.prepareStatement("SELECT USER_ID FROM USERS WHERE USERS.USER_NAME=?");) {
+                PreparedStatement selectUser = c.prepareStatement("SELECT user_id FROM users WHERE users.user_name=?");) {
             
             selectUser.setString(1, user);
             ResultSet rs = selectUser.executeQuery();

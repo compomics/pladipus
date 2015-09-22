@@ -34,7 +34,8 @@ import org.xml.sax.SAXException;
  * @author Kenneth Verheggen
  */
 public class ProcessDAO extends PladipusDAO implements AutoCloseable {
-/**
+
+    /**
      * The Logging instance
      */
     public static final Logger LOGGER = Logger.getLogger(ProcessDAO.class);
@@ -45,7 +46,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     /**
      * The timeout value for queries (in seconds)
      */
-    private static final int queryTimeOut = 30; 
+    private static final int queryTimeOut = 30;
 
     /**
      *
@@ -71,11 +72,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public int getStepCount(int processID) throws SQLException {
         int stepCount = -1;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement selectStepCount = c.prepareStatement("SELECT STEPCOUNT FROM PROCESS WHERE PROCESS_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement selectStepCount = c.prepareStatement("SELECT stepcount FROM process WHERE process_id=?")) {
             selectStepCount.setInt(1, processID);
             try (ResultSet executeQuery = selectStepCount.executeQuery()) {
                 if (executeQuery.next()) {
-                    stepCount = executeQuery.getInt("STEPCOUNT");
+                    stepCount = executeQuery.getInt("stepcount");
                 }
             }
         }
@@ -91,11 +92,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public int getFailCount(int processID) throws SQLException {
         int failCount = -1;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT FAILCOUNT FROM PROCESS WHERE PROCESS_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT failcount FROM PROCESS WHERE process_id=?")) {
             updateRun.setInt(1, processID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 if (executeQuery.next()) {
-                    failCount = executeQuery.getInt("FAILCOUNT");
+                    failCount = executeQuery.getInt("failcount");
                 }
             }
         }
@@ -109,7 +110,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws SQLException
      */
     public void increaseFailCount(int processID) throws SQLException {
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET FAILCOUNT=FAILCOUNT+1,STEPCOUNT=0 WHERE PROCESS_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=failcount+1,stepcount=0 WHERE process_id=?")) {
 
             updateRun.setInt(1, processID);
             updateRun.executeUpdate();
@@ -118,7 +119,8 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     }
 
     /**
-     *  Updates the process' state
+     * Updates the process' state
+     *
      * @param processID the process to be updated
      * @param newState the new state for the process
      * @throws SQLException
@@ -128,7 +130,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
             setDone(processID);
         } else {
             try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                    PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET STATE =?,STEPCOUNT=STEPCOUNT+1 WHERE PROCESS_ID=?")) {
+                    PreparedStatement updateRun = c.prepareStatement("UPDATE process SET state =?,stepcount=stepcount+1 WHERE process_id=?")) {
                 updateRun.setString(1, newState);
                 updateRun.setInt(2, processID);
                 updateRun.executeUpdate();
@@ -146,12 +148,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public String getProcessState(int processID) throws SQLException {
 
         String state = "Unknown";
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT STATE FROM PROCESS WHERE PROCESS_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT state FROM process WHERE process_id=?")) {
 
             updateRun.setInt(1, processID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 if (executeQuery.next()) {
-                    state = executeQuery.getString("STATE");
+                    state = executeQuery.getString("state");
                 }
             }
         }
@@ -167,12 +169,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public TreeMap<Integer, String> getProcessStatesForRun(int runID) throws SQLException {
 
         TreeMap<Integer, String> runMap = new TreeMap<>();
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT PROCESS_ID,STATE FROM PROCESS WHERE RUN_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT process_id,state FROM process WHERE run_id=?")) {
 
             updateRun.setInt(1, runID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 while (executeQuery.next()) {
-                    runMap.put(executeQuery.getInt("PROCESS_ID"), executeQuery.getString("STATE"));
+                    runMap.put(executeQuery.getInt("process_id"), executeQuery.getString("state"));
                 }
             }
         }
@@ -201,12 +203,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public LinkedList<Integer> getUnqueuedProcesses() throws SQLException {
 
         LinkedList<Integer> processList = new LinkedList<>();
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT PROCESS_ID FROM PROCESS WHERE ON_QUEUE=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT process_id FROM process WHERE on_queue=?")) {
 
             retrieveStatement.setBoolean(1, false);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    processList.add(executeQuery.getInt("PROCESS_ID"));
+                    processList.add(executeQuery.getInt("process_id"));
                 }
             }
         }
@@ -222,13 +224,13 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public LinkedList<Integer> getProcessesForRun(int runID) throws SQLException {
 
         LinkedList<Integer> processList = new LinkedList<>();
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT PROCESS_ID FROM PROCESS WHERE RUN_ID=? AND ON_QUEUE=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT process_id FROM PROCESS WHERE run_id=? AND on_queue=?")) {
 
             retrieveStatement.setInt(1, runID);
             retrieveStatement.setBoolean(2, false);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    processList.add(executeQuery.getInt("PROCESS_ID"));
+                    processList.add(executeQuery.getInt("process_id"));
                 }
             }
         }
@@ -244,7 +246,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public double getCompletedProcessesForRun(int runID) throws SQLException {
 
         double percentage = 0;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT COUNT(CASE COMPLETE WHEN true THEN 1 ELSE null END)/COUNT(PROCESS_ID) FROM PROCESS WHERE RUN_ID=?;")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT COUNT(CASE complete WHEN true THEN 1 ELSE null END)/COUNT(process_id) FROM process WHERE run_id=?;")) {
 
             retrieveStatement.setQueryTimeout(queryTimeOut);
             retrieveStatement.setInt(1, runID);
@@ -268,14 +270,14 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public LinkedList<Object[]> getProcessInformation(int runID, int lowestLimit, int pageSize) throws SQLException {
         LinkedList<Object[]> processList = new LinkedList<>();
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement retrieveStatement = c.prepareStatement("SELECT PROCESS_ID,STATE,STEPCOUNT,COMPLETE FROM PROCESS WHERE RUN_ID=? LIMIT ?,?;")) {
+                PreparedStatement retrieveStatement = c.prepareStatement("SELECT process_id,state,stepcount,complete FROM process WHERE run_id=? LIMIT ?,?;")) {
 
             retrieveStatement.setInt(1, runID);
             retrieveStatement.setInt(2, lowestLimit);
             retrieveStatement.setInt(3, pageSize);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    processList.add(new Object[]{executeQuery.getLong("PROCESS_ID"), executeQuery.getString("STATE"), executeQuery.getInt("STEPCOUNT"), executeQuery.getBoolean("COMPLETE")});
+                    processList.add(new Object[]{executeQuery.getLong("process_id"), executeQuery.getString("state"), executeQuery.getInt("stepcount"), executeQuery.getBoolean("complete")});
                 }
             }
             return processList;
@@ -291,12 +293,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public boolean isQueued(int processID) throws SQLException {
 
         boolean isQueued = false;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT ON_QUEUE FROM PROCESS WHERE PROCESS_ID =?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT on_queue FROM process WHERE process_id =?")) {
 
             retrieveStatement.setInt(1, processID);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 if (executeQuery.next()) {
-                    isQueued = executeQuery.getBoolean("ON_QUEUE");
+                    isQueued = executeQuery.getBoolean("on_queue");
                 }
             }
         }
@@ -313,12 +315,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public boolean isCompletedProcess(int processID) throws SQLException {
 
         boolean completed = false;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT COMPLETE FROM PROCESS WHERE PROCESS_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT complete FROM process WHERE process_id=?")) {
 
             updateRun.setInt(1, processID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 if (executeQuery.next()) {
-                    completed = executeQuery.getBoolean("COMPLETE");
+                    completed = executeQuery.getBoolean("complete");
                 }
             }
         }
@@ -334,12 +336,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public int getParentRunID(int processID) throws SQLException {
 
         int runID = -1;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT RUN.RUN_ID FROM PROCESS INNER JOIN RUN ON RUN.RUN_ID=PROCESS.RUN_ID WHERE PROCESS_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT run.run_id FROM process INNER JOIN run ON run.run_id=process.run_id WHERE process_id=?")) {
 
             updateRun.setInt(1, processID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 if (executeQuery.next()) {
-                    runID = executeQuery.getInt("RUN.RUN_ID");
+                    runID = executeQuery.getInt("run.run_id");
                 }
             }
         }
@@ -353,7 +355,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void removeProcesses(List<Integer> selectedProcessID) throws SQLException {
         String sql = selectedProcessID.toString().replace("[", "(").replace("]", ")");
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("DELETE FROM PROCESS WHERE PROCESS_ID IN " + sql)) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("DELETE FROM process WHERE process_id IN " + sql)) {
 
             insertProcess.executeUpdate();
             c.commit();
@@ -370,12 +372,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public void setQueued(Integer aProcessID, boolean queued) throws SQLException {
 
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET STATE=?,ON_QUEUE =? WHERE PROCESS_ID=?")) {
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET state=?,on_queue =? WHERE process_id=?")) {
 
             if (queued) {
-                updateRun.setString(1, "ON QUEUE");
+                updateRun.setString(1, "Waiting to be pulled by worker ...");
             } else {
-                updateRun.setString(1, "AWAITING PROCESSING");
+                updateRun.setString(1, "Waiting to be dispatched ...");
             }
             updateRun.setBoolean(2, queued);
             updateRun.setInt(3, aProcessID);
@@ -392,13 +394,13 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void setQueued(Collection<Integer> processIDs, boolean queued) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET STATE=?,ON_QUEUE =? WHERE PROCESS_ID=?")) {
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET state=?,on_queue =? WHERE process_id=?")) {
 
             for (Integer aProcessID : processIDs) {
                 if (queued) {
-                    updateRun.setString(1, "ON QUEUE");
+                    updateRun.setString(1, "Waiting to be pulled by worker ...");
                 } else {
-                    updateRun.setString(1, "AWAITING PROCESSING");
+                    updateRun.setString(1, "Waiting to be dispatched ...");
                 }
                 updateRun.setBoolean(2, queued);
                 updateRun.setInt(3, aProcessID);
@@ -416,7 +418,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void setDone(Integer aProcessID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET COMPLETE = ? WHERE PROCESS_ID=?")) {
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET complete = ? WHERE process_id=?")) {
 
             updateRun.setBoolean(1, true);
             updateRun.setInt(2, aProcessID);
@@ -438,11 +440,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
 
         LinkedList<Integer> unqueuedProcesses = new LinkedList<>();
         try (Connection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement(""
-                + "SELECT PROCESS_ID FROM PROCESS WHERE (RUN_ID =? AND ON_QUEUE=0 AND COMPLETE=0)")) {
+                + "SELECT process_id FROM process WHERE (run_id =? AND on_queue=0 AND complete=0)")) {
             retrieveStatement.setInt(1, run_id);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    unqueuedProcesses.add(executeQuery.getInt("PROCESS_ID"));
+                    unqueuedProcesses.add(executeQuery.getInt("process_id"));
                 }
             }
         }
@@ -460,12 +462,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
 
         LinkedList<Integer> unqueuedProcesses = new LinkedList<>();
         try (Connection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement(""
-                + "SELECT PROCESS_ID FROM PROCESS INNER JOIN RUN ON RUN.RUN_ID=PROCESS.RUN_ID WHERE (USER_NAME =? AND ON_QUEUE=?)")) {
+                + "SELECT process_id FROM process INNER JOIN RUN ON run.run_id=process.run_id WHERE (user_name =? AND on_queue=?)")) {
             retrieveStatement.setString(1, user);
             retrieveStatement.setBoolean(2, false);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    unqueuedProcesses.add(executeQuery.getInt("PROCESS_ID"));
+                    unqueuedProcesses.add(executeQuery.getInt("process_id"));
                 }
             }
         }
@@ -483,11 +485,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
 
         LinkedList<Integer> unqueuedProcesses = new LinkedList<>();
         try (Connection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement(""
-                + "SELECT PROCESS_ID FROM PROCESS WHERE (RUN_ID=? AND ON_QUEUE=1 AND COMPLETE=0)")) {
+                + "SELECT process_id FROM process WHERE (run_id=? AND on_queue=1 AND complete=0)")) {
             retrieveStatement.setInt(1, run_id);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    unqueuedProcesses.add(executeQuery.getInt("PROCESS_ID"));
+                    unqueuedProcesses.add(executeQuery.getInt("process_id"));
                 }
             }
         }
@@ -514,15 +516,15 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
         HashMap<Integer, HashMap<String, String>> processParameterMap = new HashMap<>();
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
                 PreparedStatement fillTemplateXMLQuery = c.prepareStatement(
-                        "SELECT PROCESS.PROCESS_ID,NAME,VALUE,ON_QUEUE,COMPLETE FROM PROCESS_PARAMETERS INNER JOIN PROCESS ON PROCESS.PROCESS_ID=PROCESS_PARAMETERS.PROCESS_ID WHERE RUN_ID =?")) {
+                        "SELECT process.process_id,name,value,on_queue,complete FROM process_parameters INNER JOIN process ON process.process_id=process_parameters.process_id WHERE run_id =?")) {
 
             fillTemplateXMLQuery.setInt(1, run_id);
             ResultSet parameterResultSet = fillTemplateXMLQuery.executeQuery();
             while (parameterResultSet.next() & !parameterResultSet.isClosed()) {
-                if (complete == parameterResultSet.getBoolean("COMPLETE") && queued == parameterResultSet.getBoolean("ON_QUEUE")) {
-                    int processID = parameterResultSet.getInt("PROCESS.PROCESS_ID");
-                    String parameter_Name = parameterResultSet.getString("NAME");
-                    String parameter_Value = parameterResultSet.getString("VALUE");
+                if (complete == parameterResultSet.getBoolean("complete") && queued == parameterResultSet.getBoolean("on_queue")) {
+                    int processID = parameterResultSet.getInt("process.process_id");
+                    String parameter_Name = parameterResultSet.getString("name");
+                    String parameter_Value = parameterResultSet.getString("value");
                     HashMap<String, String> parameterMap = processParameterMap.getOrDefault(processID, new HashMap<>());
                     parameterMap.put(parameter_Name, parameter_Value);
                     processParameterMap.put(processID, parameterMap);
@@ -565,13 +567,13 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public String getXMLForProcess(PladipusProcessingTemplate template, int processID) throws SQLException, SAXException, IOException, ParserConfigurationException, StepLoadingException {
         String toJobXML = null;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement fillTemplateXMLQuery = c.prepareStatement("SELECT NAME,VALUE FROM PROCESS_PARAMETERS WHERE PROCESS_ID =?")) {
+                PreparedStatement fillTemplateXMLQuery = c.prepareStatement("SELECT name,value FROM process_parameters WHERE process_id=?")) {
 
             fillTemplateXMLQuery.setInt(1, processID);
             if (!fillTemplateXMLQuery.isClosed()) {
                 ResultSet parameterResultSet = fillTemplateXMLQuery.executeQuery();
                 while (parameterResultSet.next() & !parameterResultSet.isClosed()) {
-                    template.addJobParameter(new ProcessingParameterTemplate(parameterResultSet.getString("NAME"), parameterResultSet.getString("VALUE")));
+                    template.addJobParameter(new ProcessingParameterTemplate(parameterResultSet.getString("name"), parameterResultSet.getString("value")));
                 }
                 toJobXML = template.toJobXML(processID);
             }
@@ -595,20 +597,20 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
         //XML STRING
         PladipusProcessingTemplate templateXML;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement selectRun = c.prepareStatement("SELECT TEMPLATE FROM RUN "
-                        + "INNER JOIN PROCESS ON RUN.RUN_ID=PROCESS.RUN_ID WHERE PROCESS_ID =?");
-                PreparedStatement fillTemplateXMLQuery = c.prepareStatement("SELECT NAME,VALUE FROM PROCESS_PARAMETERS WHERE PROCESS_ID =?")) {
+                PreparedStatement selectRun = c.prepareStatement("SELECT template FROM run "
+                        + "INNER JOIN process ON run.run_id=process.run_id WHERE process_id =?");
+                PreparedStatement fillTemplateXMLQuery = c.prepareStatement("SELECT name,value FROM process_parameters WHERE process_id=?")) {
 
             //selectRun.setQueryTimeout(queryTimeOut);
             selectRun.setInt(1, processID);
             try (ResultSet executeQuery = selectRun.executeQuery()) {
                 if (executeQuery.next() & !executeQuery.isClosed()) {
-                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString("TEMPLATE"));
+                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString("template"));
                     //      fillTemplateXMLQuery.setQueryTimeout(queryTimeOut);
                     fillTemplateXMLQuery.setInt(1, processID);
                     ResultSet parameterResultSet = fillTemplateXMLQuery.executeQuery();
                     while (parameterResultSet.next() & !parameterResultSet.isClosed()) {
-                        templateXML.addJobParameter(new ProcessingParameterTemplate(parameterResultSet.getString("NAME"), parameterResultSet.getString("VALUE")));
+                        templateXML.addJobParameter(new ProcessingParameterTemplate(parameterResultSet.getString("name"), parameterResultSet.getString("value")));
                     }
                     toJobXML = templateXML.toJobXML(processID);
                 }
@@ -620,13 +622,14 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     }
 
     /**
-     *  Removes the process from the database
+     * Removes the process from the database
+     *
      * @param selectedProcessID the process ID to remove from the database
      * @throws SQLException
      */
     public void removeProcess(int selectedProcessID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("DELETE FROM PROCESS WHERE PROCESS_ID=?")) {
+                PreparedStatement updateRun = c.prepareStatement("DELETE FROM process WHERE process_id=?")) {
 
             updateRun.setInt(1, selectedProcessID);
             updateRun.executeUpdate();
@@ -642,8 +645,8 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void updateProcessParameters(int selectedProcessID, HashMap<String, String> processingParameters) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement deleteParam = c.prepareStatement("DELETE FROM PROCESS_PARAMETERS WHERE PROCESS_ID=?");
-                PreparedStatement updateRun = c.prepareStatement("INSERT INTO PROCESS_PARAMETERS(PROCESS_ID,NAME,VALUE) VALUES(?,?,?)");) {
+                PreparedStatement deleteParam = c.prepareStatement("DELETE FROM process_parameteters process_id PROCESS_ID=?");
+                PreparedStatement updateRun = c.prepareStatement("INSERT INTO process_parameteters(process_id,name,value) VALUES(?,?,?)");) {
             deleteParam.setQueryTimeout(queryTimeOut);
             updateRun.setQueryTimeout(queryTimeOut);
 
@@ -669,8 +672,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void resetStepCount(int processID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET STEPCOUNT=0,STATE='RESET' WHERE PROCESS_ID=?")) {
-
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET stepcount=0,state='Resetting...' WHERE process_id=?")) {
             updateRun.setInt(1, processID);
             updateRun.executeUpdate();
             c.commit();
@@ -684,7 +686,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void resetProcess(int processID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET FAILCOUNT=0,STEPCOUNT=0,STATE='CANCELLED' FROM PROCESS WHERE PROCESS_ID=?")) {
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=0,stepcount=0,state='Cancelled' FROM process WHERE process_id=?")) {
 
             updateRun.setInt(1, processID);
             updateRun.executeUpdate();
@@ -699,7 +701,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void resetProcesses(Collection<Integer> processIDs) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE PROCESS SET FAILCOUNT=0,STEPCOUNT=0,STATE='CANCELLED' WHERE PROCESS_ID=?")) {
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=0,stepcount=0,state='Cancelled' WHERE process_id=?")) {
 
             for (int processID : processIDs) {
                 updateRun.setInt(1, processID);
@@ -723,11 +725,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public PladipusProcessingTemplate getTemplate(int processID) throws SQLException, IOException, StepLoadingException, ParserConfigurationException, SAXException {
         PladipusProcessingTemplate template = null;
         try (Connection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement(""
-                + "SELECT TEMPLATE FROM (PROCESS INNER JOIN RUN ON PROCESS.RUN_ID = RUN.RUN_ID) WHERE PROCESS_ID=?;")) {
+                + "SELECT template FROM (process INNER JOIN run ON process.run_id = run.run_id) WHERE process_id=?;")) {
             retrieveStatement.setInt(1, processID);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 if (executeQuery.next()) {
-                    String xmlString = executeQuery.getString("TEMPLATE");
+                    String xmlString = executeQuery.getString("template");
                     template = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(xmlString.trim());
                 }
             }

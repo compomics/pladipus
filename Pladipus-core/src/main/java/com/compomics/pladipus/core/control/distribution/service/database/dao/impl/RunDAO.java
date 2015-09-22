@@ -61,12 +61,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public String getOwnerContact(int runID) throws SQLException {
 
         String contactAdress = "";
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT CONTACT FROM RUN INNER JOIN USERS ON RUN.USER_NAME=USERS.USER_NAME WHERE RUN_ID=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT contact FROM run INNER JOIN users ON run.user_name=users.user_name WHERE run_id=?")) {
 
             retrieveStatement.setInt(1, runID);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    contactAdress = executeQuery.getString("CONTACT");
+                    contactAdress = executeQuery.getString("contact");
                 }
             }
         }
@@ -82,12 +82,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public TreeMap<Integer, String> getRuns(String user) throws SQLException {
 
         TreeMap<Integer, String> runs = new TreeMap<>();
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT RUN_ID,TITLE FROM RUN WHERE USER_NAME=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement("SELECT run_id,title FROM run WHERE user_name=?")) {
 
             retrieveStatement.setString(1, user);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 while (executeQuery.next()) {
-                    runs.put(executeQuery.getInt("RUN_ID"), executeQuery.getString("TITLE"));
+                    runs.put(executeQuery.getInt("run_id"), executeQuery.getString("title"));
                 }
             }
         }
@@ -105,7 +105,7 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public int createRun(PladipusProcessingTemplate template) throws SQLException {
         int insertedRunID;
         //step 1 = generate a run and get the ID
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement updateRun = c.prepareStatement("INSERT INTO RUN(TITLE,USER_NAME,TEMPLATE) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement updateRun = c.prepareStatement("INSERT INTO run(title,user_name,template) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
 
             updateRun.setString(1, template.getName());
             updateRun.setString(2, template.getUser());
@@ -128,13 +128,13 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
      */
     public Integer getRunID(String runName, String userName) throws SQLException {
         Integer runID = -1;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement query = c.prepareStatement("SELECT RUN_ID FROM RUN WHERE TITLE=? AND USER_NAME=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement query = c.prepareStatement("SELECT run_id FROM run WHERE title=? AND user_name=?")) {
 
             query.setString(1, runName);
             query.setString(2, userName);
             try (ResultSet executeQuery = query.executeQuery()) {
                 if (executeQuery.next()) {
-                    runID = executeQuery.getInt("RUN_ID");
+                    runID = executeQuery.getInt("run_id");
                 }
             }
         }
@@ -152,8 +152,8 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public LinkedList<Integer> addToRun(int runID, List<HashMap<String, String>> parameterList) throws SQLException {
         //step 2 = insert the processingJOB xml, update to the correct ID when retrieving from db is faster
         LinkedList<Integer> processIDs = new LinkedList<>();
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("INSERT INTO PROCESS(STATE,RUN_ID,FAILCOUNT) VALUES('AWAITING EXECUTION',?,?)",
-                Statement.RETURN_GENERATED_KEYS); PreparedStatement insertParameter = c.prepareStatement("INSERT INTO PROCESS_PARAMETERS(PROCESS_ID,NAME,VALUE) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("INSERT INTO process(state,run_id,failcount) VALUES('Waiting to be dispatched ...',?,?)",
+                Statement.RETURN_GENERATED_KEYS); PreparedStatement insertParameter = c.prepareStatement("INSERT INTO process_parameters(process_id,name,value) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
 
             for (HashMap<String, String> parameterMap : parameterList) {
                 insertProcess.setInt(1, runID);
@@ -194,8 +194,8 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public int addToRun(int runID, HashMap<String, String> parameterMap) throws SQLException {
         //step 2 = insert the processingJOB xml, update to the correct ID when retrieving from db is faster
         int processID = -1;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("INSERT INTO PROCESS(STATE,RUN_ID,FAILCOUNT) VALUES('AWAITING EXECUTION',?,?)",
-                Statement.RETURN_GENERATED_KEYS); PreparedStatement insertParameter = c.prepareStatement("INSERT INTO PROCESS_PARAMETERS(PROCESS_ID,NAME,VALUE) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("INSERT INTO process(state,run_id,failcount) VALUES('Waiting to be pulled by worker ...',?,?)",
+                Statement.RETURN_GENERATED_KEYS); PreparedStatement insertParameter = c.prepareStatement("INSERT INTO process_parameters(process_id,name,value) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             insertProcess.setInt(1, runID);
             insertProcess.setInt(2, 0);
             insertProcess.executeUpdate();
@@ -236,12 +236,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
 
         //XML STRING
         PladipusProcessingTemplate templateXML = null;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT TEMPLATE FROM RUN WHERE RUN_ID =?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT template FROM run WHERE run_id =?")) {
 
             updateRun.setInt(1, runID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 while (executeQuery.next()) {
-                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString("TEMPLATE"));
+                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString("template"));
                 }
             }
         }
@@ -257,13 +257,13 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public boolean isCompletedRun(int runID) throws SQLException {
 
         int incomplete = 0;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT COUNT(COMPLETE) AS COUNTER FROM PROCESS INNER JOIN RUN ON RUN.RUN_ID=PROCESS.RUN_ID WHERE RUN.RUN_ID=? AND COMPLETE=?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT COUNT(complete) AS counter FROM process INNER JOIN run ON run.run_id=process.run_id WHERE run.run_id=? AND complete=?")) {
 
             updateRun.setInt(1, runID);
             updateRun.setBoolean(2, false);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 if (executeQuery.next()) {
-                    incomplete = executeQuery.getInt("COUNTER");
+                    incomplete = executeQuery.getInt("counter");
                 }
             }
         }
@@ -281,12 +281,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public String getRunOwner(String run) throws SQLException {
         String owner = "";
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement retrieveStatement = c.prepareStatement("SELECT USER FROM RUN WHERE TITLE=?")) {
+                PreparedStatement retrieveStatement = c.prepareStatement("SELECT user FROM run WHERE title=?")) {
 
             retrieveStatement.setString(1, run);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 if (executeQuery.next()) {
-                    owner = executeQuery.getString("USER");
+                    owner = executeQuery.getString("user");
                 }
             }
         }
@@ -303,12 +303,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
 
         String owner = "";
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement retrieveStatement = c.prepareStatement("SELECT USER_NAME FROM RUN WHERE RUN_ID=?")) {
+                PreparedStatement retrieveStatement = c.prepareStatement("SELECT user_name FROM run WHERE run_id=?")) {
 
             retrieveStatement.setInt(1, runID);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 if (executeQuery.next()) {
-                    owner = executeQuery.getString("USER_NAME");
+                    owner = executeQuery.getString("user_name");
                 }
             }
         }
@@ -325,12 +325,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
 
         String owner = "";
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement retrieveStatement = c.prepareStatement("SELECT TITLE FROM RUN WHERE RUN_ID=?")) {
+                PreparedStatement retrieveStatement = c.prepareStatement("SELECT title FROM run WHERE run_id=?")) {
 
             retrieveStatement.setInt(1, runID);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 if (executeQuery.next()) {
-                    owner = executeQuery.getString("TITLE");
+                    owner = executeQuery.getString("title");
                 }
             }
         }
@@ -345,8 +345,8 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public void deleteRun(Collection<Integer> runIDs) throws SQLException {
         for (int runID : runIDs) {
             try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                    PreparedStatement deleteRunStatement = c.prepareStatement("DELETE FROM RUN WHERE RUN_ID=?");
-                    PreparedStatement deleteAssociatedProcessesStatement = c.prepareStatement("DELETE FROM PROCESS WHERE RUN_ID=?")) {
+                    PreparedStatement deleteRunStatement = c.prepareStatement("DELETE FROM run WHERE run_id=?");
+                    PreparedStatement deleteAssociatedProcessesStatement = c.prepareStatement("DELETE FROM process WHERE run_id=?")) {
 
                 deleteRunStatement.setInt(1, runID);
                 deleteRunStatement.executeUpdate();
@@ -364,9 +364,9 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public void truncatePladipus() throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
                 Statement statement = c.createStatement();) {
-            statement.executeUpdate("TRUNCATE RUN");
-            statement.executeUpdate("TRUNCATE PROCESS");
-            statement.executeUpdate("TRUNCATE PROCESS_PARAMETERS");
+            statement.executeUpdate("TRUNCATE run");
+            statement.executeUpdate("TRUNCATE process");
+            statement.executeUpdate("TRUNCATE process_parameters");
         }
     }
 
@@ -379,12 +379,12 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public int getRunSize(int runID) throws SQLException {
         int runSize = 0;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement retrieveStatement = c.prepareStatement("SELECT COUNT(RUN_ID) AS RUN_SIZE FROM PROCESS WHERE RUN_ID=?")) {
+                PreparedStatement retrieveStatement = c.prepareStatement("SELECT COUNT(run_id) AS run_size FROM process WHERE run_id=?")) {
 
             retrieveStatement.setInt(1, runID);
             try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
                 if (executeQuery.next()) {
-                    runSize = executeQuery.getInt("RUN_SIZE");
+                    runSize = executeQuery.getInt("run_size");
                 }
             }
         }
