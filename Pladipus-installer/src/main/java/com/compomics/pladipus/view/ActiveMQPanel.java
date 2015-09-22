@@ -114,7 +114,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        btnApply.setText("Apply");
+        btnApply.setText("Save settings");
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnApplyActionPerformed(evt);
@@ -185,7 +185,6 @@ public class ActiveMQPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tfAmqPortActionPerformed
 
     private void btnInstallAmqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallAmqActionPerformed
-
         int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to apply the following settings on this machine?"
                 + System.lineSeparator()
                 + "ActiveMQ host \t=" + tfHost.getText()
