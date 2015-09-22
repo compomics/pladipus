@@ -65,9 +65,11 @@ public class ActiveMQPanel extends javax.swing.JPanel {
 
         tfHost.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfHost.setText("localhost");
+        tfHost.setToolTipText("The IP address of the machine hosting the ActiveMQ server.");
 
         tfAmqPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfAmqPort.setText("3389");
+        tfAmqPort.setToolTipText("The port on the host that's listening for Pladipus connections");
         tfAmqPort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfAmqPortActionPerformed(evt);
@@ -76,6 +78,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
 
         tfJmxPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfJmxPort.setText("1099");
+        tfJmxPort.setToolTipText("The JMX port. This port is required for internal management and maintenance.");
 
         btnTestConnection.setText("Test Connection");
         btnTestConnection.addActionListener(new java.awt.event.ActionListener() {

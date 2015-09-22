@@ -9,7 +9,6 @@ import com.compomics.pladipus.controller.setup.InitMySQL;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -83,7 +82,6 @@ public class MySQLPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        lbLogo = new javax.swing.JLabel();
         lblHost = new javax.swing.JLabel();
         lblPort = new javax.swing.JLabel();
         lblUser = new javax.swing.JLabel();
@@ -93,15 +91,13 @@ public class MySQLPanel extends javax.swing.JPanel {
         tfUser = new javax.swing.JTextField();
         btnApply = new javax.swing.JButton();
         pfPass = new javax.swing.JPasswordField();
+        btnInstallDatabase = new javax.swing.JButton();
         btnTestConnection = new javax.swing.JButton();
+        lbLogo = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
         pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-
-        lbLogo.setBackground(new java.awt.Color(255, 255, 255));
-        lbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbLogo.setText("jLabel1");
 
         lblHost.setBackground(new java.awt.Color(255, 255, 255));
         lblHost.setText("Host");
@@ -117,14 +113,17 @@ public class MySQLPanel extends javax.swing.JPanel {
 
         tfHost.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfHost.setText("localhost");
+        tfHost.setToolTipText("This is the IP adress of the machine hosting the MySQL database");
 
         tfPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfPort.setText("3306");
+        tfPort.setToolTipText("This is the open port of the host where the MySQL service is listening on ");
 
         tfUser.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfUser.setText("root");
+        tfUser.setToolTipText("The user to the database with correct privileges");
 
-        btnApply.setText("Apply");
+        btnApply.setText("Save Settings");
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnApplyActionPerformed(evt);
@@ -132,49 +131,68 @@ public class MySQLPanel extends javax.swing.JPanel {
         });
 
         pfPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        pfPass.setToolTipText("The password for the user");
 
-        btnTestConnection.setText("Test");
+        btnInstallDatabase.setText("Import Db");
+        btnInstallDatabase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInstallDatabaseActionPerformed(evt);
+            }
+        });
+
+        btnTestConnection.setText("Test Settings");
         btnTestConnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTestConnectionActionPerformed(evt);
             }
         });
 
+        lbLogo.setBackground(new java.awt.Color(255, 255, 255));
+        lbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbLogo.setText("jLabel1");
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addComponent(lblPass, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(btnTestConnection, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                        .addComponent(lblHost, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE))
-                    .addComponent(pfPass)))
-            .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(pnlMainLayout.createSequentialGroup()
-                .addComponent(lblHost, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfHost))
-            .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfPort)
-                    .addComponent(tfUser)))
+                        .addComponent(tfHost))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(lblPass, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addComponent(btnInstallDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnTestConnection, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(pfPass)))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfUser)
+                            .addComponent(tfPort)))
+                    .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblHost, lblPass, lblPort, lblUser});
 
+        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnApply, btnInstallDatabase, btnTestConnection});
+
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblHost)
@@ -191,11 +209,13 @@ public class MySQLPanel extends javax.swing.JPanel {
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblPass)
                     .addComponent(pfPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(11, 11, 11)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnTestConnection)
-                    .addComponent(btnApply))
-                .addContainerGap(29, Short.MAX_VALUE))
+                    .addComponent(btnInstallDatabase)
+                    .addComponent(btnTestConnection))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnApply)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -204,16 +224,19 @@ public class MySQLPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
+        testConnection(true);
         try {
             mySQLSetup.updateProperties(host, port, user, password);
         } catch (IOException ex) {
@@ -223,41 +246,77 @@ public class MySQLPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnApplyActionPerformed
 
+    private void btnInstallDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallDatabaseActionPerformed
+        loadInput();
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password)) {
+            if (mySQLSetup.pladipusExists(connection)) {
+                int answer = JOptionPane.showConfirmDialog(this, "The database already exists. Would you like to perform a clean install?");
+                if (answer == JOptionPane.YES_OPTION) {
+                    answer = JOptionPane.showConfirmDialog(this, "Are you sure? This action can not be undone?");
+                    if (answer == JOptionPane.YES_OPTION) {
+                        mySQLSetup.dropPladipus(connection);
+                    } else {
+                        return;
+                    }
+                }else{
+                    return;
+                }
+            }
+            mySQLSetup.setupMySql(connection);
+            JOptionPane.showMessageDialog(null, "Succesfully initiated database.");
+            dbExists = true;
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Could not connect to the database: " + System.lineSeparator() + ex.getMessage(),
+                    "Connection Failed",
+                    JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            dbExists = true;
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Could not import the database: " + System.lineSeparator() + ex.getMessage(),
+                    "Import Failed",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnInstallDatabaseActionPerformed
+
     private void btnTestConnectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTestConnectionActionPerformed
-        testConnection();
+        testConnection(false);
     }//GEN-LAST:event_btnTestConnectionActionPerformed
 
-    private void testConnection() {
+    private void loadInput() {
         host = tfHost.getText();
         port = tfPort.getText();
         user = tfUser.getText();
         password = new String(pfPass.getPassword());
+    }
 
-        String url = "jdbc:mysql://" + host + ":" + port;
-
+    private void testConnection(boolean save) {
+        loadInput();
         System.out.println("Connecting to database...");
         //1. check if db exists
         boolean connected = false;
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password)) {
             connected = true;
             try {
-                ResultSet executeQuery = connection.createStatement().executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'pladipus'");
-                executeQuery.next();
-                dbExists = (!executeQuery.getString("SCHEMA_NAME").isEmpty());
-                JOptionPane.showMessageDialog(this, "Succesfully contacted the Pladipus database.");
+                dbExists = mySQLSetup.pladipusExists(connection);
+                if (dbExists) {
+                    if (save) {
+                        mySQLSetup.updateProperties(host, port, user, password);
+                        JOptionPane.showMessageDialog(this, "Succesfully saved database settings.");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Succesfully contacted the Pladipus database.");
+                    }
+                }
             } catch (SQLException theDatabaseIsNotThere) {
                 if (connected) {
                     //2. prompt user if he/she wants to attempt to initialize the database?
                     int dialogResult = JOptionPane.showConfirmDialog(this, "Would you like to automatically import the Pladipus database?");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         mySQLSetup.setupMySql(connection);
+                        JOptionPane.showMessageDialog(null, "Succesfully initiated database.");
                         dbExists = true;
-                        JOptionPane.showMessageDialog(this, "Succesfully created the Pladipus database.");
                     }
-                }
-            } finally {
-                if (dbExists) {
-                    mySQLSetup.updateProperties(host, port, user, password);
                 }
             }
         } catch (SQLException e) {
@@ -280,6 +339,7 @@ public class MySQLPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
+    private javax.swing.JButton btnInstallDatabase;
     private javax.swing.JButton btnTestConnection;
     private javax.swing.JLabel lbLogo;
     private javax.swing.JLabel lblHost;

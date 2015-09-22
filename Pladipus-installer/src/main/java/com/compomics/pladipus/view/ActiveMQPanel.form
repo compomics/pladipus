@@ -110,12 +110,14 @@
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" value="localhost"/>
+        <Property name="toolTipText" type="java.lang.String" value="The IP address of the machine hosting the ActiveMQ server."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="tfAmqPort">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" value="3389"/>
+        <Property name="toolTipText" type="java.lang.String" value="The port on the host that&apos;s listening for Pladipus connections"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfAmqPortActionPerformed"/>
@@ -125,6 +127,7 @@
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" value="1099"/>
+        <Property name="toolTipText" type="java.lang.String" value="The JMX port. This port is required for internal management and maintenance."/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnTestConnection">

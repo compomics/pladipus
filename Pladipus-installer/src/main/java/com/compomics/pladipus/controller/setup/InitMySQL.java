@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -25,6 +27,16 @@ public class InitMySQL {
 
     public InitMySQL() {
 
+    }
+
+    public boolean dropPladipus(Connection connection) throws SQLException {
+        int executeQuery = connection.createStatement().executeUpdate("drop schema pladipus;");
+        return executeQuery == 1;
+    }
+
+    public boolean pladipusExists(Connection connection) throws SQLException {
+        ResultSet executeQuery = connection.createStatement().executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'pladipus'");
+        return executeQuery.next();
     }
 
     /**
@@ -48,6 +60,7 @@ public class InitMySQL {
             IOUtils.copy(in, out);
             runner.runScript(new FileReader(tempFile));
         }
+
     }
 
     /**
