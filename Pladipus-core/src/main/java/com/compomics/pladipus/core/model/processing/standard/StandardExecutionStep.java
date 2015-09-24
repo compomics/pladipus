@@ -25,7 +25,7 @@ public class StandardExecutionStep extends ProcessingStep {
     public boolean doAction() throws Exception {
         String cmd = parameters.get("cmd");
         String executable = parameters.get("executable");
-        ProcessingEngine.startProcess(new File(executable), Arrays.asList(cmd.split(" ")));
+        new ProcessingEngine().startProcess(new File(executable), Arrays.asList(cmd.split(" ")));
         return true;
     }      
     

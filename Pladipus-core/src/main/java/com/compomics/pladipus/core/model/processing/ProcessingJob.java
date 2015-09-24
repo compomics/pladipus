@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.core.model.processing;
 
+import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import java.io.IOException;
@@ -41,6 +42,10 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
      */
     private long id;
     /**
+     * a callback notifier for this process
+     */
+    private final CallbackNotifier notifier;
+    /**
      * the user (must be in database)
      */
     private String user;
@@ -75,13 +80,14 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
      * @param name the name of this process
      * @param run the parent run of this process
      */
-    public ProcessingJob(HashMap<String, String> processingParameters, String user, long id, String name, String run) {
+    public ProcessingJob(HashMap<String, String> processingParameters, String user, int id, String name, String run) {
         this.user = user;
         this.id = id;
         this.name = name;
         this.run = run;
         this.processingParameters = processingParameters;
         this.jobPrerequisite = new Prerequisite();
+        this.notifier = new CallbackNotifier(id);
     }
 
     /**
@@ -95,13 +101,14 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
      * @param jobPrerequisite machine parameters that have to be respected for
      * this job
      */
-    public ProcessingJob(HashMap<String, String> processingParameters, String user, long id, String name, String run, Prerequisite jobPrerequisite) {
+    public ProcessingJob(HashMap<String, String> processingParameters, String user, int id, String name, String run, Prerequisite jobPrerequisite) {
         this.user = user;
         this.id = id;
         this.name = name;
         this.run = run;
         this.processingParameters = processingParameters;
         this.jobPrerequisite = jobPrerequisite;
+        this.notifier = new CallbackNotifier(id);
     }
 
     /**
@@ -114,6 +121,7 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
         this.user = user;
         this.processingParameters = processingParameters;
         this.jobPrerequisite = new Prerequisite();
+        this.notifier = new CallbackNotifier();
     }
 
     public boolean allowRun() {

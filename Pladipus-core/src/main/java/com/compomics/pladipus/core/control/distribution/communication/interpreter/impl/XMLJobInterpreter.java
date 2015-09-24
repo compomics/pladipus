@@ -9,6 +9,7 @@ import com.compomics.pladipus.core.control.distribution.communication.interprete
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
+import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import java.io.BufferedReader;
 import java.io.File;
@@ -118,7 +119,7 @@ public class XMLJobInterpreter extends XMLInterpreter {
         parameterMap.put("run", run);
         parameterMap.put("user", user);
         parameterMap.put("processID", id);
-        ProcessingJob job = new ProcessingJob(parameterMap, user, Long.parseLong(id), user + "_" + id, run, jobPrerequisite);
+        ProcessingJob job = new ProcessingJob(parameterMap, user, Integer.parseInt(id), user + "_" + id, run, jobPrerequisite);
         //add the standard initialisingStep
         //download required
         if (parameterMap.containsKey("required")) {
@@ -132,7 +133,9 @@ public class XMLJobInterpreter extends XMLInterpreter {
                 Element stepNode = (Element) steps.item(temp);
                 String className = stepNode.getAttribute("class");
                 LOGGER.info("Loading " + className);
-                job.add(loadProcessingStepFromClass(loader, className));
+                ProcessingStep requestedStep = loadProcessingStepFromClass(loader, className);
+                requestedStep.setProcessingID(Integer.parseInt(id));
+                job.add(requestedStep);
             }
         }
         return job;

@@ -33,20 +33,19 @@ public class SessionProcessingEngine extends ProcessingEngine {
 
     @Override
     public Boolean call() throws Exception {
-        CallbackNotifier callbackNotifier = CallbackNotifier.getInstance();
-        String text = getCurrentMessage().getText();
-        System.out.println(text);
-        ProcessingJob aJob = XMLJobInterpreter.getInstance().convertXMLtoJob(text);
 
+        String text = getCurrentMessage().getText();
+        ProcessingJob aJob = XMLJobInterpreter.getInstance().convertXMLtoJob(text);
+        CallbackNotifier callbackNotifier = aJob.get(0).getCallbackNotifier();
         if (!aJob.allowRun()) {
             throw new RejectedExecutionException("This machine is not qualified to run this task");
         } else {
             LOGGER.info("Executing job...");
             for (ProcessingStep aStep : aJob) {
-                callbackNotifier.onNotification(aStep.getDescription(), getCurrentMessage());
+                callbackNotifier.onNotification(aStep.getDescription());
                 aStep.doAction();
             }
-            callbackNotifier.onNotification("Finished", getCurrentMessage());
+            callbackNotifier.onNotification("Finished");
             return true;
         }
     }

@@ -75,7 +75,7 @@ public class MsConvertStep extends ProcessingStep {
                 parameters.put("o", tempResults.getAbsolutePath());
                 constructArguments();
 
-                ProcessingEngine.startProcess(executable, constructArguments());
+                new ProcessingEngine().startProcess(executable, constructArguments(),getCallbackNotifier());
 
                 File[] resultFiles = tempResults.listFiles();
 

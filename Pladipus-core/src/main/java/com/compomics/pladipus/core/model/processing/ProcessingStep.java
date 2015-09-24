@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.core.model.processing;
 
+import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import java.util.HashMap;
 
 /**
@@ -16,13 +17,17 @@ public abstract class ProcessingStep implements ProcessingExecutable {
     /**
      * The Logger Instance
      */
-
     protected HashMap<String, String> parameters;
     /**
      * The fully defined class name of the processing step
      */
 
     protected String processingStepClassName;
+    /**
+     * The id of the current process / job
+     */
+    private int processingID = -1;
+    private CallbackNotifier callbackNotifier;
 
     public String getProcessingStepClassName() {
         return processingStepClassName;
@@ -39,6 +44,22 @@ public abstract class ProcessingStep implements ProcessingExecutable {
     @Override
     public HashMap<String, String> getParameters() {
         return parameters;
+    }
+
+    public int getProcessingID() {
+        return processingID;
+    }
+
+    public void setProcessingID(int processingID) {
+        this.processingID = processingID;
+        this.callbackNotifier = new CallbackNotifier(processingID);
+    }
+
+    public CallbackNotifier getCallbackNotifier() {
+        if (callbackNotifier == null) {
+            callbackNotifier = new CallbackNotifier();
+        }
+        return callbackNotifier;
     }
 
 }

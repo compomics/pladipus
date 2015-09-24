@@ -50,6 +50,7 @@ public class ZipUtils {
                 unzipEntry(zipfile, entry, outputDir);
             }
             unzipped = true;
+            zipfile.close();
         } catch (Exception e) {
             LOGGER.error("Error while extracting file " + archive, e);
         } finally {
@@ -75,6 +76,7 @@ public class ZipUtils {
 
         try (BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry)); BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
             IOUtils.copy(inputStream, outputStream);
+            outputStream.flush();
         }
     }
 

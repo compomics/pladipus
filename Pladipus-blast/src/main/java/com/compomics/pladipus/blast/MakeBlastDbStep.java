@@ -48,7 +48,7 @@ public class MakeBlastDbStep extends ProcessingStep {
         commands.add(blastType);
         commands.add("-in");
         commands.add(fasta.getAbsolutePath());
-        ProcessingEngine.startProcess(executable, commands);
+        new ProcessingEngine().startProcess(executable, commands, getCallbackNotifier());
     }
 
     @Override

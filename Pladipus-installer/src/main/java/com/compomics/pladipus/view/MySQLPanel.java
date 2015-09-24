@@ -178,15 +178,12 @@ public class MySQLPanel extends javax.swing.JPanel {
                             .addGroup(pnlMainLayout.createSequentialGroup()
                                 .addComponent(btnInstallDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE))
                             .addComponent(pfPass))))
                 .addContainerGap())
         );
 
         pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblHost, lblPass, lblPort, lblUser});
-
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnApply, btnInstallDatabase});
 
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

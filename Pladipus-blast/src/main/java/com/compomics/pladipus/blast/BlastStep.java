@@ -46,7 +46,7 @@ public class BlastStep extends ProcessingStep {
         commands.add(dbFasta.getAbsolutePath());
         commands.add("-out");
         commands.add(outputFile.getAbsolutePath());
-        ProcessingEngine.startProcess(executable, commands);
+        new ProcessingEngine().startProcess(executable, commands,getCallbackNotifier());
         //copy the output to the correct folder?--> text files are fast, no need
     }
 

@@ -6,18 +6,23 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedSearchGUIParams;
+import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
+import com.compomics.pladipus.search.checkpoints.SearchGUICheckpoints;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -74,10 +79,26 @@ public class SearchGUIStep extends ProcessingStep {
         LOGGER.info("Starting SearchGUI...");
         //use this variable if you'd run peptideshaker following this classs
         parameters.put("output_folder", temp_searchGUI_output.getAbsolutePath());
-        ProcessingEngine.startProcess(getJar(), constructArguments());
+        //add callback notifier for more detailed printouts of the processing
+        CallbackNotifier callbackNotifier = getCallbackNotifier();
+        for (SearchGUICheckpoints aCheckPoint : SearchGUICheckpoints.values()) {
+            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(),aCheckPoint.getFeedback()));
+        }
+        new ProcessingEngine().startProcess(getJar(), constructArguments(),callbackNotifier);
         //storing intermediate results
         LOGGER.info("Storing results in " + real_outputFolder);
-        FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
+           real_outputFolder.mkdirs();
+           File outputFile = new File(real_outputFolder,"searchgui_out.zip");
+           File tempOutput= new File(temp_searchGUI_output,"searchgui_out.zip");
+        //copy as a stream?
+        if (!outputFile.exists()) {
+            outputFile.createNewFile();
+        }
+        try (FileChannel source = new FileInputStream(tempOutput).getChannel();
+                FileChannel destination = new FileOutputStream(outputFile).getChannel()) {
+            destination.transferFrom(source, 0, source.size());
+        }
+      //  FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
         //in case of future peptideShaker searches : 
         parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
         return true;

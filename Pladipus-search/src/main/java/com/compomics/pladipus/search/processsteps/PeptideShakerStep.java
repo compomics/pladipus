@@ -6,14 +6,20 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
+import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
+import com.compomics.pladipus.search.checkpoints.PeptideShakerCheckPoints;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +31,9 @@ import org.apache.commons.io.FileUtils;
 public class PeptideShakerStep extends ProcessingStep {
 
     private final File temp_output_folder = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/PeptideShaker/result");
+    private File temp_output_file;
+    private File real_output_folder;
+    private File real_output_file;
 
     public PeptideShakerStep() {
 
@@ -65,18 +74,24 @@ public class PeptideShakerStep extends ProcessingStep {
             experiment = parameters.get("experiment");
         }
 
+        real_output_folder = new File(parameters.get("out")).getParentFile();
         if (parameters.containsKey("output_folder")) {
-            parameters.put("out", new File(parameters.get("output_folder") + "/" + experiment + ".cps").getAbsolutePath());
+            temp_output_file = new File(temp_output_folder + "/" + experiment + ".cps");
+            parameters.put("out", temp_output_file.getAbsolutePath());
             parameters.remove("output_folder");
         }
-
-        File real_output_folder = new File(parameters.get("out")).getParentFile();
+        real_output_file=new File(real_output_folder,temp_output_file.getName());
+      
 
         List<String> constructArguments = constructArguments();
-        //TODO REPLACE THIS WITH THE ACTUAL OUTPUTFOLDER OR WAIT TILL THE VERY END IN THE CLEANING STEP?
-        ProcessingEngine.startProcess(peptideShakerJar, constructArguments);
+        //add callback notifier for more detailed printouts of the processing
+        CallbackNotifier callbackNotifier = getCallbackNotifier();
+        for (PeptideShakerCheckPoints aCheckPoint : PeptideShakerCheckPoints.values()) {
+            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+        }
+        new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
         //run peptideShaker with the existing files
-        cleanupAndSave(real_output_folder);
+        cleanupAndSave();
         return true;
     }
 
@@ -100,21 +115,25 @@ public class PeptideShakerStep extends ProcessingStep {
         return true;
     }
 
-    private void cleanupAndSave(File realTargetFolder) throws IOException {
-
+    private void cleanupAndSave() throws IOException {
         System.out.println("Running " + this.getClass().getName());
-
-        File outputFolder = new File(parameters.get("out")).getParentFile();
-        outputFolder.mkdirs();
-        for (File aFile : temp_output_folder.listFiles()) {
-            File dest = new File(realTargetFolder, aFile.getName());
-            if (aFile.isDirectory()) {
-                FileUtils.copyDirectory(aFile, dest, true);
-            } else {
-                FileUtils.copyFile(aFile, dest, true);
-            }
+        //parameters.put("out",real_output_file.getAbsolutePath());
+        real_output_file.getParentFile().mkdirs();
+        //copy as a stream?
+        if (!real_output_file.exists()) {
+            real_output_file.createNewFile();
         }
-        FileUtils.deleteDirectory(temp_output_folder);
+        try (FileChannel source = new FileInputStream(temp_output_file).getChannel();
+                FileChannel destination = new FileOutputStream(real_output_file).getChannel()) {
+            destination.transferFrom(source, 0, source.size());
+        }
+        //check if reports should be made
+        if (!parameters.containsKey("generate_reports")) {
+            FileUtils.deleteDirectory(temp_output_folder);
+        }else{
+            parameters.put("out_reports",real_output_file.getParentFile().getAbsolutePath());
+        }
+        
     }
 
     @Override
