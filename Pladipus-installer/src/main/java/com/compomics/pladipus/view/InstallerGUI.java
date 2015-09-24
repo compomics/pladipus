@@ -330,7 +330,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                         + "<br><br>"
                         + "By using the default settings you can easily connect and automatically import the Pladipus database scheme."
                         + "<br><br>"
-                        + "If there is no MySQL service reachable, click <a href='https://compomics.github.io/pladipus/wiki/12installingmysql.html'>here</a> for more help."
+                        + "If there is no MySQL service reachable, click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20MySQL'>here</a> for more help."
                 );
                 break;
             case 3:
@@ -342,7 +342,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                         + "<br><br>"
                         + "If no ActiveMQ service is reachable, please click the install button to automatically set up a prepackaged version."
                         + "<br><br>"
-                        + "Click <a href='http://compomics.github.io/pladipus/wiki/11installingactivemq.html'>here</a> for more help."
+                        + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20ActiveMQ'>here</a> for more help."
                 );
                 break;
             case 4:
@@ -359,7 +359,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                         + "<a href='http://www.ncbi.nlm.nih.gov/pubmed/24295440'>DeNovoGUI</a> "
                         + "and <a href='http://www.ncbi.nlm.nih.gov/pubmed/25574629'>PeptideShaker</a> to quickly set up a demo worker."
                         + "<br><br>"
-                        + "Click <a href='http://compomics.github.io/pladipus/wiki/13installingpladipus.html'>here</a> for more help."
+                        + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation'>here</a> for more help."
                 );
                 break;
         }
