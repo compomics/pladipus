@@ -114,7 +114,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        btnApply.setText("Save settings");
+        btnApply.setText("Save Settings");
         btnApply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnApplyActionPerformed(evt);
@@ -204,7 +204,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                 try {
 
                     setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
-                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Installation completed. Please launch the server using the generated shortcut on the desktop.");
+                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.","Installation complete",JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(ActiveMQPanel.this,
                             "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
@@ -248,10 +248,12 @@ public class ActiveMQPanel extends javax.swing.JPanel {
     private void testConnection() {
         try {
             PladipusTrafficManager.getInstance().isSystemOnline();
-            JOptionPane.showMessageDialog(this, "Succesfully connected to the ActiveMQ Server.");
+            JOptionPane.showMessageDialog(this, "Succesfully connected to the ActiveMQ Server.","Connected to ActiveMQ",JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
-                    "ActiveMQ could not be reached: " + System.lineSeparator() + ex.getMessage(),
+                    "The ActiveMQ server could not be reached. "+System.lineSeparator()+
+                            "* Is the server already running? Please verify the settings"+System.lineSeparator()+
+                            "* If not, please start the server by double clicking the .bat file on your desktop",
                     "Connection Failed",
                     JOptionPane.ERROR_MESSAGE);
         }

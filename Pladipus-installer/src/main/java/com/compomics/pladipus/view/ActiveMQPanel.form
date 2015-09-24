@@ -182,7 +182,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="btnApply">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Save settings"/>
+        <Property name="text" type="java.lang.String" value="Save Settings"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnApplyActionPerformed"/>

@@ -169,7 +169,7 @@ public class PladipusPanel extends javax.swing.JPanel {
             public void run() {
                 try {
                     new InstallPladipus().installWorker();
-                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.");
+                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.","Pladipus installed",JOptionPane.INFORMATION_MESSAGE);
                 } catch (SecurityException | IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
                             "Could not install Pladipus Worker: " + System.lineSeparator() + ex.getMessage(),
