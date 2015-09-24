@@ -7,7 +7,6 @@ package com.compomics.pladipus.core.control.engine.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLJobInterpreter;
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
-import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.IOException;
@@ -36,16 +35,16 @@ public class SessionProcessingEngine extends ProcessingEngine {
 
         String text = getCurrentMessage().getText();
         ProcessingJob aJob = XMLJobInterpreter.getInstance().convertXMLtoJob(text);
-        CallbackNotifier callbackNotifier = aJob.get(0).getCallbackNotifier();
         if (!aJob.allowRun()) {
             throw new RejectedExecutionException("This machine is not qualified to run this task");
         } else {
             LOGGER.info("Executing job...");
             for (ProcessingStep aStep : aJob) {
-                callbackNotifier.onNotification(aStep.getDescription(), true);
+                aStep.setProcessingID((int) aJob.getId());
+                aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
                 aStep.doAction();
             }
-            callbackNotifier.onNotification("Finished", true);
+            aJob.get(0).getCallbackNotifier().onNotification("Finished", true);
             return true;
         }
     }
