@@ -87,7 +87,7 @@ public class ProcessingEngine implements Callable {
         System.out.println(arguments.toString()
                 .replace("[", "")
                 .replace("]", "")
-            .replace(", ", " "));
+                .replace(", ", " "));
         try {
             ProcessingMonitor monitor = new ProcessingMonitor(processBuilder, callbackNotifier);
             monitor.getHook();
@@ -107,8 +107,9 @@ public class ProcessingEngine implements Callable {
     public boolean runJob(ProcessingJob aJob) throws Exception {
         for (ProcessingStep aStep : aJob) {
             try {
-                aStep.getCallbackNotifier().onNotification(aStep.getDescription(),true);
+                aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
                 aStep.doAction();
+                aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
             } catch (Exception e) {
                 //     e.printStackTrace();
                 throw e;
