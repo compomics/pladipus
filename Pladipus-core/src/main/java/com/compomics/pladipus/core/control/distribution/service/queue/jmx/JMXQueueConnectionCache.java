@@ -75,7 +75,9 @@ public class JMXQueueConnectionCache extends HashMap<CompomicsQueue, QueueViewMB
 
     private MBeanServerConnection initConnection() throws IOException, ConnectionException {
         if (conn == null) {
-            JMXServiceURL url = new JMXServiceURL(NetworkProperties.getInstance().getActiveMQJMXLocation());//new JMXServiceURL("service:jmx:rmi:///jndi/rmi://157.193.229.78:1099/jmxrmi");
+            NetworkProperties instance = NetworkProperties.getInstance();
+            instance.reload();
+            JMXServiceURL url = new JMXServiceURL(instance.getActiveMQJMXLocation());//new JMXServiceURL("service:jmx:rmi:///jndi/rmi://157.193.229.78:1099/jmxrmi");
             JMXConnector jmxc = JMXConnectorFactory.connect(url);
             conn = jmxc.getMBeanServerConnection();
         }
