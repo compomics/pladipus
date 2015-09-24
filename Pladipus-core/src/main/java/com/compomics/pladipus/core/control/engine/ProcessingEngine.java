@@ -6,6 +6,7 @@
 package com.compomics.pladipus.core.control.engine;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLJobInterpreter;
+import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.engine.callback.ProcessingMonitor;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
@@ -65,11 +66,36 @@ public class ProcessingEngine implements Callable {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public static int startProcess(File executable, List<String> arguments) throws IOException, InterruptedException, ExecutionException {
+    public int startProcess(File executable, List<String> arguments) {
+        CallbackNotifier callbackNotifier = new CallbackNotifier(-1);
+        return startProcess(executable, arguments, callbackNotifier);
+    }
+
+    /**
+     *
+     * @param executable the jar that should be started on this jvm
+     * @param arguments list of arguments + values required to start the jar
+     * @return the system exit value of the process
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier) {
         ProcessBuilder processBuilder = new ProcessBuilder(arguments);
         processBuilder.directory(executable.getParentFile());
         System.out.println("Launching process @ " + processBuilder.directory().getAbsolutePath());
-        return ProcessingMonitor.getHook(processBuilder);
+        System.out.println(arguments.toString()
+                .replace("[", "")
+                .replace("]", "")
+            .replace(", ", " "));
+        try {
+            ProcessingMonitor monitor = new ProcessingMonitor(processBuilder, callbackNotifier);
+            monitor.getHook();
+        } catch (Exception ex) {
+            LOGGER.error(ex);
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
     /**
@@ -80,7 +106,13 @@ public class ProcessingEngine implements Callable {
      */
     public boolean runJob(ProcessingJob aJob) throws Exception {
         for (ProcessingStep aStep : aJob) {
-            aStep.doAction();
+            try {
+                aStep.getCallbackNotifier().onNotification(aStep.getDescription(),true);
+                aStep.doAction();
+            } catch (Exception e) {
+                //     e.printStackTrace();
+                throw e;
+            }
         }
         LOGGER.info("Done !");
         return true;
@@ -94,12 +126,7 @@ public class ProcessingEngine implements Callable {
      * @throws Exception
      */
     public boolean runJob(TextMessage aJobMessage) throws Exception {
-        ProcessingJob aJob = XMLJobInterpreter.getInstance().convertXMLtoJob(aJobMessage.getText());
-        for (ProcessingStep aStep : aJob) {
-            aStep.doAction();
-        }
-        LOGGER.info("Done !");
-        return true;
+        return runJob(XMLJobInterpreter.getInstance().convertXMLtoJob(aJobMessage.getText()));
     }
 
     @Override

@@ -16,15 +16,15 @@ import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.engine.impl.SessionProcessingEngine;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
@@ -107,7 +107,7 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
             LOGGER.info("Run complete, notifying " + recipient);
             Mailer mailer = new Mailer(recipient);
             try {
-                mailer.generateAndSendEmail(generator.generateSubject(parentRunID), generator.generateReport(parentRunID),recipient);
+                mailer.generateAndSendEmail(generator.generateSubject(parentRunID), generator.generateReport(parentRunID), recipient);
             } catch (MessagingException ex) {
                 LOGGER.warn("Could not notify run owner of finished run !");
             }
@@ -127,16 +127,26 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
                     commit(message);
                     LOGGER.info("Succesfully handled task");
                 }
-            } catch (JMSException | IOException | InterruptedException | ExecutionException | TimeoutException | SQLException ex) {
+                //exception can be due to nearly everything. it is up to the user to chose what to throw...
+            } catch (Exception ex) {
                 //otherwise other executionexceptions are ignored...
                 if (ex instanceof RejectedExecutionException) {
                     LOGGER.info("Machine is not qualified to run this job");
                     rollback();
                 } else {
                     try {
-                        CallbackNotifier callbackNotifier = CallbackNotifier.getInstance();
-                        callbackNotifier.onNotification(ex.getMessage(), message);
+                        CallbackNotifier callbackNotifier = new CallbackNotifier(message);
+                        callbackNotifier.onNotification(ex.getMessage(),false);
                         rollbackWithError(message);
+                        //log the error to a file-->should be refactored to get a spot in the database or something, or mail? :
+                        File errorLog = new File(System.getProperty("user.home") + "/.compomics/pladipus/log/errors.log");
+                        errorLog.getParentFile().mkdirs();
+                        errorLog.createNewFile();
+                        try ( //APPEND EXCEPTION TO THE FILE
+                                PrintWriter writer = new PrintWriter(errorLog)) {
+                            writer.append("ERROR IN PROCESS : " + message.getJMSCorrelationID() + System.lineSeparator()).flush();
+                            ex.printStackTrace(writer);
+                        }
                     } catch (IOException | SQLException ex1) {
                         ex1.printStackTrace();
                         LOGGER.error(ex1);
