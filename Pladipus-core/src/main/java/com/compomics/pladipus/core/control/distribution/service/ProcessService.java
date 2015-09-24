@@ -281,6 +281,17 @@ public class ProcessService {
 
     /**
      *
+     * @param processID the process to be updated
+     * @throws SQLException
+     */
+    public void increaseProcessStepCount(int processID) throws SQLException {
+        try (ProcessDAO dao = ProcessDAO.getInstance()) {
+            dao.updateProcessCounter(processID);
+        }
+    }
+
+    /**
+     *
      * @param processID
      * @return the job object for this process ID
      * @throws Exception

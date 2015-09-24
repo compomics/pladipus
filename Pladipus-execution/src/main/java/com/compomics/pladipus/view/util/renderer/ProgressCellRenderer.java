@@ -20,6 +20,7 @@ public class ProgressCellRenderer extends JProgressBar implements TableCellRende
         super(0, 100);
         setValue(0);
         setStringPainted(true);
+        //temporary measure, update later to make sure percentages are shown
     }
 
     @Override
@@ -42,7 +43,6 @@ public class ProgressCellRenderer extends JProgressBar implements TableCellRende
         double parseDouble = 0;
         if (value != null) {
             parseDouble = Double.parseDouble(String.valueOf(value));
-
             int actualValue = Math.min(100, (int) parseDouble);
             //TODO make this a color index?        
             this.setValue(actualValue);

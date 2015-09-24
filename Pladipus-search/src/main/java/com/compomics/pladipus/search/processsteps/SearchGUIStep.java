@@ -101,6 +101,7 @@ public class SearchGUIStep extends ProcessingStep {
       //  FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
         //in case of future peptideShaker searches : 
         parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
+        parameters.put("out",real_outputFolder.getAbsolutePath()+"/"+parameterFile.getName()+".cps");
         return true;
     }
 

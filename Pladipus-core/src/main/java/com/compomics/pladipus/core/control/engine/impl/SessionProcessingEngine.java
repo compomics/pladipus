@@ -42,10 +42,10 @@ public class SessionProcessingEngine extends ProcessingEngine {
         } else {
             LOGGER.info("Executing job...");
             for (ProcessingStep aStep : aJob) {
-                callbackNotifier.onNotification(aStep.getDescription());
+                callbackNotifier.onNotification(aStep.getDescription(), true);
                 aStep.doAction();
             }
-            callbackNotifier.onNotification("Finished");
+            callbackNotifier.onNotification("Finished", true);
             return true;
         }
     }

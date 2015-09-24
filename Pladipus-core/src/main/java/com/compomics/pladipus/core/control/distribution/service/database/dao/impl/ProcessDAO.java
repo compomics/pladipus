@@ -130,12 +130,21 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
             setDone(processID);
         } else {
             try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                    PreparedStatement updateRun = c.prepareStatement("UPDATE process SET state =?,stepcount=stepcount+1 WHERE process_id=?")) {
+                    PreparedStatement updateRun = c.prepareStatement("UPDATE process SET state =? WHERE process_id=?")) {
                 updateRun.setString(1, newState);
                 updateRun.setInt(2, processID);
                 updateRun.executeUpdate();
                 c.commit();
             }
+        }
+    }
+
+    public void updateProcessCounter(int processID) throws SQLException {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET stepcount=stepcount+1 WHERE process_id=?")) {
+            updateRun.setInt(1, processID);
+            updateRun.executeUpdate();
+            c.commit();
         }
     }
 
