@@ -4,13 +4,13 @@
 
     <groupId>com.compomics</groupId>
     <artifactId>Pladipus-core</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.compomics</groupId>
         <artifactId>Pladipus</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </parent>
 
     <name>Pladipus-core</name>
