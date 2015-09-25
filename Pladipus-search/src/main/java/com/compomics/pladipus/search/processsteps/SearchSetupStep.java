@@ -17,6 +17,7 @@ import com.compomics.util.experiment.identification.identification_parameters.to
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.XtandemParameters;
 import java.io.File;
+import java.io.FileNotFoundException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -30,11 +31,14 @@ public class SearchSetupStep extends ProcessingStep {
      * the temp folder for the entire processing
      */
     private final File tempResources;
+    private final File fasta_repo;
     private static final Logger LOGGER = Logger.getLogger(SearchSetupStep.class);
 
     public SearchSetupStep() {
         tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/resources");
         tempResources.getParentFile().mkdirs();
+        fasta_repo = new File(System.getProperty("user.home") + "/.compomics/pladipus/fasta");
+        fasta_repo.mkdirs();
     }
 
     @Override
@@ -76,23 +80,49 @@ public class SearchSetupStep extends ProcessingStep {
             parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFolder(inputPath, tempResources).getAbsolutePath());
         }
         LOGGER.info("Got input files " + parameters.get("spectrum_files"));
-        File fastaFile = PladipusFileDownloadingService.downloadFile(fastaPath, tempResources, "temp.fasta");
-        parameters.put("fasta_file", fastaFile.getAbsolutePath());
-        LOGGER.info("Got fasta file " + parameters.get("fasta_file"));
-        //get and update parameters
-        File paramFile = PladipusFileDownloadingService.downloadFile(paramPath, tempResources);
-        SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(paramFile);
-        SearchParameters updatedIdentificationParameters = updateAlgorithmSettings(identificationParameters, fastaFile);
-        SearchParameters.saveIdentificationParameters(updatedIdentificationParameters, paramFile);
-        parameters.put("id_params", paramFile.getAbsolutePath());
-        LOGGER.info("Got identification parameters " + parameters.get("id_params"));
 
-        //output
-        File outputFolder = new File(parameters.get("output_folder"));
-        outputFolder.mkdirs();
-        LOGGER.info("Got output folder " + parameters.get("output_folder"));
-        parameters.put("output_folder", outputFolder.getAbsolutePath());
+        //generate a repo folder for fasta files...
+        //clear the repository save for the current fasta (temporary solution)
+        //TODO refactor that it deletes complete runs only
+        String fastaName = new File(fastaPath).getName();
+        boolean fastaAlreadyExists = false;
+        File fastaFile = null;
+        for (File aFasta : fasta_repo.listFiles()) {
+            if (aFasta.getName().equalsIgnoreCase(fastaName)) {
+                fastaFile = aFasta;
+                fastaAlreadyExists = true;
+                break;
+            }
+        }
+        if (!fastaAlreadyExists) {
+            fastaFile = PladipusFileDownloadingService.downloadFile(fastaPath, fasta_repo, fastaName);
+        }else{
+            for(File aFile:fasta_repo.listFiles()){
+                if(!aFile.getName().toLowerCase().contains(fastaName.toLowerCase())){
+                    aFile.delete();
+                }
+            }
+        }
+            
+        if (fastaFile != null) {
+            parameters.put("fasta_file", fastaFile.getAbsolutePath());
+            LOGGER.info("Got fasta file " + parameters.get("fasta_file"));
+            //get and update parameters
+            File paramFile = PladipusFileDownloadingService.downloadFile(paramPath, tempResources);
+            SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(paramFile);
+            SearchParameters updatedIdentificationParameters = updateAlgorithmSettings(identificationParameters, fastaFile);
+            SearchParameters.saveIdentificationParameters(updatedIdentificationParameters, paramFile);
+            parameters.put("id_params", paramFile.getAbsolutePath());
+            LOGGER.info("Got identification parameters " + parameters.get("id_params"));
 
+            //output
+            File outputFolder = new File(parameters.get("output_folder"));
+            outputFolder.mkdirs();
+            LOGGER.info("Got output folder " + parameters.get("output_folder"));
+            parameters.put("output_folder", outputFolder.getAbsolutePath());
+        } else {
+            throw new FileNotFoundException("Fasta file was not found !");
+        }
     }
 
     @Override
@@ -170,9 +200,7 @@ public class SearchSetupStep extends ProcessingStep {
         tempSearchParameters.setMaxChargeSearched(searchParameters.getMaxChargeSearched());
         tempSearchParameters.setMinChargeSearched(searchParameters.getMinChargeSearched());
         System.out.println(tempSearchParameters.toString());
-        
-     
-        
+
         return tempSearchParameters;
     }
 }
