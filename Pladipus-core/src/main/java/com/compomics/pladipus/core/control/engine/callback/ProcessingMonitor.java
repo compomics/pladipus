@@ -190,15 +190,15 @@ public class ProcessingMonitor {
                     break;
                 }
             }
-            /*  if (!ignoreLine) {
-             //scan for errors
-             for (String aKeyword : errorKeyWords) {
-             if (line.toUpperCase().contains(aKeyword)) {
-             isAThrownError = true;
-             throw (handleError(line, processReader));
-             }
-             }
-             }*/
+            if (!ignoreLine) {
+                //scan for errors
+                for (String aKeyword : errorKeyWords) {
+                    if (line.toUpperCase().contains(aKeyword)) {
+                        isAThrownError = true;
+                        throw (handleError(line, processReader));
+                    }
+                }
+            }
         } catch (NullPointerException e) {
             LOGGER.error(e);
         }

@@ -19,7 +19,7 @@ public enum SearchGUICheckpoints {
     SEARCH_ENGINE_MYRIMATCH("myrimatch command:", "Running Myrimatch"),
     SEARCH_ENGINE_MSAMANDA("ms amanda command:", "Running MSAmanda"),
     SEARCH_ENGINE_OMSSA("omssa command:", "Running OMSSA"),
-    SEARCH_ENGINE_XTANDEM("xtandem command:", "Running XTandem"),
+    SEARCH_ENGINE_XTANDEM("xtandem command:", "Running X!Tandem"),
     SEARCH_ENGINE_TIDE_INDEX("tide index command:", "Running TIDE : indexing"),
     SEARCH_ENGINE_TIDE_SEARCH("tide search command:", "Running TIDE : searching"),
     PROCESSING_MSCONVERT("msconvert command:", "Running MSConvert"),
