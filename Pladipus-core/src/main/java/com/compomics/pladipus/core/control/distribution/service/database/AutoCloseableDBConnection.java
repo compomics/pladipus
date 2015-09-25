@@ -101,7 +101,7 @@ public class AutoCloseableDBConnection implements Connection, AutoCloseable {
                 c.close();
             }
         } catch (SQLException ex) {
-            LOGGER.info("Faulty shutdown : " + ex);
+            LOGGER.warn("Faulty shutdown : " + ex);
             c = null;
         }
     }
@@ -114,7 +114,7 @@ public class AutoCloseableDBConnection implements Connection, AutoCloseable {
         boolean shutdown = false;
         try {
             shutdown = c == null || c.isClosed();
-            LOGGER.info("MySQL connection was gracefully closed");
+            LOGGER.debug("MySQL connection was gracefully closed");
         } catch (SQLException ex) {
             LOGGER.error(ex);
             LOGGER.warn("MySQL connection may have been closed with errors");

@@ -85,7 +85,7 @@ public class Prerequisite {
         if (parameter.equals(PrerequisiteParameter.CORES)) {
             int requestedCores = Integer.valueOf(parameter.getOptionValue());
             if (requestedCores <= 0) {
-                LOGGER.info("0 cores requested, any number of cores allowed for this task");
+                LOGGER.debug("0 cores requested, any number of cores allowed for this task");
                 complied = true;
             } else {
                 int actualCores = Runtime.getRuntime().availableProcessors();
@@ -100,7 +100,7 @@ public class Prerequisite {
         else if (parameter.equals(PrerequisiteParameter.MEMORY)) {
             int memoryGB = Integer.valueOf(parameter.getOptionValue());
             if (memoryGB <= 0) {
-                LOGGER.info("0 RAM requested, any number of cores allowed for this task");
+                LOGGER.debug("0 RAM requested, any number of cores allowed for this task");
                 complied = true;
             } else {
                 long actualRAM = Runtime.getRuntime().maxMemory() / 1024 / 1024 / 1024;
@@ -115,7 +115,7 @@ public class Prerequisite {
         else if (parameter.equals(PrerequisiteParameter.DISKSPACE)) {
             int gigabytes = Integer.valueOf(parameter.getOptionValue());
             if (gigabytes <= 0) {
-                LOGGER.info("0 DiskSpace requested, any number of cores allowed for this task");
+                LOGGER.debug("0 DiskSpace requested, any number of cores allowed for this task");
                 complied = true;
             } else {
                 File temp = new File("test.txt");

@@ -175,7 +175,7 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
                     processIDs.add(generatedKeys.getInt(1));
                 }
             }
-            LOGGER.info("Storing parameters as batch in the task database");
+            LOGGER.debug("Storing parameters as batch in the task database");
 
             insertParameter.executeBatch();
             c.commit();
@@ -214,7 +214,7 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
             if (generatedKeys.next()) {
                 processID = generatedKeys.getInt(1);
             }
-            LOGGER.info("Storing parameters as batch in the task database");
+            LOGGER.debug("Storing parameters as batch in the task database");
             insertParameter.executeBatch();
             c.commit();
         }

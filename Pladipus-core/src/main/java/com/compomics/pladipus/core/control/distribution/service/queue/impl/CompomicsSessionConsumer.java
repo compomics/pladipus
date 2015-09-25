@@ -125,7 +125,7 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
                 //executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
                 if (future.get(1, TimeUnit.DAYS)) {
                     commit(message);
-                    LOGGER.info("Succesfully handled task");
+                    LOGGER.info("Succesfully completed task");
                 }
                 //exception can be due to nearly everything. it is up to the user to chose what to throw...
             } catch (Exception ex) {

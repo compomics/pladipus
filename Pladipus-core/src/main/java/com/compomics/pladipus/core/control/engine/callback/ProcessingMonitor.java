@@ -64,18 +64,6 @@ public class ProcessingMonitor {
     public ProcessingMonitor(ProcessBuilder processBuilder, CallbackNotifier notifier) {
         this.notifier = notifier;
         this.processBuilder = processBuilder;
-        addTerminatingKeywords();
-    }
-
-    private void addTerminatingKeywords() {
-        //TODO FIGURE OUT A CLEANER WAY TO DO THIS?...
-        errorKeyWords.add("ERROR");
-        errorKeyWords.add("FATAL");
-        errorKeyWords.add("PLEASE CONTACT");
-        errorKeyWords.add("EXCEPTION");
-        errorKeyWords.add("PEPTDESHAKER PROCESSING CANCELED");
-        errorKeyWords.add("UNABLE TO READ SPECTRUM");
-        errorKeyWords.add("COMPOMICSERROR");
     }
 
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
@@ -161,7 +149,14 @@ public class ProcessingMonitor {
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
                 String line;
+                File logFile = new File(System.getProperty("user.home")+"/.compomics/pladipus/log/subprocess.log");
+                if(logFile.exists()){
+                    logFile.delete();
+                }
+                logFile.getParentFile().mkdirs();
+                logFile.createNewFile();
                 while ((line = br.readLine()) != null) {
+                    writeToLog(line, logFile);
                     scanForCheckpoints(line, br);
                 }
             } catch (Exception ex) {
@@ -172,7 +167,7 @@ public class ProcessingMonitor {
     }
 
     private void writeToLog(String line, File logFile) throws IOException {
-        try (FileWriter writer = new FileWriter(logFile)) {
+        try (FileWriter writer = new FileWriter(logFile, true)) {
             writer.append(line).append(System.lineSeparator()).flush();
         }
     }
@@ -181,7 +176,6 @@ public class ProcessingMonitor {
         boolean ignoreLine;
         ignoreLine = false;
         //print to the console
-        System.out.println(line);
         try {
             for (Checkpoint checkpoint : notifier.getCheckpoints()) {
                 if (line.toUpperCase().contains(checkpoint.getCheckpoint().toUpperCase())) {
@@ -190,15 +184,15 @@ public class ProcessingMonitor {
                     break;
                 }
             }
-            if (!ignoreLine) {
-                //scan for errors
-                for (String aKeyword : errorKeyWords) {
-                    if (line.toUpperCase().contains(aKeyword)) {
-                        isAThrownError = true;
-                        throw (handleError(line, processReader));
-                    }
-                }
-            }
+            /*    if (!ignoreLine) {
+             //scan for errors
+             for (String aKeyword : errorKeyWords) {
+             if (line.toUpperCase().contains(aKeyword)) {
+             isAThrownError = true;
+             throw (handleError(line, processReader));
+             }
+             }
+             }*/
         } catch (NullPointerException e) {
             LOGGER.error(e);
         }

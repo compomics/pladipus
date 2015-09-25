@@ -54,6 +54,7 @@ public class CallbackNotifier {
      * @throws JMSException
      */
     public void onNotification(String event,boolean increaseStepCounter) throws SQLException, JMSException {
+        LOGGER.info(event);
         if (processID != -1) {
             ProcessService pService = ProcessService.getInstance();
             pService.updateProcessState(processID, event);

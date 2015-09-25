@@ -118,7 +118,7 @@ public class ZipUtils {
                 zipOutputStream.close();
             }
 
-            LOGGER.info("Regular file :" + inputFile.getCanonicalPath() + " is zipped to archive :" + zipFile.getAbsolutePath());
+            LOGGER.debug("Regular file :" + inputFile.getCanonicalPath() + " is zipped to archive :" + zipFile.getAbsolutePath());
 
         } catch (IOException e) {
             LOGGER.error(e);

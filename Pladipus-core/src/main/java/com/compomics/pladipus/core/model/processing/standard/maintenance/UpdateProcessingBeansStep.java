@@ -22,7 +22,7 @@ public class UpdateProcessingBeansStep extends ProcessingStep {
     @Override
     public boolean doAction() throws Exception {
         String className = getParameters().get("class");
-        LOGGER.info("Updating processing bean configuration...");
+        LOGGER.debug("Updating processing bean configuration...");
         ProcessingBeanUpdater instance = ProcessingBeanUpdater.getInstance();
         instance.addNewProcessingStep(className);
         return true;

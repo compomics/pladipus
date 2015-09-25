@@ -139,7 +139,7 @@ public class CLIExecutor {
     }
 
     private static void parseCLI(String[] args) {
-        LOGGER.info("Parsing arguments...");
+        LOGGER.debug("Parsing arguments...");
         CommandLineParser parser = new GnuParser();
         try {
             CommandLine line = parser.parse(options, args);

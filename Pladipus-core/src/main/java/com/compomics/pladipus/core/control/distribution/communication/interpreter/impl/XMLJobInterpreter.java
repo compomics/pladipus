@@ -90,13 +90,13 @@ public class XMLJobInterpreter extends XMLInterpreter {
         LOGGER.info("Converting instructions to java code...");
         Document doc = getDocumentFromXml(XML);
         //option   Document doc = getDocumentFromXml(XML);al, but recommended
-        LOGGER.info("Extracting message parameters...");
+        LOGGER.debug("Extracting message parameters...");
         String user = ((Element) doc.getElementsByTagName("job").item(0)).getAttribute("user");
 
         String id = ((Element) doc.getElementsByTagName("job").item(0)).getAttribute("id");
 
         String run = ((Element) doc.getElementsByTagName("job").item(0)).getAttribute("run");
-        LOGGER.info(run + "(" + id + ") was requested by " + user);
+        LOGGER.debug(run + "(" + id + ") was requested by " + user);
 
         HashMap<String, String> parameterMap = new HashMap<>();
         Prerequisite jobPrerequisite = new Prerequisite();
@@ -123,7 +123,7 @@ public class XMLJobInterpreter extends XMLInterpreter {
         //add the standard initialisingStep
         //download required
         if (parameterMap.containsKey("required")) {
-            LOGGER.info("Some additional files will be downloaded to run this job...");
+            LOGGER.debug("Some additional files will be downloaded to run this job...");
             downloadRequiredProjects(parameterMap.get("required"));
         }
         NodeList steps = doc.getElementsByTagName("step");
@@ -132,7 +132,7 @@ public class XMLJobInterpreter extends XMLInterpreter {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element stepNode = (Element) steps.item(temp);
                 String className = stepNode.getAttribute("class");
-                LOGGER.info("Loading " + className);
+                LOGGER.debug("Loading " + className);
                 ProcessingStep requestedStep = loadProcessingStepFromClass(loader, className);
                 requestedStep.setProcessingID(Integer.parseInt(id));
                 job.add(requestedStep);

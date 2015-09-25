@@ -97,21 +97,21 @@ public class PladipusTrafficManager {
         if (!jobConfigurationFile.exists()) {
             throw new IllegalArgumentException("Job configuration file does not exist!");
         }
-        LOGGER.info("Establishing connection with database...");
+        LOGGER.info("Posting jobs to the pladipus network...");
         XMLTemplateInterpreter interpreter = XMLTemplateInterpreter.getInstance();
-        LOGGER.info("Reading provided job configuration file...");
+        LOGGER.debug("Reading provided job configuration file...");
         String runTitle = convertXMLtoTemplate.getName();
         String xmlUser = convertXMLtoTemplate.getUser();
         RunService rService = RunService.getInstance();
         if (isValidUser(xmlUser)) {
             priority = convertXMLtoTemplate.getPriority();
-            LOGGER.info("Storing local jobs for " + xmlUser + " run name = " + runTitle);
+            LOGGER.debug("Storing local jobs for " + xmlUser + " run name = " + runTitle);
             LinkedList<HashMap<String, String>> readLocalProcessingParameters = interpreter.readLocalProcessingParameters(convertXMLtoTemplate, jobConfigurationFile);
-            LOGGER.info("Converting template to job using the provided configuration...");
-            LOGGER.info("Finding run...");
+            LOGGER.debug("Converting template to job using the provided configuration...");
+            LOGGER.debug("Finding run...");
             int runId = rService.getRunID(runTitle, xmlUser);
-            LOGGER.info("Matching run found : runID = " + runId);
-            LOGGER.info("Adding " + readLocalProcessingParameters.size() + " jobs to run...");
+            LOGGER.debug("Matching run found : runID = " + runId);
+            LOGGER.debug("Adding " + readLocalProcessingParameters.size() + " jobs to run...");
             rService.addToRun(runId, readLocalProcessingParameters);
         }
     }
@@ -139,28 +139,28 @@ public class PladipusTrafficManager {
         if (!jobConfigurationFile.exists()) {
             throw new IllegalArgumentException("Job configuration file does not exist!");
         }
-        LOGGER.info("Establishing connection with database...");
+        LOGGER.info("Posting jobs to pladipus...");
 
         XMLTemplateInterpreter interpreter = XMLTemplateInterpreter.getInstance();
-        LOGGER.info("Reading provided job configuration file...");
+        LOGGER.debug("Reading provided job configuration file...");
         PladipusProcessingTemplate convertXMLtoTemplate = interpreter.convertXMLtoTemplate(templateFile);
         String runTitle = convertXMLtoTemplate.getName();
         String xmlUser = convertXMLtoTemplate.getUser();
         RunService rService = RunService.getInstance();
         if (isValidUser(xmlUser)) {
             priority = convertXMLtoTemplate.getPriority();
-            LOGGER.info("Storing local jobs for " + xmlUser + " run name = " + runTitle);
+            LOGGER.debug("Storing local jobs for " + xmlUser + " run name = " + runTitle);
             LinkedList<HashMap<String, String>> readLocalProcessingParameters = interpreter.readLocalProcessingParameters(convertXMLtoTemplate, jobConfigurationFile);
-            LOGGER.info("Converting template to job using the provided configuration...");
-            LOGGER.info("Finding run...");
+            LOGGER.debug("Converting template to job using the provided configuration...");
+            LOGGER.debug("Finding run...");
             int runId = rService.getRunID(runTitle, xmlUser);
             if (runId == -1) {
                 runId = rService.createRun(convertXMLtoTemplate);
-                LOGGER.info("Run created : runID = " + runId);
+                LOGGER.debug("Run created : runID = " + runId);
             } else {
-                LOGGER.info("Matching run found : runID = " + runId);
+                LOGGER.debug("Matching run found : runID = " + runId);
             }
-            LOGGER.info("Adding " + readLocalProcessingParameters.size() + " jobs to run...");
+            LOGGER.debug("Adding " + readLocalProcessingParameters.size() + " jobs to run...");
             ProcessService pService = ProcessService.getInstance();
             rService.addToRun(runId, readLocalProcessingParameters);
             //only the not-queued ones should be put on the queue here 

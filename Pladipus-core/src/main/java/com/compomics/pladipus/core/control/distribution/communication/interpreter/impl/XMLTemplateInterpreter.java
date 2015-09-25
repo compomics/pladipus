@@ -100,7 +100,7 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
         int priority = 4;
         try {
             String priorityString = ((Element) doc.getElementsByTagName("template").item(0)).getAttribute("priority");
-            LOGGER.info("Priority in template : " + priorityString);
+            LOGGER.debug("Priority in template : " + priorityString);
             priority = Integer.parseInt(priorityString);
         } catch (NumberFormatException e) {
             LOGGER.warn("Priority not found : default priority will be set");

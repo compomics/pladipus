@@ -44,7 +44,7 @@ public class CompomicsDurableConsumer extends CompomicsConsumer {
                 //executor.shutdown();
                 //executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
                 if (future.get(1, TimeUnit.DAYS)) {
-                    LOGGER.info("Succesfully handled task");
+                    LOGGER.info("Succesfully completed task");
                 }
             } catch (JMSException | IOException | InterruptedException | ExecutionException | TimeoutException ex) {
                 //otherwise other executionexceptions are ignored...

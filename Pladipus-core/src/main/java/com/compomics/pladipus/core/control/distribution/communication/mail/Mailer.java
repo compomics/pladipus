@@ -51,7 +51,7 @@ public class Mailer {
         mailServerProperties.put("mail.smtp.starttls.enable", "true");
         System.out.println("Mail Server Properties have been setup successfully..");
         // Step2
-        LOGGER.info("Generating message...");
+        LOGGER.debug("Generating message...");
         getMailSession = Session.getDefaultInstance(mailServerProperties, null);
         generateMailMessage = new MimeMessage(getMailSession);
         generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));

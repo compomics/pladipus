@@ -113,7 +113,7 @@ public class SpringProcessingStepLoader implements StepLoader {
 
     @Override
     public ProcessingStep loadProcessingStep(String className) throws Exception {
-        LOGGER.info("Loading " + className);
+        LOGGER.debug("Loading " + className);
         //load the bean
         // Logger.getRootLogger().setLevel(Level.OFF);
         ProcessingStep assummedProcessingStep = null;

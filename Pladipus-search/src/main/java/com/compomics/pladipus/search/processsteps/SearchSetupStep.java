@@ -71,15 +71,15 @@ public class SearchSetupStep extends ProcessingStep {
         if (inputPath.toLowerCase().endsWith(".mgf") || inputPath.toLowerCase().endsWith(".mgf.zip")) {
             String inputFile = PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath();
             if (inputPath.toLowerCase().endsWith(".zip")) {
-                LOGGER.info("Unzipping input");
+                LOGGER.debug("Unzipping input");
                 ZipUtils.unzipArchive(new File(inputFile), tempResources);
-                LOGGER.info("Done unzipping...");
+                LOGGER.debug("Done unzipping...");
             }
             parameters.put("spectrum_files", inputFile.replace(".zip", ""));
         } else {
             parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFolder(inputPath, tempResources).getAbsolutePath());
         }
-        LOGGER.info("Got input files " + parameters.get("spectrum_files"));
+        LOGGER.debug("Got input files " + parameters.get("spectrum_files"));
 
         //generate a repo folder for fasta files...
         //clear the repository save for the current fasta (temporary solution)
@@ -106,7 +106,7 @@ public class SearchSetupStep extends ProcessingStep {
             
         if (fastaFile != null) {
             parameters.put("fasta_file", fastaFile.getAbsolutePath());
-            LOGGER.info("Got fasta file " + parameters.get("fasta_file"));
+            LOGGER.debug("Got fasta file " + parameters.get("fasta_file"));
             //get and update parameters
             File paramFile = PladipusFileDownloadingService.downloadFile(paramPath, tempResources);
             SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(paramFile);
@@ -118,7 +118,7 @@ public class SearchSetupStep extends ProcessingStep {
             //output
             File outputFolder = new File(parameters.get("output_folder"));
             outputFolder.mkdirs();
-            LOGGER.info("Got output folder " + parameters.get("output_folder"));
+            LOGGER.debug("Got output folder " + parameters.get("output_folder"));
             parameters.put("output_folder", outputFolder.getAbsolutePath());
         } else {
             throw new FileNotFoundException("Fasta file was not found !");

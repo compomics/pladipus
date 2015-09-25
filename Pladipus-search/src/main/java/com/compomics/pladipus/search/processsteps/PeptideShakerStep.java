@@ -23,6 +23,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -34,6 +35,7 @@ public class PeptideShakerStep extends ProcessingStep {
     private File temp_output_file;
     private File real_output_folder;
     private File real_output_file;
+    private static final Logger LOGGER = Logger.getLogger(PeptideShakerStep.class);
 
     public PeptideShakerStep() {
 
@@ -60,7 +62,7 @@ public class PeptideShakerStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws Exception, Exception {
-        System.out.println("Running " + this.getClass().getName());
+        LOGGER.info("Running Peptide Shaker");
         File peptideShakerJar = getJar();
 
         if (temp_output_folder.exists()) {

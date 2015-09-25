@@ -59,12 +59,10 @@ public class SearchGUIStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws Exception, Exception {
-        LOGGER.info("Running " + this.getClass().getName());
         File parameterFile = new File(parameters.get("id_params"));
         File fastaFile = new File(parameters.get("fasta_file"));
         File real_outputFolder = new File(parameters.get("output_folder"));
         //update the fasta
-        LOGGER.info("Updating parameters...");
         SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
         identificationParameters.setFastaFile(fastaFile);
         //fix the location
@@ -86,7 +84,7 @@ public class SearchGUIStep extends ProcessingStep {
         }
         new ProcessingEngine().startProcess(getJar(), constructArguments(),callbackNotifier);
         //storing intermediate results
-        LOGGER.info("Storing results in " + real_outputFolder);
+        LOGGER.debug("Storing results in " + real_outputFolder);
            real_outputFolder.mkdirs();
            File outputFile = new File(real_outputFolder,"searchgui_out.zip");
            File tempOutput= new File(temp_searchGUI_output,"searchgui_out.zip");
