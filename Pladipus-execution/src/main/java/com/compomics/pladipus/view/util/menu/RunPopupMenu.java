@@ -94,7 +94,7 @@ public class RunPopupMenu extends JPopupMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-            new AttachJobAction().queryUserForJobs(userPanel);
+                new AttachJobAction().queryUserForJobs(userPanel);
             }
         });
         add(launchAction);
@@ -138,8 +138,8 @@ public class RunPopupMenu extends JPopupMenu {
                             userPanel.activate();
                             //update the table
                             DefaultTableModel model = (DefaultTableModel) runTable.getModel();
-                            for (int i = selectedRows.length ; i > 0; i--) {
-                                model.removeRow(selectedRows[i-1]);
+                            for (int i = selectedRows.length; i > 0; i--) {
+                                model.removeRow(selectedRows[i - 1]);
                             }
                             runTable.setModel(model);
                             DefaultTableModel processModel = (DefaultTableModel) processTable.getModel();
@@ -149,13 +149,13 @@ public class RunPopupMenu extends JPopupMenu {
                                     "Could not delete the selection: " + ex,
                                     "Error",
                                     JOptionPane.ERROR_MESSAGE);
-                        }finally{
+                        } finally {
                             try {
                                 userPanel.updateProcessTable();
                                 userPanel.updateRunTable();
                             } catch (Exception ex) {
-                              ex.printStackTrace();
-                              //ignore for now?
+                                ex.printStackTrace();
+                                //ignore for now?
                             }
                         }
                     }
@@ -188,14 +188,12 @@ public class RunPopupMenu extends JPopupMenu {
                 int runCounter = 0;
                 for (int selectedRow : selectedRows) {
                     try {
-                        runCounter++;
                         int run_ID = Integer.parseInt(String.valueOf(runTable.getValueAt(selectedRow, 1)));
                         progressDialog.setPrimaryProgressCounterIndeterminate(true);
                         progressDialog.setWaitingText("Getting all unqueued and incomplete processing jobs...");
                         PladipusProcessingTemplate templateForRun = rDao.getTemplateForRun(run_ID);
                         Collection<ProcessingJob> unqueuedProcesses = dao.getJobsForRun(templateForRun, run_ID, false, false);
                         progressDialog.setPrimaryProgressCounterIndeterminate(false);
-
                         progressDialog.setWaitingText("Starting run ID=" + run_ID + "(" + runCounter + "/" + selectedRows.length + ")");
                         Collection<Integer> processesToQueue = new ArrayList<>();
                         progressDialog.setMaxPrimaryProgressCounter(unqueuedProcesses.size());
@@ -218,6 +216,7 @@ public class RunPopupMenu extends JPopupMenu {
                         progressDialog.setRunFinished();
                         return;
                     }
+                    runCounter++;
                 }
                 progressDialog.setRunFinished();
             }
@@ -271,7 +270,5 @@ public class RunPopupMenu extends JPopupMenu {
             }
         }.start();
     }
-
-
 
 }

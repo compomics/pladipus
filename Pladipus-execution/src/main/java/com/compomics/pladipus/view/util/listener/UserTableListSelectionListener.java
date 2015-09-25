@@ -59,11 +59,13 @@ public class UserTableListSelectionListener implements ListSelectionListener {
                     LOGGER.error(e);
                 } finally {
                     progressDialog.setRunFinished();
+                    progressDialog.setVisible(false);
+                    progressDialog.dispose();
                 }
             }
         }, "ProgressDialog").start();
 
-        new Thread("SaveThread") {
+        new Thread("Update Thread") {
             @Override
             public void run() {
                 try {
@@ -75,7 +77,8 @@ public class UserTableListSelectionListener implements ListSelectionListener {
                     LOGGER.error(e);
                 } finally {
                     progressDialog.setRunFinished();
-
+                    progressDialog.setVisible(false);
+                    progressDialog.dispose();
                 }
             }
         }.start();

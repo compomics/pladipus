@@ -132,6 +132,11 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
 
     public void setUser(String userName) {
         this.userName = userName;
+                try {
+            updateRunTable();
+        } catch (Exception ex) {
+            LOGGER.error(ex);
+        }
     }
 
     @Override
@@ -568,12 +573,14 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         try {
             int parseInt = Integer.parseInt(tfCurrentPage.getText());
             if (parseInt <= 0 || parseInt > pagesNeeded) {
+                tfCurrentPage.setText("1");
                 promptErrorMessage();
-            } else {
-                currentPage = Integer.parseInt(tfCurrentPage.getText());
+            } else if (currentPage != parseInt) {
+                currentPage = parseInt;
                 updateProcessTable();
             }
         } catch (NumberFormatException e) {
+            tfCurrentPage.setText("1");
             promptErrorMessage();
         } catch (Exception ex) {
             LOGGER.error(ex);
@@ -725,9 +732,9 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
 
         @Override
         protected Integer doInBackground() throws Exception {
-            updateRunTable();
             while (!isDone) {
                 try {
+
                     Thread.sleep(1000);
                     if (selected_run_id > 0) {
                         updateRunTable();
