@@ -43,7 +43,6 @@ public class SearchSetupStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws Exception {
-        System.out.println("Running " + this.getClass().getName());
         if (tempResources.exists()) {
             for (File aFile : tempResources.listFiles()) {
                 if (aFile.exists()) {
@@ -199,7 +198,7 @@ public class SearchSetupStep extends ProcessingStep {
         tempSearchParameters.setnMissedCleavages(searchParameters.getnMissedCleavages());
         tempSearchParameters.setMaxChargeSearched(searchParameters.getMaxChargeSearched());
         tempSearchParameters.setMinChargeSearched(searchParameters.getMinChargeSearched());
-        System.out.println(tempSearchParameters.toString());
+     //   System.out.println(tempSearchParameters.toString());
 
         return tempSearchParameters;
     }

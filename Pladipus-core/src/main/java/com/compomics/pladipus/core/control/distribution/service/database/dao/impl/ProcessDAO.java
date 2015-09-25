@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -179,7 +178,6 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
 
         TreeMap<Integer, String> runMap = new TreeMap<>();
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT process_id,state FROM process WHERE run_id=?")) {
-
             updateRun.setInt(1, runID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
                 while (executeQuery.next()) {
@@ -521,11 +519,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws StepLoadingException
      */
     public Collection<ProcessingJob> getJobsForRun(PladipusProcessingTemplate template, int run_id, boolean queued, boolean complete) throws SQLException, SAXException, IOException, ParserConfigurationException, StepLoadingException {
-        ArrayList<ProcessingJob> processingJob = new ArrayList<>();
-        HashMap<Integer, HashMap<String, String>> processParameterMap = new HashMap<>();
+        LinkedList<ProcessingJob> processingJob = new LinkedList<>();
+        TreeMap<Integer, HashMap<String, String>> processParameterMap = new TreeMap<>();
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
                 PreparedStatement fillTemplateXMLQuery = c.prepareStatement(
-                        "SELECT process.process_id,name,value,on_queue,complete FROM process_parameters INNER JOIN process ON process.process_id=process_parameters.process_id WHERE run_id =?")) {
+                        "SELECT process.process_id,name,value,on_queue,complete FROM process_parameters INNER JOIN process ON process.process_id=process_parameters.process_id WHERE run_id =? ORDER BY process_id")) {
 
             fillTemplateXMLQuery.setInt(1, run_id);
             ResultSet parameterResultSet = fillTemplateXMLQuery.executeQuery();

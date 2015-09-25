@@ -127,8 +127,8 @@ public class ProcessingMonitor {
     public int getHook() throws IOException, InterruptedException, ExecutionException, Exception {
         //  processBuilder = processBuilder.redirectOutput(Redirect.INHERIT).redirectError(Redirect.INHERIT);
         process = processBuilder.start();
-        StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream());
-        StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream());
+        StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), "errors");
+        StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), "process");
         errorGobbler.start();
         outputGobbler.start();
         process.waitFor();
@@ -137,26 +137,27 @@ public class ProcessingMonitor {
 
     private class StreamGobbler extends Thread {
 
-        InputStream is;
+        private InputStream is;
+        private final String type;
 
-        private StreamGobbler(InputStream is) {
+        private StreamGobbler(InputStream is, String type) {
             this.is = is;
+            this.type = type;
         }
 
         @Override
         public void run() {
-            try {
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                String line;
-                File logFile = new File(System.getProperty("user.home")+"/.compomics/pladipus/log/subprocess.log");
-                if(logFile.exists()){
-                    logFile.delete();
-                }
-                logFile.getParentFile().mkdirs();
-                logFile.createNewFile();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            File logFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/log/subprocess_" + type + ".log");
+            if (logFile.exists()) {
+                logFile.delete();
+            }
+            logFile.getParentFile().mkdirs();
+            try (FileWriter writer = new FileWriter(logFile, true)) {
                 while ((line = br.readLine()) != null) {
-                    writeToLog(line, logFile);
+                    writer.append(line).append(System.lineSeparator()).flush();
                     scanForCheckpoints(line, br);
                 }
             } catch (Exception ex) {
@@ -164,11 +165,9 @@ public class ProcessingMonitor {
                 ex.printStackTrace();
             }
         }
-    }
 
-    private void writeToLog(String line, File logFile) throws IOException {
-        try (FileWriter writer = new FileWriter(logFile, true)) {
-            writer.append(line).append(System.lineSeparator()).flush();
+        private void writeToLog(String line, File logFile) throws IOException {
+
         }
     }
 

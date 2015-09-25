@@ -59,7 +59,7 @@ public class ActiveMQPropertyUpdater {
                 //update the transporter URI
                 Node nodeAttr = attr.getNamedItem("uri");
                 //also disable the inactivitymonitoring
-                nodeAttr.setTextContent("tcp://" + transporterHostName + ":" + activeMQPort + "?jms.prefetchPolicy.queuePrefetch=1;transport.useInactivityMonitor=false");
+                nodeAttr.setTextContent("tcp://" + transporterHostName + ":" + activeMQPort + "?consumer.queuePrefetch=1;transport.useInactivityMonitor=false");
             }
 
             //get the jmx management item

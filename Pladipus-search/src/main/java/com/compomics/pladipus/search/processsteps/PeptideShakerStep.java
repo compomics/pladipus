@@ -118,7 +118,6 @@ public class PeptideShakerStep extends ProcessingStep {
     }
 
     private void cleanupAndSave() throws IOException {
-        System.out.println("Running " + this.getClass().getName());
         //parameters.put("out",real_output_file.getAbsolutePath());
         real_output_file.getParentFile().mkdirs();
         //copy as a stream?

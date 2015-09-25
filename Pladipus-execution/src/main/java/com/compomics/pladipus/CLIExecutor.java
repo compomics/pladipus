@@ -9,11 +9,10 @@ import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
 import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.view.MainGUI;
-import com.sun.mail.iap.ConnectionException;
 import java.io.Console;
-import java.io.EOFException;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -81,41 +80,44 @@ public class CLIExecutor {
             MainGUI.main(args);
         } else {
             while (true) {
-                try {
-                    //check if this is the firt time pladipus is run...
-                    File firstRunFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config");
-                    if (!firstRunFile.exists()) {
-                        NetworkProperties.getInstance();
-                        System.out.println("Hello! It seems this is the first time you are running pladipus." + System.lineSeparator()
-                                + "Some settings are required for the software to become operational" + System.lineSeparator()
-                                + "You can find these in the following folder : " + System.lineSeparator()
-                                + firstRunFile.getAbsolutePath() + System.lineSeparator()
-                                + "Hope to see you soon !");
-                        //wait to make sure the user read it
-                        Console c = System.console();
-                        if (c != null) {
-                            c.format("\nPress ENTER to exit.\n");
-                            c.readLine();
-                            System.exit(0);
-                        }
-                    } else if (trafficManager.isSystemOnline()) {
-                        constructOptions();
-                        parseCLI(args);
-                        if (push && templateFile != null) {
-                            trafficManager.pushToPladipus(templateFile, jobConfigurationFile);
-                        } else {
-                            trafficManager.pullFromPladipus();
-                            //continue doing this if it's auto-pulling mode
-                            while (auto) {
-                                trafficManager.pullFromPladipus();
-                            }
-                        }
-                        LOGGER.info("Done");
+                //check if this is the firt time pladipus is run...
+                File firstRunFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config");
+                if (!firstRunFile.exists()) {
+                    NetworkProperties.getInstance();
+                    System.out.println("Hello! It seems this is the first time you are running pladipus." + System.lineSeparator()
+                            + "Some settings are required for the software to become operational" + System.lineSeparator()
+                            + "You can find these in the following folder : " + System.lineSeparator()
+                            + firstRunFile.getAbsolutePath() + System.lineSeparator()
+                            + "Hope to see you soon !");
+                    //wait to make sure the user read it
+                    Console c = System.console();
+                    if (c != null) {
+                        c.format("\nPress ENTER to exit.\n");
+                        c.readLine();
                         System.exit(0);
                     }
-                } catch (ConnectionException | EOFException e) {
-                    LOGGER.error("Could not connect to server...");
-                    Thread.sleep(5000);
+                } else if (trafficManager.isSystemOnline()) {
+                    constructOptions();
+                    parseCLI(args);
+                    if (push && templateFile != null) {
+                        trafficManager.pushToPladipus(templateFile, jobConfigurationFile);
+                    } else {
+                        while (true) {
+                            try {
+                                trafficManager.pullFromPladipus();
+                                if (!auto) {
+                                    break;
+                                }
+                            } catch (UnknownHostException e) {
+                                LOGGER.warn("Could not contact the activeMQ server");
+                                try {
+                                    Thread.sleep(10000);
+                                } catch (InterruptedException e2) {
+
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -153,7 +155,7 @@ public class CLIExecutor {
             } else {
                 throw new SecurityException("User is not provided");
             }
-            System.out.println("user is "+user);
+            System.out.println("user is " + user);
 //verify the user
             if (line.hasOption("p")) {
                 password = line.getOptionValue("p");
@@ -198,8 +200,8 @@ public class CLIExecutor {
         //options
         options = new Options();
         options.addOption(new Option("help", "prints help message"));
-        options.addOption(new Option("u",true, "pladipus user"));
-        options.addOption(new Option("p",true, "pladipus password"));
+        options.addOption(new Option("u", true, "pladipus user"));
+        options.addOption(new Option("p", true, "pladipus password"));
         //pushing options
         options.addOption(new Option("template", true, "The template XML file to generate jobs with"));
         options.addOption(new Option("job_config", true, "The TSV file containing tab separated parameters (one job per line)"));

@@ -11,7 +11,6 @@ import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.UserDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
-import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsQueueConnectionFactory;
 import com.compomics.pladipus.core.control.distribution.service.queue.impl.CompomicsDurableConsumer;
 import com.compomics.pladipus.core.control.distribution.service.queue.impl.CompomicsSessionConsumer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.QueryOperation;
@@ -21,6 +20,7 @@ import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.sun.mail.iap.ConnectionException;
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -255,12 +255,15 @@ public class PladipusTrafficManager {
             compomicsSessionConsumer.run();
         } catch (IOException | JMSException ex) {
             LOGGER.error(ex);
-            CompomicsQueueConnectionFactory.getInstance().close();
+            Exception e = new UnknownHostException("Could not see the ActiveMQ service");
+            e.setStackTrace(ex.getStackTrace());
+            throw e;
         }
     }
 
     /**
      * Checks for system broadcasts and executes them
+     *
      * @throws Exception
      */
     public void pullUpdates() throws Exception {
@@ -270,6 +273,7 @@ public class PladipusTrafficManager {
 
     /**
      * Check if the system is online
+     *
      * @return a boolean to check if the system is online
      * @throws ConnectionException
      * @throws Exception
@@ -277,7 +281,7 @@ public class PladipusTrafficManager {
     public boolean isSystemOnline() throws ConnectionException, Exception {
         try {
             //do a quick check on queue
-             new QueryOperation();
+            new QueryOperation();
             //do a quick check on the sql database
             UserDAO dao = UserDAO.getInstance();
             dao.userExists("check");

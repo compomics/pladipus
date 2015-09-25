@@ -96,6 +96,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     private void initConnection() throws JMSException, JMSException, JMSException, JMSException, JMSException {
         // Create a Connection
         CompomicsQueueConnectionFactory instance = CompomicsQueueConnectionFactory.getInstance();
+        //it needs to be a connection WITHOUT the prefetch...
         // Create a Session
         session = instance.getSession();
         // Create the destination (Topic or Queue)
