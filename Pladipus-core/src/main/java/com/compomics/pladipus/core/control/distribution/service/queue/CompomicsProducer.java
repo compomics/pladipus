@@ -96,7 +96,6 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     private void initConnection() throws JMSException, JMSException, JMSException, JMSException, JMSException {
         // Create a Connection
         CompomicsQueueConnectionFactory instance = CompomicsQueueConnectionFactory.getInstance();
-        //it needs to be a connection WITHOUT the prefetch...
         // Create a Session
         session = instance.getSession();
         // Create the destination (Topic or Queue)
@@ -145,6 +144,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     public void close() {
         try {
             producer.close();
+            CompomicsQueueConnectionFactory.reset();
         } catch (JMSException ex) {
             LOGGER.error(ex);
             producer = null;
@@ -156,6 +156,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
         try {
             initConnection();
             processMessage();
+
         } catch (SQLException | JMSException ex) {
             LOGGER.error(ex);
         } finally {
