@@ -64,20 +64,20 @@ public class InstallActiveMQ {
      * @throws IOException
      */
     public void updateProperties(String host, String amqPort, String jmxPort) throws IOException {
-        URL inputUrl = new InstallActiveMQ().getClass().getResource("/doc/activemq.xml");
-        File conf = findFile(activeMQFolder, "conf");
-        File activeMQSettingsFile = new File(conf, "activemq.xml");
-        FileUtils.copyURLToFile(inputUrl, activeMQSettingsFile);
-
-        //update properties in the activeMQ file
-        ActiveMQPropertyUpdater.updateActiveMQProperties(activeMQSettingsFile, host, amqPort, jmxPort);
-
         NetworkProperties properties = NetworkProperties.getInstance();
         properties.setProperty("AMQ.host", host);
         properties.setProperty("AMQ.port.queue", amqPort);
         properties.setProperty("AMQ.version", "5.11.1");
         properties.setProperty("app.classpath", System.getProperty("user.home") + "/.compomics/pladipus/external/");
         properties.save();
+        URL inputUrl = new InstallActiveMQ().getClass().getResource("/doc/activemq.xml");
+        File conf = findFile(activeMQFolder, "conf");
+        File activeMQSettingsFile = new File(conf, "activemq.xml");
+        FileUtils.copyURLToFile(inputUrl, activeMQSettingsFile);
+        //update properties in the activeMQ file
+        ActiveMQPropertyUpdater.updateActiveMQProperties(activeMQSettingsFile, host, amqPort, jmxPort);
+
+
     }
 
     private static File findFile(File root, String fileName) {

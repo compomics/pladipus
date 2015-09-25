@@ -202,7 +202,6 @@ public class ActiveMQPanel extends javax.swing.JPanel {
             @Override
             public void run() {
                 try {
-
                     setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
                     JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.","Installation complete",JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ex) {

@@ -326,10 +326,10 @@ public class MySQLPanel extends javax.swing.JPanel {
                         "Connection Failed",
                         JOptionPane.ERROR_MESSAGE);
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             //custom title, error icon
             JOptionPane.showMessageDialog(this,
-                    "Could not import SQL init script.",
+                    "Could not import SQL init script." +System.lineSeparator()+ex.getMessage(),
                     "Database Creation Error",
                     JOptionPane.ERROR_MESSAGE);
         }

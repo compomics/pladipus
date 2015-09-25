@@ -16,4 +16,5 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <name>Pladipus-msconvert</name>
 </project>

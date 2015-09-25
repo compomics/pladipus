@@ -16,4 +16,5 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+    <name>Pladipus-blast</name>
 </project>
