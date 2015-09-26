@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import javax.jms.JMSException;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -205,19 +202,16 @@ public class RunPopupMenu extends JPopupMenu {
                         Collection<Integer> processesToQueue = new ArrayList<>();
                         progressDialog.setMaxPrimaryProgressCounter(unqueuedProcesses.size());
                         progressDialog.setPrimaryProgressCounter(0);
-                        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
                         for (ProcessingJob aJob : unqueuedProcesses) {
                             long processID = aJob.getId();
-                            //do this with executorservice to be sure they all got pushed?
-                            CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, aJob.toXML(), (int) processID, templateForRun.getPriority());
-                            executorService.submit(producer);
+                            try (
+                                    CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, aJob.toXML(), (int) processID, templateForRun.getPriority())) {
+                                producer.run();
+                            }
                             processesToQueue.add((int) processID);
                             progressDialog.increasePrimaryProgressCounter();
                         }
-                        executorService.shutdown();
-                        executorService.awaitTermination(1, TimeUnit.HOURS);
-                        dao
-                                .setQueued(processesToQueue, true);
+                        dao.setQueued(processesToQueue, true);
                     } catch (JMSException | NumberFormatException | SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(RunPopupMenu.this,
@@ -226,8 +220,6 @@ public class RunPopupMenu extends JPopupMenu {
                                 JOptionPane.ERROR_MESSAGE);
                         progressDialog.setRunFinished();
                         return;
-                    } catch (InterruptedException ex) {
-                        LOGGER.error(ex);
                     }
                     runCounter++;
                 }

@@ -11,6 +11,7 @@ import com.compomics.pladipus.core.control.distribution.communication.mail.impl.
 import com.compomics.pladipus.core.control.distribution.service.ProcessService;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsConsumer;
+import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsQueueConnectionFactory;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.engine.impl.SessionProcessingEngine;
@@ -80,7 +81,20 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
         int maxFailCount = NetworkProperties.getInstance().getMaxFailCount();
         if (failcount < maxFailCount) {
             pService.increaseFailCount(processID);
+
             rollback();
+            //todo repush this message?
+            TextMessage textMessage = (TextMessage) message;
+            try (
+               CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB,
+                       textMessage.getText(), 
+                       (int) processID,
+                       pService.getProcessingJob(processID).getPriority())) {
+                producer.run();
+            } catch (Exception ex) {
+                LOGGER.warn("Could not relaunch job : "+processID+". Please try again manually or by force-starting the entire run");
+                LOGGER.error(ex);
+            }
         }
     }
 
@@ -136,7 +150,7 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
                 } else {
                     try {
                         CallbackNotifier callbackNotifier = new CallbackNotifier(message);
-                        callbackNotifier.onNotification(ex.getMessage(),false);
+                        callbackNotifier.onNotification(ex.getMessage(), false);
                         rollbackWithError(message);
                         //log the error to a file-->should be refactored to get a spot in the database or something, or mail? :
                         File errorLog = new File(System.getProperty("user.home") + "/.compomics/pladipus/log/errors.log");

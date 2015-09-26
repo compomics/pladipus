@@ -132,8 +132,9 @@ public class ProcessPopupMenu extends JPopupMenu {
                             }
                             //is the process complete?
                             if (!pDAO.isCompletedProcess(processID) && !pDAO.isQueued(processID)) {
-                                CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, pDAO.getXMLForProcess(processID), processID);
-                                producer.run();
+                                try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, pDAO.getXMLForProcess(processID), processID)) {
+                                    producer.run();
+                                }
                                 pDAO.setQueued(processID, true);
                             }
                         }

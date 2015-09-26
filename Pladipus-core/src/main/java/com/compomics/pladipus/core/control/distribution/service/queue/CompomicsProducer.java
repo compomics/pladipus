@@ -166,7 +166,6 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     public void close() {
         try {
             producer.close();
-        
             session.close();
             connection.close();
         } catch (JMSException ex) {
@@ -180,6 +179,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
         try {
             initConnection();
             processMessage();
+
         } catch (SQLException | JMSException ex) {
             LOGGER.error(ex);
         } finally {

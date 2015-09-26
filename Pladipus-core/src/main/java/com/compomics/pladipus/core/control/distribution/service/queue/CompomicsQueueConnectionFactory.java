@@ -75,7 +75,7 @@ public class CompomicsQueueConnectionFactory {
         queuePolicy.setMaximumRedeliveries(5);
         connectionFactory.setRedeliveryPolicy(queuePolicy);
 
-        connection = connectionFactory.createConnection();
+        connection = getConnection();
         connection.setClientID(ClientNameResolver.getClientIdentifier());
 
         systemSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -109,11 +109,21 @@ public class CompomicsQueueConnectionFactory {
         return queueConnectionFactory;
     }
 
+    public static void reset() {
+        if (queueConnectionFactory != null) {
+            queueConnectionFactory.close();
+            queueConnectionFactory = null;
+        }
+    }
+
     /**
      *
      * @return a connection object to tje JMX queue
      */
-    public Connection getConnection() {
+    public Connection getConnection() throws JMSException {
+        if (connection == null) {
+            connection = connectionFactory.createConnection();
+        }
         return connection;
     }
 
