@@ -5,15 +5,20 @@
  */
 package com.compomics.pladipus.core.control.distribution.service.queue;
 
+import com.compomics.pladipus.core.control.util.ClientNameResolver;
+import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import java.io.IOException;
 import java.sql.SQLException;
+import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.apache.log4j.Logger;
 
 /**
@@ -34,6 +39,10 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      * The producer that pushes jobs to the queue
      */
     private MessageProducer producer;
+    /**
+     * This producer's connection (only one per machine)
+     */
+    private Connection connection;
     /**
      * This producer's session (only one per machine)
      */
@@ -95,10 +104,22 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
 
     private void initConnection() throws JMSException, JMSException, JMSException, JMSException, JMSException {
         // Create a Connection
-        CompomicsQueueConnectionFactory instance = CompomicsQueueConnectionFactory.getInstance();
-        //it needs to be a connection WITHOUT the prefetch...
+       ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(NetworkProperties.getInstance().getActiveMQLocation());
+        connectionFactory.setCloseTimeout(30000);
+        connectionFactory.setUseAsyncSend(true);
+        // Create a redeliverypolicy
+        RedeliveryPolicy queuePolicy = new RedeliveryPolicy();
+        queuePolicy.setInitialRedeliveryDelay(0);
+        queuePolicy.setRedeliveryDelay(1000);
+        queuePolicy.setUseExponentialBackOff(false);
+        //TODO make this a property
+        queuePolicy.setMaximumRedeliveries(5);
+        connectionFactory.setRedeliveryPolicy(queuePolicy);
+
+        connection = connectionFactory.createConnection();
+        connection.setClientID(ClientNameResolver.getClientIdentifier());
         // Create a Session
-        session = instance.getSession();
+         session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
         Destination destination;
         if (queue.isBroadcastToAll()) {
@@ -145,6 +166,9 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     public void close() {
         try {
             producer.close();
+        
+            session.close();
+            connection.close();
         } catch (JMSException ex) {
             LOGGER.error(ex);
             producer = null;
