@@ -13,12 +13,23 @@ public class SplashPanel extends javax.swing.JPanel {
      */
     public SplashPanel() {
         initComponents();
+         btnGroupModes.add(btnInstallWorker);
+        btnGroupModes.add(btnInstallManagement);
         ImageIcon image = new ImageIcon(
                 getClass().getResource(
                         "/images/pladipus_icon.gif"));
         lbLogo.setText("");
         lbLogo.setIcon(image);
     }
+
+    public boolean isInstallManagementMode() {
+        return btnInstallManagement.isSelected();
+    }
+
+    public boolean isInstallWorkerMode() {
+        return btnInstallWorker.isSelected();
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,8 +40,11 @@ public class SplashPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnGroupModes = new javax.swing.ButtonGroup();
         pnlLogo = new javax.swing.JPanel();
         lbLogo = new javax.swing.JLabel();
+        btnInstallManagement = new javax.swing.JRadioButton();
+        btnInstallWorker = new javax.swing.JRadioButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -39,17 +53,33 @@ public class SplashPanel extends javax.swing.JPanel {
         lbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbLogo.setText("jLabel1");
 
+        btnInstallManagement.setBackground(new java.awt.Color(255, 255, 255));
+        btnInstallManagement.setSelected(true);
+        btnInstallManagement.setText("Install Manager");
+
+        btnInstallWorker.setBackground(new java.awt.Color(255, 255, 255));
+        btnInstallWorker.setText("Install Worker");
+
         javax.swing.GroupLayout pnlLogoLayout = new javax.swing.GroupLayout(pnlLogo);
         pnlLogo.setLayout(pnlLogoLayout);
         pnlLogoLayout.setHorizontalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+            .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+            .addGroup(pnlLogoLayout.createSequentialGroup()
+                .addGroup(pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnInstallManagement)
+                    .addComponent(btnInstallWorker))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         pnlLogoLayout.setVerticalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLogoLayout.createSequentialGroup()
-                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(pnlLogoLayout.createSequentialGroup()
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInstallManagement)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnInstallWorker)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -63,14 +93,17 @@ public class SplashPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup btnGroupModes;
+    private javax.swing.JRadioButton btnInstallManagement;
+    private javax.swing.JRadioButton btnInstallWorker;
     private javax.swing.JLabel lbLogo;
     private javax.swing.JPanel pnlLogo;
     // End of variables declaration//GEN-END:variables

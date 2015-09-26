@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
  */
 public class PladipusPanel extends javax.swing.JPanel {
 
+    private boolean isWorkerMode;
+
     /**
      * Creates a new PladipusPanel.
      */
@@ -24,6 +26,16 @@ public class PladipusPanel extends javax.swing.JPanel {
                         "/images/pladipus_icon.gif"));
         lbLogo.setText("");
         lbLogo.setIcon(image);
+    }
+
+    public void setWorkerMode(boolean isWorkerMode) {
+        this.isWorkerMode = isWorkerMode;
+        btnInstallExample.setEnabled(isWorkerMode);
+        if (!isWorkerMode) {
+            btnInstallPladipus.setText("Install Pladipus Manager");
+        } else {
+            btnInstallPladipus.setText("Install Pladipus Worker");
+        }
     }
 
     /**
@@ -38,8 +50,7 @@ public class PladipusPanel extends javax.swing.JPanel {
         btnRegister = new javax.swing.JButton();
         pnlLogo = new javax.swing.JPanel();
         lbLogo = new javax.swing.JLabel();
-        btnInstallGUI = new javax.swing.JButton();
-        btnInstallWorker = new javax.swing.JButton();
+        btnInstallPladipus = new javax.swing.JButton();
         btnInstallExample = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -72,17 +83,10 @@ public class PladipusPanel extends javax.swing.JPanel {
                 .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
         );
 
-        btnInstallGUI.setText("Install Manager");
-        btnInstallGUI.addActionListener(new java.awt.event.ActionListener() {
+        btnInstallPladipus.setText("Install Pladipus");
+        btnInstallPladipus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInstallGUIActionPerformed(evt);
-            }
-        });
-
-        btnInstallWorker.setText("Install Worker");
-        btnInstallWorker.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInstallWorkerActionPerformed(evt);
+                btnInstallPladipusActionPerformed(evt);
             }
         });
 
@@ -105,8 +109,7 @@ public class PladipusPanel extends javax.swing.JPanel {
                         .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(btnRegister, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnInstallGUI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnInstallWorker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnInstallPladipus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnInstallExample, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))))
                 .addGap(20, 20, 20))
         );
@@ -118,12 +121,10 @@ public class PladipusPanel extends javax.swing.JPanel {
                 .addGap(30, 30, 30)
                 .addComponent(btnRegister)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnInstallGUI)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnInstallWorker)
+                .addComponent(btnInstallPladipus)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnInstallExample)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -134,7 +135,15 @@ public class PladipusPanel extends javax.swing.JPanel {
         userCreationDialog.setVisible(true);
     }//GEN-LAST:event_btnRegisterActionPerformed
 
-    private void btnInstallGUIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallGUIActionPerformed
+    private void btnInstallPladipusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallPladipusActionPerformed
+        if (!isWorkerMode) {
+            installPladipusManagement();
+        } else {
+            installPladipusWorker();
+        }
+    }//GEN-LAST:event_btnInstallPladipusActionPerformed
+
+    private void installPladipusManagement() {
         ProgressDialogX dialog = new ProgressDialogX(true);
 
         new Thread(new Runnable() {
@@ -159,17 +168,18 @@ public class PladipusPanel extends javax.swing.JPanel {
         dialog.setPrimaryProgressCounterIndeterminate(true);
         dialog.setTitle("Installing Pladipus Manager");
         dialog.setVisible(true);
-    }//GEN-LAST:event_btnInstallGUIActionPerformed
+    }
 
-    private void btnInstallWorkerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallWorkerActionPerformed
+    private void installPladipusWorker() {
         ProgressDialogX dialog = new ProgressDialogX(true);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    new InstallPladipus().installWorker();
-                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.","Pladipus installed",JOptionPane.INFORMATION_MESSAGE);
+                    if (new InstallPladipus().installWorker()) {
+                        JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.", "Pladipus installed", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 } catch (SecurityException | IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
                             "Could not install Pladipus Worker: " + System.lineSeparator() + ex.getMessage(),
@@ -186,7 +196,7 @@ public class PladipusPanel extends javax.swing.JPanel {
         dialog.setPrimaryProgressCounterIndeterminate(true);
         dialog.setTitle("Installing Pladipus Worker");
         dialog.setVisible(true);
-    }//GEN-LAST:event_btnInstallWorkerActionPerformed
+    }
 
     private void btnInstallExampleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallExampleActionPerformed
         new InstallExample().install();
@@ -194,8 +204,7 @@ public class PladipusPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnInstallExample;
-    private javax.swing.JButton btnInstallGUI;
-    private javax.swing.JButton btnInstallWorker;
+    private javax.swing.JButton btnInstallPladipus;
     private javax.swing.JButton btnRegister;
     private javax.swing.JLabel lbLogo;
     private javax.swing.JPanel pnlLogo;

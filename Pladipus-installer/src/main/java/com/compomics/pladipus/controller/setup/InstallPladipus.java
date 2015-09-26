@@ -74,12 +74,16 @@ public class InstallPladipus {
      *
      * @throws IOException
      */
-    public void installWorker() throws IOException, SecurityException {
-        validateUser();
-        setupPladipus();
-        installPladipusModules();
-        installProcessingBeanProperties();
-        setClassPath();
+    public boolean installWorker() throws IOException, SecurityException {
+        if (validateUser()) {
+            setupPladipus();
+            installPladipusModules();
+            installProcessingBeanProperties();
+            setClassPath();
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
@@ -141,7 +145,7 @@ public class InstallPladipus {
      *
      * @throws IOException
      */
-    public void validateUser() throws IOException {
+    public boolean validateUser() throws IOException {
 
         JPanel panel = new JPanel(new BorderLayout(5, 5));
 
@@ -158,13 +162,18 @@ public class InstallPladipus {
 
         panel.add(controls, BorderLayout.CENTER);
 
-        JOptionPane.showConfirmDialog(null, panel, "Pladipus Login", JOptionPane.OK_OPTION);
+        int showConfirmDialog = JOptionPane.showConfirmDialog(null, panel, "Pladipus Login", JOptionPane.OK_CANCEL_OPTION);
+
+        if (showConfirmDialog == JOptionPane.CANCEL_OPTION) {
+            return false;
+        }
 
         String user = username.getText();
         String pass = new String(password.getPassword());
 
         if (login(user, pass)) {
             writeWorkerBash(user, pass);
+            return true;
         } else {
             throw new SecurityException("User credentials are incorrect!");
         }

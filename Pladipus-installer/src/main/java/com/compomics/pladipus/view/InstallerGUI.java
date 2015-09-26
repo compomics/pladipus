@@ -141,7 +141,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         liSteps.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         liSteps.setFocusable(false);
         liSteps.setRequestFocusEnabled(false);
-        liSteps.setSelectionBackground(new java.awt.Color(0, 102, 204));
+        liSteps.setSelectionBackground(new java.awt.Color(2, 111, 170));
         liSteps.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout pnlDescriptionLayout = new javax.swing.GroupLayout(pnlDescription);
@@ -206,7 +206,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))
+                    .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNext)
@@ -246,9 +246,14 @@ public class InstallerGUI extends javax.swing.JFrame {
     }
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+
         if (cursor == cards.size()) {
             //then it's done
             System.exit(0);
+        } else {
+            pnlActiveMQ.setWorkerMode(pnlSplash.isInstallWorkerMode());
+            pnlMySQL.setWorkerMode(pnlSplash.isInstallWorkerMode());
+            pnlPladipus.setWorkerMode(pnlSplash.isInstallWorkerMode());
         }
         cursor++;
         cursor = Math.min(cards.size(), cursor);
@@ -260,6 +265,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         }
         btnPrev.setEnabled(true);
     }//GEN-LAST:event_btnNextActionPerformed
+
 
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
         cursor--;
@@ -316,9 +322,13 @@ public class InstallerGUI extends javax.swing.JFrame {
             case 1:
                 epDescription.setText("<h2>Welcome To Pladipus</h2>"
                         + "<br>"
-                        + "Pladipus is a user friendly tool designed to manage distributed computational biology across a GRID of computers."
-                        + "This wizard will guide you through the installation process."
-                        + "<br><br>"
+                        + "This wizard will guide you through the installation process. "
+                        + "<ul>"
+                        + "<li>Pladipus Manager : create and launch runs </li>"
+                        + "<br>"
+                        + "<li>Pladipus Worker  : pull and process jobs</li>"
+                        + "</ul>"
+                        + "<br>"
                         + "If any problem occurs, please visit the <a href='http://compomics.github.io/projects/pladipus.html'>website</a> for more help."
                         + "Additionally, you can contact the developers at <b>kenneth.verheggen@ugent.be</b> for more help"
                 );

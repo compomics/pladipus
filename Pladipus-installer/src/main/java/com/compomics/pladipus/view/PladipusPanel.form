@@ -29,8 +29,7 @@
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="btnRegister" alignment="2" max="32767" attributes="0"/>
-                          <Component id="btnInstallGUI" alignment="2" max="32767" attributes="0"/>
-                          <Component id="btnInstallWorker" alignment="2" max="32767" attributes="0"/>
+                          <Component id="btnInstallPladipus" alignment="2" max="32767" attributes="0"/>
                           <Component id="btnInstallExample" alignment="2" pref="155" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -47,12 +46,10 @@
               <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Component id="btnRegister" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnInstallGUI" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnInstallWorker" min="-2" max="-2" attributes="0"/>
+              <Component id="btnInstallPladipus" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btnInstallExample" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="16" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -101,20 +98,12 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="btnInstallGUI">
+    <Component class="javax.swing.JButton" name="btnInstallPladipus">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Install Manager"/>
+        <Property name="text" type="java.lang.String" value="Install Pladipus"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInstallGUIActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnInstallWorker">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Install Worker"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInstallWorkerActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnInstallPladipusActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnInstallExample">
