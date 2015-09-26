@@ -6,7 +6,6 @@
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
-import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
@@ -25,7 +24,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -813,24 +811,6 @@ public class RunCreationDialog extends javax.swing.JDialog {
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
-            if (confirmed) {
-                RunDAO rInstance = RunDAO.getInstance();
-                try {
-                    int runID = rInstance.createRun(template);
-                    try {
-                        userPanel.updateRunTable();
-                        userPanel.updateProcessTable();
-                    } catch (Exception e) {
-                        //ignore for now;
-                        e.printStackTrace();
-                    }
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this,
-                            "An error occurred during run storage in database: " + ex.getMessage(),
-                            "Database Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
         }
     }//GEN-LAST:event_btnCreateRunActionPerformed
 
@@ -1311,7 +1291,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
                 try {
                     RunCreationDialog dialog;
-                    dialog = new RunCreationDialog(new javax.swing.JFrame(), "pladmin",new UserPanel(), true);
+                    dialog = new RunCreationDialog(new javax.swing.JFrame(), "pladmin", new UserPanel(), true);
                     dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                         @Override
                         public void windowClosing(java.awt.event.WindowEvent e) {

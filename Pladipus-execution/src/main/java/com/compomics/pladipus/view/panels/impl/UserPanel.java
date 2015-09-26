@@ -212,7 +212,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         });
         tblRunInfo.setGridColor(new java.awt.Color(255, 255, 255));
         tblRunInfo.setOpaque(false);
-        tblRunInfo.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRunInfo.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tblRunInfo.getTableHeader().setReorderingAllowed(false);
         spnlRun.setViewportView(tblRunInfo);
         tblRunInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -395,7 +395,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         });
         tblProcessInfo.setGridColor(new java.awt.Color(255, 255, 255));
         tblProcessInfo.setOpaque(false);
-        tblProcessInfo.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblProcessInfo.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tblProcessInfo.getTableHeader().setReorderingAllowed(false);
         spnlProcess.setViewportView(tblProcessInfo);
         tblProcessInfo.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -481,7 +481,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void showCreateNewRunDialog() {
+    private void showCreateNewRunDialog() throws Exception {
         try {
             RunCreationDialog dialog = new RunCreationDialog(null, userName, this, true);
             dialog.setLocationRelativeTo(this);
@@ -492,12 +492,19 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 int runID = rInstance.createRun(processingTemplate);
             }
             dialog.dispose();
+            updateRunTable();
+            updateProcessTable();
         } catch (SQLException | ParserConfigurationException | IOException | SAXException ex) {
             ex.printStackTrace();
         }
     }
     private void btnNewRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewRunActionPerformed
-        showCreateNewRunDialog();
+        try {
+            showCreateNewRunDialog();
+        } catch (Exception ex) {
+           LOGGER.error("Couldn't update tables...");
+           ex.printStackTrace();
+        }
     }//GEN-LAST:event_btnNewRunActionPerformed
 
     private void btnAddProcessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProcessActionPerformed
