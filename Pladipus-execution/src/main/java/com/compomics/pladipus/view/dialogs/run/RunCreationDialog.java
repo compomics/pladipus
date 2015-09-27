@@ -425,6 +425,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         slPriority.setPaintLabels(true);
         slPriority.setPaintTicks(true);
         slPriority.setSnapToTicks(true);
+        slPriority.setValue(5);
 
         jLabel1.setText("Run Name");
 
@@ -736,6 +737,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
     private void refreshPreview() {
         LOGGER.debug("Refreshing preview...");
         if (template != null) {
+            template.setUser(user);
             //check the step order
             template.clearProcessSteps();
             DefaultListModel model = (DefaultListModel) liSteps.getModel();
@@ -789,6 +791,8 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 }
                 try (FileWriter xmlOut = new FileWriter(fileToSave);
                         FileWriter tsvOut = new FileWriter(new File(fileToSave.getAbsolutePath() + ".tsv"))) {
+                    //set the username
+                    template.setUser(user);
                     //save the template
                     xmlOut.append(template.toXML().replace(">", ">" + System.lineSeparator())).flush();
                     if (template.getAllProcessingParameters().size() > 0) {
