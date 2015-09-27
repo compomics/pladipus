@@ -29,7 +29,7 @@ public class UploadRunAction {
     public void executeUpload(PladipusProcessingTemplate processingTemplate, File config, UserPanel userPanel) {
         progressDialog = new ProgressDialogX(true);
         progressDialog.setPrimaryProgressCounterIndeterminate(true);
-        progressDialog.setTitle("Adding jobs to run. Please Wait...");
+        progressDialog.setTitle("Adding Jobs to run. Please Wait...");
 
         new Thread(new Runnable() {
             public void run() {

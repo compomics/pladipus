@@ -57,7 +57,7 @@ public class ProcessPopupMenu extends JPopupMenu {
                 int[] selectedRows = processTable.getSelectedRows();
                 if (selectedRows.length > 0) {
                     int dialogResult = JOptionPane.showConfirmDialog(ProcessPopupMenu.this, "Are you sure you want to stop the selected process(es)?" 
-                            + System.lineSeparator() + "Stopping a job will lose all current progress...");
+                            + System.lineSeparator() + "Stopping a Job will lose all current progress...");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         try {
                             ProcessDAO pDAO = ProcessDAO.getInstance();
@@ -187,5 +187,4 @@ public class ProcessPopupMenu extends JPopupMenu {
         });
         add(deleteItem);
     }
-
 }

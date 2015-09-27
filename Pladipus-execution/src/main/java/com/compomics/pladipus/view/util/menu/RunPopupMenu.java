@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.util.menu;
 
 import com.compomics.pladipus.core.control.distribution.service.RunService;
@@ -112,11 +107,10 @@ public class RunPopupMenu extends JPopupMenu {
             public void actionPerformed(ActionEvent e) {
                 int[] selectedRows = runTable.getSelectedRows();
                 if (selectedRows.length > 0) {
-                    int dialogResult = JOptionPane.showConfirmDialog(RunPopupMenu.this, "Are you sure you want to launch the selected run(s)?", "Starting run", JOptionPane.INFORMATION_MESSAGE);
+                    int dialogResult = JOptionPane.showConfirmDialog(RunPopupMenu.this, "Are you sure you want to launch the selected run(s)?", "Starting Run", JOptionPane.INFORMATION_MESSAGE);
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         launchRun(selectedRows);
                     }
-
                 }
             }
         });
@@ -172,7 +166,7 @@ public class RunPopupMenu extends JPopupMenu {
 
     private void launchRun(int[] selectedRows) {
         progressDialog = new ProgressDialogX(true);
-        progressDialog.setTitle("Launching jobs. Please Wait...");
+        progressDialog.setTitle("Launching Jobs. Please Wait...");
 
         new Thread(new Runnable() {
             public void run() {
@@ -198,7 +192,7 @@ public class RunPopupMenu extends JPopupMenu {
                         PladipusProcessingTemplate templateForRun = rDao.getTemplateForRun(run_ID);
                         Collection<ProcessingJob> unqueuedProcesses = dao.getJobsForRun(templateForRun, run_ID, false, false);
                         progressDialog.setPrimaryProgressCounterIndeterminate(false);
-                        progressDialog.setWaitingText("Starting run ID=" + run_ID + "(" + runCounter + "/" + selectedRows.length + ")");
+                        progressDialog.setWaitingText("Starting Run ID=" + run_ID + " (" + ++runCounter + "/" + selectedRows.length + ")");
                         Collection<Integer> processesToQueue = new ArrayList<>();
                         progressDialog.setMaxPrimaryProgressCounter(unqueuedProcesses.size());
                         progressDialog.setPrimaryProgressCounter(0);
@@ -221,7 +215,6 @@ public class RunPopupMenu extends JPopupMenu {
                         progressDialog.setRunFinished();
                         return;
                     }
-                    runCounter++;
                 }
                 progressDialog.setRunFinished();
             }
@@ -249,10 +242,9 @@ public class RunPopupMenu extends JPopupMenu {
                 ProcessDAO dao = ProcessDAO.getInstance();
                 int runCounter = 0;
                 for (int selectedRow : selectedRows) {
-                    runCounter++;
                     try {
                         int run_ID = Integer.parseInt(String.valueOf(runTable.getValueAt(selectedRow, 1)));
-                        progressDialog.setWaitingText("Cancelling run ID=" + run_ID + "(" + runCounter + "/" + selectedRows.length + ")");
+                        progressDialog.setWaitingText("Canceling Run ID=" + run_ID + " (" + ++runCounter + "/" + selectedRows.length + ")");
                         LinkedList<Integer> queuedProcess = dao.getQueuedProcesses(run_ID);
                         progressDialog.setMaxPrimaryProgressCounter(queuedProcess.size());
                         progressDialog.setPrimaryProgressCounter(0);
@@ -275,5 +267,4 @@ public class RunPopupMenu extends JPopupMenu {
             }
         }.start();
     }
-
 }

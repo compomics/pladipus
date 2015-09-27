@@ -449,6 +449,7 @@
                 <Property name="paintLabels" type="boolean" value="true"/>
                 <Property name="paintTicks" type="boolean" value="true"/>
                 <Property name="snapToTicks" type="boolean" value="true"/>
+                <Property name="value" type="int" value="5"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
@@ -582,7 +583,7 @@
                     <Font component="lblParameterRemark" italic="true" property="font" relativeSize="true" size="0"/>
                   </FontInfo>
                 </Property>
-                <Property name="text" type="java.lang.String" value="* Run parameters will be available to all jobs in the template"/>
+                <Property name="text" type="java.lang.String" value="* Run parameters will be available to all Jobs in the template"/>
               </Properties>
             </Component>
           </SubComponents>

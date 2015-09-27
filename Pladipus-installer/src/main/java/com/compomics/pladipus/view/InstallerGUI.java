@@ -133,7 +133,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         spnlDescription.setViewportView(epDescription);
 
         liSteps.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "-", "1. Installing MySQL", "2. Installing ActiveMQ", "3. Installing Pladipus" };
+            String[] strings = { "0 - Overview", "1 - Installing MySQL", "2 - Installing ActiveMQ", "3 - Installing Pladipus" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -141,7 +141,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         liSteps.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         liSteps.setFocusable(false);
         liSteps.setRequestFocusEnabled(false);
-        liSteps.setSelectionBackground(new java.awt.Color(2, 111, 170));
+        liSteps.setSelectionBackground(new java.awt.Color(204, 204, 255));
         liSteps.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout pnlDescriptionLayout = new javax.swing.GroupLayout(pnlDescription);

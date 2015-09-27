@@ -56,30 +56,35 @@ public class SplashPanel extends javax.swing.JPanel {
         btnInstallManagement.setBackground(new java.awt.Color(255, 255, 255));
         btnInstallManagement.setSelected(true);
         btnInstallManagement.setText("Install Manager");
+        btnInstallManagement.setIconTextGap(15);
 
         btnInstallWorker.setBackground(new java.awt.Color(255, 255, 255));
         btnInstallWorker.setText("Install Worker");
+        btnInstallWorker.setIconTextGap(15);
 
         javax.swing.GroupLayout pnlLogoLayout = new javax.swing.GroupLayout(pnlLogo);
         pnlLogo.setLayout(pnlLogoLayout);
         pnlLogoLayout.setHorizontalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
             .addGroup(pnlLogoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(pnlLogoLayout.createSequentialGroup()
+                .addGap(36, 36, 36)
                 .addGroup(pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnInstallManagement)
                     .addComponent(btnInstallWorker))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 36, Short.MAX_VALUE))
         );
         pnlLogoLayout.setVerticalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLogoLayout.createSequentialGroup()
                 .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(40, 40, 40)
                 .addComponent(btnInstallManagement)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnInstallWorker)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

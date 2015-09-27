@@ -509,7 +509,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         });
 
         lblParameterRemark.setFont(lblParameterRemark.getFont().deriveFont((lblParameterRemark.getFont().getStyle() | java.awt.Font.ITALIC)));
-        lblParameterRemark.setText("* Run parameters will be available to all jobs in the template");
+        lblParameterRemark.setText("* Run parameters will be available to all Jobs in the template");
 
         javax.swing.GroupLayout pnlParametersLayout = new javax.swing.GroupLayout(pnlParameters);
         pnlParameters.setLayout(pnlParametersLayout);

@@ -224,10 +224,10 @@
                   <Properties>
                     <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
                       <StringArray count="4">
-                        <StringItem index="0" value="-"/>
-                        <StringItem index="1" value="1. Installing MySQL"/>
-                        <StringItem index="2" value="2. Installing ActiveMQ"/>
-                        <StringItem index="3" value="3. Installing Pladipus"/>
+                        <StringItem index="0" value="0 - Overview"/>
+                        <StringItem index="1" value="1 - Installing MySQL"/>
+                        <StringItem index="2" value="2 - Installing ActiveMQ"/>
+                        <StringItem index="3" value="3 - Installing Pladipus"/>
                       </StringArray>
                     </Property>
                     <Property name="selectionMode" type="int" value="0"/>
@@ -237,7 +237,7 @@
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="requestFocusEnabled" type="boolean" value="false"/>
                     <Property name="selectionBackground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="aa" green="6f" red="2" type="rgb"/>
+                      <Color blue="ff" green="cc" red="cc" type="rgb"/>
                     </Property>
                     <Property name="verifyInputWhenFocusTarget" type="boolean" value="false"/>
                   </Properties>

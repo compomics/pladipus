@@ -178,7 +178,7 @@ public class PladipusPanel extends javax.swing.JPanel {
             public void run() {
                 try {
                     if (new InstallPladipus().installWorker()) {
-                        JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.", "Pladipus installed", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.", "Pladipus Worker", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (SecurityException | IOException ex) {
                     JOptionPane.showMessageDialog(PladipusPanel.this,
