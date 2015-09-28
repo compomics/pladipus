@@ -175,6 +175,7 @@ public class ProcessingMonitor {
         boolean ignoreLine;
         ignoreLine = false;
         //print to the console
+        LOGGER.debug(line);
         try {
             for (Checkpoint checkpoint : notifier.getCheckpoints()) {
                 if (line.toUpperCase().contains(checkpoint.getCheckpoint().toUpperCase())) {

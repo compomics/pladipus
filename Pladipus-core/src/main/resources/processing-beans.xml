@@ -9,9 +9,11 @@
   
     <bean id="PeptideShakerStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerStep" lazy-init="true"/>    
     
-    <bean id="PeptideShakerReportStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerReportStep" lazy-init="true"/>    
+    <bean id="PeptideShakerReportStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerReportStep" lazy-init="true"/>
+    
+    <bean id="PeptideShakerFollowUpStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerFollowUpStep" lazy-init="true"/>    
                                                         
-    <!--Denovo Search beans -->
+    <!--DeNovo Search beans -->
     
     <bean id="DeNovoGUISetupStep" class="com.compomics.pladipus.denovo.processsteps.DeNovoGUISetupStep" lazy-init="true"/>    
 

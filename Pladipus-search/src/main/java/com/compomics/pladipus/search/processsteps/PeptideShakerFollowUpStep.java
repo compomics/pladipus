@@ -7,14 +7,13 @@ package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
-import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
-import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
+import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
-import com.compomics.pladipus.search.checkpoints.PeptideShakerCheckPoints;
+import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,33 +22,38 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-public class PeptideShakerStep extends ProcessingStep {
+public class PeptideShakerFollowUpStep extends ProcessingStep {
 
-    private final File temp_output_folder = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/PeptideShaker/result");
-    private File temp_output_file;
     private File real_output_folder;
-    private File real_output_file;
-    private static final Logger LOGGER = Logger.getLogger(PeptideShakerStep.class);
+    private File temp;
 
-    public PeptideShakerStep() {
+    public PeptideShakerFollowUpStep() {
 
     }
 
     private List<String> constructArguments() throws IOException {
+        temp = new File(System.getProperty("user.home") + "/compomics/.compomics/pladipus/temp/PeptideShaker/followup");
+        if (temp.exists()) {
+            FileUtils.deleteDirectory(temp);
+        }
+        temp.mkdirs();
+
+        real_output_folder = new File(parameters.get("cps")).getParentFile();
+        parameters.put("spectrum_folder", temp.getAbsolutePath());
+        parameters.put("in", parameters.get("cps"));
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
-        cmdArgs.add("-Xmx" + MemoryWarningSystem.getAllowedRam() + "M");
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
-        cmdArgs.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
-        for (AllowedPeptideShakerParams aParameter : AllowedPeptideShakerParams.values()) {
+        cmdArgs.add("eu.isas.peptideshaker.cmd.FollowUpCLI");
+        //construct the cmd
+        for (AllowedPeptideShakerFollowUpParams aParameter : AllowedPeptideShakerFollowUpParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
                 cmdArgs.add(parameters.get(aParameter.getId()));
@@ -62,33 +66,13 @@ public class PeptideShakerStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws Exception, Exception {
-        LOGGER.info("Running Peptide Shaker");
+        System.out.println("Running " + this.getClass().getName());
+        List<String> constructArguments = constructArguments();
         File peptideShakerJar = getJar();
 
-        if (temp_output_folder.exists()) {
-            temp_output_folder.delete();
-        }
-        temp_output_folder.mkdirs();
-
-        String experiment = "output";
-
-        if (parameters.containsKey("experiment")) {
-            experiment = parameters.get("experiment");
-        }
-
-        real_output_folder = new File(parameters.get("out")).getParentFile();
-        if (parameters.containsKey("output_folder")) {
-            temp_output_file = new File(temp_output_folder + "/" + experiment + ".cps");
-            parameters.put("out", temp_output_file.getAbsolutePath());
-            parameters.remove("output_folder");
-        }
-        real_output_file=new File(real_output_folder,temp_output_file.getName());
-      
-
-        List<String> constructArguments = constructArguments();
         //add callback notifier for more detailed printouts of the processing
         CallbackNotifier callbackNotifier = getCallbackNotifier();
-        for (PeptideShakerCheckPoints aCheckPoint : PeptideShakerCheckPoints.values()) {
+        for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
             callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
         new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
@@ -112,34 +96,29 @@ public class PeptideShakerStep extends ProcessingStep {
         return JarLookupService.lookupFile("PeptideShaker-.*.jar", temp);
     }
 
-    public boolean aVersionExistsLocal() {
-        //TODO insert installer code here in case PeptideShaker was not included????
-        return true;
-    }
-
     private void cleanupAndSave() throws IOException {
         //parameters.put("out",real_output_file.getAbsolutePath());
-        real_output_file.getParentFile().mkdirs();
         //copy as a stream?
-        if (!real_output_file.exists()) {
+        if (!real_output_folder.exists()) {
+            real_output_folder.createNewFile();
+        }
+        for (File aFile : temp.listFiles()) {
+            File real_output_file = new File(real_output_folder, aFile.getName());
+            if (real_output_file.exists()) {
+                real_output_file.delete();
+            }
+            real_output_file.getParentFile().mkdirs();
             real_output_file.createNewFile();
+            System.out.println("Copying " + aFile.getAbsolutePath() + " to " + real_output_file.getAbsolutePath());
+            try (FileChannel source = new FileInputStream(aFile).getChannel();
+                    FileChannel destination = new FileOutputStream(real_output_file).getChannel()) {
+                destination.transferFrom(source, 0, source.size());
+            }
         }
-        try (FileChannel source = new FileInputStream(temp_output_file).getChannel();
-                FileChannel destination = new FileOutputStream(real_output_file).getChannel()) {
-            destination.transferFrom(source, 0, source.size());
-        }
-        parameters.put("cps",real_output_file.getAbsolutePath());
-        //check if reports should be made
-        if (!parameters.containsKey("generate_reports")) {
-            FileUtils.deleteDirectory(temp_output_folder);
-        }else{
-            parameters.put("out_reports",real_output_file.getParentFile().getAbsolutePath());
-        }
-        
     }
 
     @Override
     public String getDescription() {
-        return "Running PeptideShaker";
+        return "Running PeptideShaker FollowUpCLI";
     }
 }
