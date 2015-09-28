@@ -50,7 +50,7 @@ public class InstallActiveMQ {
     }
 
     private static void downloadActiveMQ() throws IOException {
-        String link = "http://apache.cu.be/activemq/5.11.1/apache-activemq-5.11.1-bin.zip";
+        String link = "http://genesis.ugent.be/pladipus/download/activeMQ/apache-activemq-5.11-bin.zip";
         File downloadFile = PladipusFileDownloadingService.downloadFile(link, activeMQFolder);
         ZipUtils.unzipArchive(downloadFile, activeMQFolder);
     }
