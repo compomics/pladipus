@@ -45,11 +45,13 @@ public class PeptideShakerReportStep extends ProcessingStep {
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
         cmdArgs.add("eu.isas.peptideshaker.cmd.ReportCLI");
+       
         //if this is part of the peptideshaker pipeline
-        if (parameters.containsKey("out")) {
+        if (!parameters.containsKey("in")) {
             //the output of the cps
-            parameters.put("in", parameters.get("out"));
+            parameters.put("in", parameters.get("cps"));
         }
+     
         if (!parameters.containsKey(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId())) {
             real_output_folder = new File(parameters.get("out")).getParentFile();
         } else {
@@ -76,7 +78,6 @@ public class PeptideShakerReportStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws Exception, Exception {
-        System.out.println("Running " + this.getClass().getName());
         List<String> constructArguments = constructArguments();
         File peptideShakerJar = getJar();
         if (temp.exists()) {
@@ -112,13 +113,14 @@ public class PeptideShakerReportStep extends ProcessingStep {
 
     private void cleanupAndSave() throws IOException {
         //parameters.put("out",real_output_file.getAbsolutePath());
-        File temp = new File(parameters.get(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId()));
+     //   File temp = new File(parameters.get(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId()));
         //copy as a stream?
+        File toStore = new File(parameters.get("cps")).getParentFile();
         if (!real_output_folder.exists()) {
             real_output_folder.createNewFile();
         }
         for (File aFile : temp.listFiles()) {
-            File real_output_file = new File(real_output_folder, aFile.getName());
+            File real_output_file = new File(toStore, aFile.getName());
             if (real_output_file.exists()) {
                 real_output_file.delete();
             }

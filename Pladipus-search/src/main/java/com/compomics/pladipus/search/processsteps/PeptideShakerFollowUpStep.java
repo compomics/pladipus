@@ -46,6 +46,8 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
         real_output_folder = new File(parameters.get("cps")).getParentFile();
         parameters.put("spectrum_folder", real_output_folder.getAbsolutePath());
         parameters.put("in", parameters.get("cps"));
+        //Temporary fix
+        parameters.remove("fasta_file");
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -66,7 +68,6 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws Exception, Exception {
-        System.out.println("Running " + this.getClass().getName());
         List<String> constructArguments = constructArguments();
         File peptideShakerJar = getJar();
 

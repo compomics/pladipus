@@ -82,8 +82,7 @@ public class PeptideShakerStep extends ProcessingStep {
             parameters.put("out", temp_output_file.getAbsolutePath());
             parameters.remove("output_folder");
         }
-        real_output_file=new File(real_output_folder,temp_output_file.getName());
-      
+        real_output_file = new File(real_output_folder, temp_output_file.getName());
 
         List<String> constructArguments = constructArguments();
         //add callback notifier for more detailed printouts of the processing
@@ -94,6 +93,9 @@ public class PeptideShakerStep extends ProcessingStep {
         new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
         //run peptideShaker with the existing files
         cleanupAndSave();
+        //roll back the parameters to their original form
+        parameters.put("cps", real_output_file.getAbsolutePath());
+        parameters.put("out", real_output_folder.getAbsolutePath());
         return true;
     }
 
@@ -128,14 +130,14 @@ public class PeptideShakerStep extends ProcessingStep {
                 FileChannel destination = new FileOutputStream(real_output_file).getChannel()) {
             destination.transferFrom(source, 0, source.size());
         }
-        parameters.put("cps",real_output_file.getAbsolutePath());
+        parameters.put("cps", real_output_file.getAbsolutePath());
         //check if reports should be made
         if (!parameters.containsKey("generate_reports")) {
             FileUtils.deleteDirectory(temp_output_folder);
-        }else{
-            parameters.put("out_reports",real_output_file.getParentFile().getAbsolutePath());
+        } else {
+            parameters.put("out_reports", real_output_file.getParentFile().getAbsolutePath());
         }
-        
+
     }
 
     @Override
