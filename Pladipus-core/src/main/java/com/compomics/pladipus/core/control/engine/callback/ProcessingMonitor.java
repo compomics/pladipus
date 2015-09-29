@@ -7,10 +7,12 @@ package com.compomics.pladipus.core.control.engine.callback;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,7 +67,7 @@ public class ProcessingMonitor {
         this.notifier = notifier;
         this.processBuilder = processBuilder;
     }
-
+    
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
         String errorLine;
         if (firstLine.toLowerCase().contains("exception:")) {
@@ -83,15 +85,15 @@ public class ProcessingMonitor {
         processOutputStream.close();
         return reThrowable;
     }
-
+    
     private final LinkedList<StackTraceElement> stackTraceElementList = new LinkedList<>();
-
+    
     private StackTraceElement[] getStackTrace() {
         StackTraceElement[] elements = new StackTraceElement[stackTraceElementList.size()];
         stackTraceElementList.toArray(elements);
         return elements;
     }
-
+    
     private void addStackTraceElement(String errorLine) throws StringIndexOutOfBoundsException {
         errorLine = errorLine.replace("at ", "");
         int endIndex = errorLine.indexOf("(");
@@ -100,7 +102,7 @@ public class ProcessingMonitor {
             declaringClass = errorLine.substring(0, errorLine.indexOf("("));
         }
         String method = declaringClass.substring(declaringClass.lastIndexOf(".") + 1);
-
+        
         declaringClass = declaringClass.substring(0, declaringClass.lastIndexOf("."));
         String fileName = declaringClass.substring(declaringClass.lastIndexOf(".") + 1) + ".java";
         int lineNumber;
@@ -134,17 +136,17 @@ public class ProcessingMonitor {
         process.waitFor();
         return process.exitValue();
     }
-
+    
     private class StreamGobbler extends Thread {
-
+        
         private InputStream is;
         private final String type;
-
+        
         private StreamGobbler(InputStream is, String type) {
             this.is = is;
             this.type = type;
         }
-
+        
         @Override
         public void run() {
             InputStreamReader isr = new InputStreamReader(is);
@@ -157,21 +159,28 @@ public class ProcessingMonitor {
             logFile.getParentFile().mkdirs();
             try (FileWriter writer = new FileWriter(logFile, true)) {
                 while ((line = br.readLine()) != null) {
-                    writer.append(line).append(System.lineSeparator()).flush();
-                    scanForCheckpoints(line, br);
+                    if (type.equalsIgnoreCase("error")) {
+                        throw handleError(line, br);
+                    } else {
+                        writer.append(line).append(System.lineSeparator()).flush();
+                        scanForCheckpoints(line);
+                    }
                 }
             } catch (Exception ex) {
                 LOGGER.error(ex);
+                PrintStream out;
+                try {
+                    out = new PrintStream(logFile);
+                    ex.printStackTrace(out);
+                } catch (FileNotFoundException ex1) {
+                    LOGGER.warn("Could not write error to file :" + ex1.getMessage());
+                }
                 ex.printStackTrace();
             }
         }
-
-        private void writeToLog(String line, File logFile) throws IOException {
-
-        }
     }
-
-    private void scanForCheckpoints(String line, BufferedReader processReader) throws Exception {
+    
+    private void scanForCheckpoints(String line) throws Exception {
         boolean ignoreLine;
         ignoreLine = false;
         //print to the console
@@ -214,5 +223,5 @@ public class ProcessingMonitor {
         processBuilder.directory(workingDirectory);
         return getHook();
     }
-
+    
 }

@@ -37,14 +37,14 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
     }
 
     private List<String> constructArguments() throws IOException {
-        temp = new File(System.getProperty("user.home") + "/compomics/.compomics/pladipus/temp/PeptideShaker/followup");
+        temp = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/PeptideShaker/followup");
         if (temp.exists()) {
             FileUtils.deleteDirectory(temp);
         }
         temp.mkdirs();
 
         real_output_folder = new File(parameters.get("cps")).getParentFile();
-        parameters.put("spectrum_folder", temp.getAbsolutePath());
+        parameters.put("spectrum_folder", real_output_folder.getAbsolutePath());
         parameters.put("in", parameters.get("cps"));
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
