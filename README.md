@@ -29,4 +29,4 @@ In case your machine does not provide a graphical user interface and can thus no
 
 ----
 
-<sub>The pladipus logo was created by Elodie Adam</sub>
+<sub>The pladipus logo was created by [Elodie Adam](https://www.linkedin.com/pub/elodie-adam/61/290/871)</sub>
