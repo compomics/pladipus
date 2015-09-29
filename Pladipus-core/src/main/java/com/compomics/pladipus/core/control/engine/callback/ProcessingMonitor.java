@@ -67,7 +67,7 @@ public class ProcessingMonitor {
         this.notifier = notifier;
         this.processBuilder = processBuilder;
     }
-    
+
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
         String errorLine;
         if (firstLine.toLowerCase().contains("exception:")) {
@@ -85,15 +85,15 @@ public class ProcessingMonitor {
         processOutputStream.close();
         return reThrowable;
     }
-    
+
     private final LinkedList<StackTraceElement> stackTraceElementList = new LinkedList<>();
-    
+
     private StackTraceElement[] getStackTrace() {
         StackTraceElement[] elements = new StackTraceElement[stackTraceElementList.size()];
         stackTraceElementList.toArray(elements);
         return elements;
     }
-    
+
     private void addStackTraceElement(String errorLine) throws StringIndexOutOfBoundsException {
         errorLine = errorLine.replace("at ", "");
         int endIndex = errorLine.indexOf("(");
@@ -102,7 +102,7 @@ public class ProcessingMonitor {
             declaringClass = errorLine.substring(0, errorLine.indexOf("("));
         }
         String method = declaringClass.substring(declaringClass.lastIndexOf(".") + 1);
-        
+
         declaringClass = declaringClass.substring(0, declaringClass.lastIndexOf("."));
         String fileName = declaringClass.substring(declaringClass.lastIndexOf(".") + 1) + ".java";
         int lineNumber;
@@ -136,17 +136,17 @@ public class ProcessingMonitor {
         process.waitFor();
         return process.exitValue();
     }
-    
+
     private class StreamGobbler extends Thread {
-        
+
         private InputStream is;
         private final String type;
-        
+
         private StreamGobbler(InputStream is, String type) {
             this.is = is;
             this.type = type;
         }
-        
+
         @Override
         public void run() {
             InputStreamReader isr = new InputStreamReader(is);
@@ -162,6 +162,7 @@ public class ProcessingMonitor {
                     if (type.equalsIgnoreCase("error")) {
                         throw handleError(line, br);
                     } else {
+                        LOGGER.debug(line);
                         writer.append(line).append(System.lineSeparator()).flush();
                         scanForCheckpoints(line);
                     }
@@ -179,12 +180,11 @@ public class ProcessingMonitor {
             }
         }
     }
-    
+
     private void scanForCheckpoints(String line) throws Exception {
         boolean ignoreLine;
         ignoreLine = false;
         //print to the console
-        LOGGER.debug(line);
         try {
             for (Checkpoint checkpoint : notifier.getCheckpoints()) {
                 if (line.toUpperCase().contains(checkpoint.getCheckpoint().toUpperCase())) {
@@ -223,5 +223,5 @@ public class ProcessingMonitor {
         processBuilder.directory(workingDirectory);
         return getHook();
     }
-    
+
 }
