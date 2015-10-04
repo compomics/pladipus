@@ -35,7 +35,7 @@ public class SearchSetupStep extends ProcessingStep {
     private static final Logger LOGGER = Logger.getLogger(SearchSetupStep.class);
 
     public SearchSetupStep() {
-        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/resources");
+        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/search/resources");
         tempResources.getParentFile().mkdirs();
         fasta_repo = new File(System.getProperty("user.home") + "/.compomics/pladipus/fasta");
         fasta_repo.mkdirs();
@@ -68,7 +68,10 @@ public class SearchSetupStep extends ProcessingStep {
 
         //fix for older files that lack identification parameters
         if (inputPath.toLowerCase().endsWith(".mgf") || inputPath.toLowerCase().endsWith(".mgf.zip")) {
-            String inputFile = PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath();
+            File downloadFile = PladipusFileDownloadingService.downloadFile(inputPath, tempResources);
+            downloadFile.deleteOnExit();
+            String inputFile = downloadFile.getAbsolutePath();
+
             if (inputPath.toLowerCase().endsWith(".zip")) {
                 LOGGER.debug("Unzipping input");
                 ZipUtils.unzipArchive(new File(inputFile), tempResources);
@@ -108,6 +111,7 @@ public class SearchSetupStep extends ProcessingStep {
             LOGGER.debug("Got fasta file " + parameters.get("fasta_file"));
             //get and update parameters
             File paramFile = PladipusFileDownloadingService.downloadFile(paramPath, tempResources);
+            paramFile.deleteOnExit();
             SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(paramFile);
             SearchParameters updatedIdentificationParameters = updateAlgorithmSettings(identificationParameters, fastaFile);
             SearchParameters.saveIdentificationParameters(updatedIdentificationParameters, paramFile);

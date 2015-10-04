@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 public class SearchGUIStep extends ProcessingStep {
 
     private static final Logger LOGGER = Logger.getLogger(SearchGUIStep.class);
-    private static final File temp_searchGUI_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/SearchGUI/result");
+    private static final File temp_searchGUI_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/search/SearchGUI");
 
     public SearchGUIStep() {
 
@@ -46,6 +46,9 @@ public class SearchGUIStep extends ProcessingStep {
         cmdArgs.add("-cp");
         cmdArgs.add(searchGuiJar.getAbsolutePath());
         cmdArgs.add("eu.isas.searchgui.cmd.SearchCLI");
+        if (!parameters.containsKey("output_data")) {
+            //          parameters.put("output_data", "1");
+        }
         for (AllowedSearchGUIParams aParameter : AllowedSearchGUIParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
@@ -76,18 +79,19 @@ public class SearchGUIStep extends ProcessingStep {
 
         LOGGER.info("Starting SearchGUI...");
         //use this variable if you'd run peptideshaker following this classs
+
         parameters.put("output_folder", temp_searchGUI_output.getAbsolutePath());
         //add callback notifier for more detailed printouts of the processing
         CallbackNotifier callbackNotifier = getCallbackNotifier();
         for (SearchGUICheckpoints aCheckPoint : SearchGUICheckpoints.values()) {
-            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(),aCheckPoint.getFeedback()));
+            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
-        new ProcessingEngine().startProcess(getJar(), constructArguments(),callbackNotifier);
+        new ProcessingEngine().startProcess(getJar(), constructArguments(), callbackNotifier);
         //storing intermediate results
         LOGGER.debug("Storing results in " + real_outputFolder);
-           real_outputFolder.mkdirs();
-           File outputFile = new File(real_outputFolder,"searchgui_out.zip");
-           File tempOutput= new File(temp_searchGUI_output,"searchgui_out.zip");
+        real_outputFolder.mkdirs();
+        File outputFile = new File(real_outputFolder, "searchgui_out.zip");
+        File tempOutput = new File(temp_searchGUI_output, "searchgui_out.zip");
         //copy as a stream?
         if (!outputFile.exists()) {
             outputFile.createNewFile();
@@ -96,10 +100,11 @@ public class SearchGUIStep extends ProcessingStep {
                 FileChannel destination = new FileOutputStream(outputFile).getChannel()) {
             destination.transferFrom(source, 0, source.size());
         }
-      //  FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
+        //  FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
         //in case of future peptideShaker searches : 
         parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
-        parameters.put("out",real_outputFolder.getAbsolutePath()+"/"+parameterFile.getName()+".cps");
+        parameters.put("out", real_outputFolder.getAbsolutePath() + "/" + parameterFile.getName() + ".cps");
+        parameters.put("output_folder", real_outputFolder.getAbsolutePath());
         return true;
     }
 

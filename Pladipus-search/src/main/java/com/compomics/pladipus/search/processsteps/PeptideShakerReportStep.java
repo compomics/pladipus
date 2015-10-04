@@ -15,13 +15,9 @@ import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -30,7 +26,6 @@ import org.apache.commons.io.FileUtils;
 public class PeptideShakerReportStep extends ProcessingStep {
 
     private File real_output_folder;
-    private File temp;
 
     public PeptideShakerReportStep() {
 
@@ -38,33 +33,25 @@ public class PeptideShakerReportStep extends ProcessingStep {
 
     private List<String> constructArguments() throws IOException {
         File peptideShakerJar = getJar();
+
         ArrayList<String> cmdArgs = new ArrayList<>();
-        temp = new File(System.getProperty("user.home") + "/compomics/.compomics/pladipus/temp/PeptideShaker/reports");
-        temp.mkdirs();
         cmdArgs.add("java");
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
         cmdArgs.add("eu.isas.peptideshaker.cmd.ReportCLI");
-       
-        //if this is part of the peptideshaker pipeline
-        if (!parameters.containsKey("in")) {
-            //the output of the cps
-            parameters.put("in", parameters.get("cps"));
-        }
-     
-        if (!parameters.containsKey(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId())) {
-            real_output_folder = new File(parameters.get("out")).getParentFile();
-        } else {
-            real_output_folder = new File(parameters.get(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId()));
-        }
-        parameters.put(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId(), temp.getAbsolutePath());
 
+        real_output_folder = new File(parameters.get("output_folder"), "reports");
+        real_output_folder.mkdirs();
+        parameters.put("out_reports", real_output_folder.getAbsolutePath());
         //if there are no specific reports required
         if (!parameters.containsKey(AllowedPeptideShakerReportParams.REPORT_TYPE.getId())) {
             parameters.put(AllowedPeptideShakerReportParams.REPORT_TYPE.getId(),
                     "0,1,2,3,4");
         }
         //construct the cmd
+        if (!parameters.containsKey("in") && parameters.containsKey("out")) {
+            parameters.put("in", parameters.get("out"));
+        }
         for (AllowedPeptideShakerReportParams aParameter : AllowedPeptideShakerReportParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
@@ -80,11 +67,6 @@ public class PeptideShakerReportStep extends ProcessingStep {
     public boolean doAction() throws Exception, Exception {
         List<String> constructArguments = constructArguments();
         File peptideShakerJar = getJar();
-        if (temp.exists()) {
-            FileUtils.deleteDirectory(temp);
-        }
-        temp.mkdirs();
-
         //add callback notifier for more detailed printouts of the processing
         CallbackNotifier callbackNotifier = getCallbackNotifier();
         for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
@@ -112,30 +94,7 @@ public class PeptideShakerReportStep extends ProcessingStep {
     }
 
     private void cleanupAndSave() throws IOException {
-        //parameters.put("out",real_output_file.getAbsolutePath());
-     //   File temp = new File(parameters.get(AllowedPeptideShakerReportParams.EXPORT_FOLDER.getId()));
-        //copy as a stream?
-        File toStore = new File(parameters.get("cps")).getParentFile();
-        if (!real_output_folder.exists()) {
-            real_output_folder.createNewFile();
-        }
-        for (File aFile : temp.listFiles()) {
-            File real_output_file = new File(toStore, aFile.getName());
-            if (real_output_file.exists()) {
-                real_output_file.delete();
-            }
-            real_output_file.getParentFile().mkdirs();
-            real_output_file.createNewFile();
-            System.out.println("Copying " + aFile.getAbsolutePath() + " to " + real_output_file.getAbsolutePath());
-            try (FileChannel source = new FileInputStream(aFile).getChannel();
-                    FileChannel destination = new FileOutputStream(real_output_file).getChannel()) {
-                destination.transferFrom(source, 0, source.size());
-            }
-        }
-        //check if reports should be made
-        if (!parameters.containsKey("generate_reports")) {
-            FileUtils.deleteDirectory(temp);
-        }
+        //the reports are written to the final folder immediatly, no point to do it locally first
     }
 
     @Override

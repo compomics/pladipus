@@ -31,20 +31,27 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
 
     private File real_output_folder;
     private File temp;
+    private static final File temp_peptideshaker_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/search/PeptideShaker/mgf");
 
     public PeptideShakerFollowUpStep() {
 
     }
 
     private List<String> constructArguments() throws IOException {
-        temp = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/PeptideShaker/followup");
-        if (temp.exists()) {
-            FileUtils.deleteDirectory(temp);
+        if (temp_peptideshaker_output.exists()) {
+            FileUtils.deleteDirectory(temp_peptideshaker_output);
         }
-        temp.mkdirs();
+        temp_peptideshaker_output.mkdirs();
 
-        real_output_folder = new File(parameters.get("cps")).getParentFile();
-        parameters.put("spectrum_folder", real_output_folder.getAbsolutePath());
+        if (!parameters.containsKey("cps")) {
+            if (parameters.containsKey("out")) {
+                parameters.put("cps", parameters.get("out"));
+            } else if (parameters.containsKey("in")) {
+                parameters.put("cps", parameters.get("in"));
+            }
+        }
+        real_output_folder = new File(parameters.get("output_folder"));
+        parameters.put("spectrum_folder", temp_peptideshaker_output.getAbsolutePath());
         parameters.put("in", parameters.get("cps"));
         //Temporary fix
         parameters.remove("fasta_file");
@@ -101,20 +108,21 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
         //parameters.put("out",real_output_file.getAbsolutePath());
         //copy as a stream?
         if (!real_output_folder.exists()) {
-            real_output_folder.createNewFile();
+            real_output_folder.mkdirs();
         }
-        for (File aFile : temp.listFiles()) {
-            File real_output_file = new File(real_output_folder, aFile.getName());
-            if (real_output_file.exists()) {
-                real_output_file.delete();
-            }
-            real_output_file.getParentFile().mkdirs();
+        for (File anMGF : temp_peptideshaker_output.listFiles()) {
+            File zipMGF = new File(anMGF.getAbsolutePath() + ".zip");
+            ZipUtils.zipFile(anMGF, zipMGF);
+            File real_output_file = new File(real_output_folder, zipMGF.getName());
             real_output_file.createNewFile();
-            System.out.println("Copying " + aFile.getAbsolutePath() + " to " + real_output_file.getAbsolutePath());
-            try (FileChannel source = new FileInputStream(aFile).getChannel();
+            System.out.println("Copying " + zipMGF.getAbsolutePath() + " to " + real_output_file.getAbsolutePath());
+            try (FileChannel source = new FileInputStream(zipMGF).getChannel();
                     FileChannel destination = new FileOutputStream(real_output_file).getChannel()) {
                 destination.transferFrom(source, 0, source.size());
             }
+            //delete the local one
+            anMGF.delete();
+            zipMGF.delete();
         }
     }
 
