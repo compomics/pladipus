@@ -103,6 +103,8 @@ public class CLIExecutor {
                     if (push && templateFile != null) {
                         trafficManager.pushToPladipus(templateFile, jobConfigurationFile);
                     } else {
+                        System.out.println("Hello, pladipus will now start pulling jobs and updates from the controller.");
+                        System.out.println("Thank you for participating in the research!");
                         while (true) {
                             try {
                                 trafficManager.pullFromPladipus();
