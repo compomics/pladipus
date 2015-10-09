@@ -153,7 +153,7 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
                         callbackNotifier.onNotification(ex.getMessage(), false);
                         rollbackWithError(message);
                         //log the error to a file-->should be refactored to get a spot in the database or something, or mail? :
-                        File errorLog = new File(System.getProperty("user.home") + "/.compomics/pladipus/log/errors.log");
+                        File errorLog = new File(System.getProperty("user.home") + "/pladipus/log/errors.log");
                         errorLog.getParentFile().mkdirs();
                         errorLog.createNewFile();
                         try ( //APPEND EXCEPTION TO THE FILE

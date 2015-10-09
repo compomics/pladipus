@@ -55,7 +55,7 @@ public class InstallExample {
     }
 
     private void installSearchGUI() {
-        File installFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/tools/SearchGUI");
+        File installFolder = new File(System.getProperty("user.home") + "/pladipus/tools/SearchGUI");
         installFolder.mkdir();
         searchGUIDialog = new ProgressDialogX(new JFrame(),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
@@ -95,7 +95,7 @@ public class InstallExample {
     }
 
     private void installPeptideShaker() {
-        File installFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/tools/PeptideShaker");
+        File installFolder = new File(System.getProperty("user.home") + "/pladipus/tools/PeptideShaker");
         installFolder.mkdir();
         peptideShakerDialog = new ProgressDialogX(new JFrame(),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/peptide-shaker.gif")),
@@ -141,7 +141,7 @@ public class InstallExample {
     }
 
     private void installDeNovoGUI() {
-        File installFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/tools/DeNovoGUI");
+        File installFolder = new File(System.getProperty("user.home") + "/pladipus/tools/DeNovoGUI");
         installFolder.mkdir();
         deNovoGUIDialog = new ProgressDialogX(new JFrame(),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/peptide-shaker.gif")),

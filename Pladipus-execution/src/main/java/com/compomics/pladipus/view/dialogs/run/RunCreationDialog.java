@@ -66,7 +66,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
     /**
      * the last selected folder
      */
-    private File lastSelectedFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus");
+    private File lastSelectedFolder = new File(System.getProperty("user.home") + "/pladipus");
     /**
      * the installed processes file chooser
      */

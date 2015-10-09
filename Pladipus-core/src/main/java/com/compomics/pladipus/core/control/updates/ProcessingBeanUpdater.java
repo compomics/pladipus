@@ -60,7 +60,7 @@ public class ProcessingBeanUpdater {
     public static ProcessingBeanUpdater getInstance() {
         if (instance == null) {
             instance = new ProcessingBeanUpdater();
-            beanXMLDefinitionFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config/processing-beans.xml");
+            beanXMLDefinitionFile = new File(System.getProperty("user.home") + "/pladipus/config/processing-beans.xml");
             if (!beanXMLDefinitionFile.exists()) {
                 copyFromResources();
             }
@@ -137,7 +137,7 @@ public class ProcessingBeanUpdater {
      */
     public TreeMap<String, String> getInstalledProcessStepClasses() throws ParserConfigurationException, IOException, SAXException {
         TreeMap<String, String> installedProcesses = new TreeMap<>();
-        File propertiesFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config/processing-beans.xml");
+        File propertiesFile = new File(System.getProperty("user.home") + "/pladipus/config/processing-beans.xml");
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();

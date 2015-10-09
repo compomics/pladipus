@@ -24,7 +24,7 @@ public class InstallActiveMQ {
     /**
      * the local location of the activeMQ folder
      */
-    private static final File activeMQFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/activeMQ/");
+    private static final File activeMQFolder = new File(System.getProperty("user.home") + "/pladipus/activeMQ/");
 
     public InstallActiveMQ() {
 
@@ -68,7 +68,7 @@ public class InstallActiveMQ {
         properties.setProperty("AMQ.host", host);
         properties.setProperty("AMQ.port.queue", amqPort);
         properties.setProperty("AMQ.version", "5.11.1");
-        properties.setProperty("app.classpath", System.getProperty("user.home") + "/.compomics/pladipus/external/");
+        properties.setProperty("app.classpath", System.getProperty("user.home") + "/pladipus/external/");
         properties.save();
         URL inputUrl = new InstallActiveMQ().getClass().getResource("/doc/activemq.xml");
         File conf = findFile(activeMQFolder, "conf");

@@ -157,7 +157,7 @@ public class ProcessingMonitor {
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             String line;
-            File logFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/log/subprocess_" + type + ".log");
+            File logFile = new File(System.getProperty("user.home") + "/pladipus/log/subprocess_" + type + ".log");
             if (logFile.exists()) {
                 logFile.delete();
             }

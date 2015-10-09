@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class PeptideShakerStep extends ProcessingStep {
 
-    private static final File temp_peptideshaker_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/search/PeptideShaker");
+    private static final File temp_peptideshaker_output = new File(System.getProperty("user.home") + "/pladipus/temp/search/PeptideShaker");
 
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerStep.class);
     private File temp_peptideshaker_cps;
@@ -99,7 +99,7 @@ public class PeptideShakerStep extends ProcessingStep {
 
     public File getJar() throws IOException {
         //check if this is possible in another way...
-        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
+        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
         File temp = new File(toolFolder, "PeptideShaker");

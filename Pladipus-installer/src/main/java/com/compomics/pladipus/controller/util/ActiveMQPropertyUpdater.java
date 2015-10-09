@@ -59,7 +59,7 @@ public class ActiveMQPropertyUpdater {
                 //update the transporter URI
                 Node nodeAttr = attr.getNamedItem("uri");
                 //also disable the inactivitymonitoring
-                nodeAttr.setTextContent("tcp://" + transporterHostName + ":" + activeMQPort + "?consumer.queuePrefetch=0;transport.useInactivityMonitor=false");
+                nodeAttr.setTextContent("tcp://" + transporterHostName + ":" + activeMQPort + "?consumer.queuePrefetch=1;transport.useInactivityMonitor=false");
             }
 
             //get the jmx management item
@@ -68,7 +68,7 @@ public class ActiveMQPropertyUpdater {
 
             //get the policyEntry item
             Node policyEntry = doc.getElementsByTagName("policyEntry").item(0);
-            ((Element) policyEntry).setAttribute("queuePrefetch", "0");
+            ((Element) policyEntry).setAttribute("queuePrefetch", "1");
 
 // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

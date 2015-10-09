@@ -41,7 +41,7 @@ public class InstallPladipus {
      * The current version of pladipus (//TODO get this from the POM or a
      * properties file???)
      */
-    private static final String version = "0.3.7";
+    private static final String version = "0.3.8";
     /**
      * The available pladipus steps that need to be installed
      */
@@ -49,7 +49,7 @@ public class InstallPladipus {
     /**
      * The pladipus folder (in user home)
      */
-    private static final File pladipusFolder = new File(System.getProperty("user.home") + "/.compomics/pladipus/");
+    private static final File pladipusFolder = new File(System.getProperty("user.home") + "/pladipus/");
     /**
      * The path to the jar file post installing
      */
@@ -65,7 +65,7 @@ public class InstallPladipus {
 
     private void setClassPath() throws IOException {
         NetworkProperties properties = NetworkProperties.getInstance();
-        properties.setProperty("app.classpath", System.getProperty("user.home") + "/.compomics/pladipus/external");
+        properties.setProperty("app.classpath", System.getProperty("user.home") + "/pladipus/external");
         properties.save();
     }
 

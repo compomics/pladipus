@@ -256,7 +256,7 @@ public class RunPopupMenu extends JPopupMenu {
                         dao.setQueued(queuedProcess, false);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(RunPopupMenu.this,
-                                "Could not launch the selection: " + ex,
+                                "Could not cancel the selection: " + ex,
                                 "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         progressDialog.setRunFinished();

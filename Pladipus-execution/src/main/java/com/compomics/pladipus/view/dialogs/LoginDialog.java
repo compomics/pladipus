@@ -78,7 +78,7 @@ public class LoginDialog extends javax.swing.JDialog {
         });
         //before allowing the user to do anything, notify them that on first run the settings need to be completed
         //check if this is the firt time pladipus is run...
-        File firstRunFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config");
+        File firstRunFile = new File(System.getProperty("user.home") + "/pladipus/config");
         if (!firstRunFile.exists()) {
             NetworkProperties.getInstance();
             JOptionPane.showMessageDialog(this,

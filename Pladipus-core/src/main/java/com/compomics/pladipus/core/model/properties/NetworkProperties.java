@@ -41,7 +41,7 @@ public class NetworkProperties extends PladipusProperties {
     public static NetworkProperties getInstance() {
         if (instance == null) {
             instance = new NetworkProperties();
-            defaultPropFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config/network.properties");
+            defaultPropFile = new File(System.getProperty("user.home") + "/pladipus/config/network.properties");
             if (!defaultPropFile.exists()) {
                 copyFromResources();
             }

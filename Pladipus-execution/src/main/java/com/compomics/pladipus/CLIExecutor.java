@@ -7,6 +7,7 @@ package com.compomics.pladipus;
 
 import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
 import com.compomics.pladipus.core.control.distribution.service.UserService;
+import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsQueueConnectionFactory;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.view.MainGUI;
 import java.io.Console;
@@ -81,7 +82,7 @@ public class CLIExecutor {
         } else {
             while (true) {
                 //check if this is the firt time pladipus is run...
-                File firstRunFile = new File(System.getProperty("user.home") + "/.compomics/pladipus/config");
+                File firstRunFile = new File(System.getProperty("user.home") + "/pladipus/config");
                 if (!firstRunFile.exists()) {
                     NetworkProperties.getInstance();
                     System.out.println("Hello! It seems this is the first time you are running pladipus." + System.lineSeparator()
@@ -109,9 +110,10 @@ public class CLIExecutor {
                                     break;
                                 }
                             } catch (UnknownHostException e) {
-                                LOGGER.warn("Could not contact the activeMQ server");
+                                LOGGER.error(e);
                                 try {
                                     Thread.sleep(10000);
+                                    CompomicsQueueConnectionFactory.reset();
                                 } catch (InterruptedException e2) {
 
                                 }

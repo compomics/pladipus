@@ -20,7 +20,7 @@ public class BlastSetupStep extends ProcessingStep {
     /**
      * the temp folder for the entire processing
      */
-    private final File tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/blast");
+    private final File tempResources = new File(System.getProperty("user.home") + "/pladipus/temp/blast");
 
     public BlastSetupStep() {
         

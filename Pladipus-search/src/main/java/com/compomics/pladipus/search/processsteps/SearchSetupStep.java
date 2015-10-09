@@ -35,9 +35,9 @@ public class SearchSetupStep extends ProcessingStep {
     private static final Logger LOGGER = Logger.getLogger(SearchSetupStep.class);
 
     public SearchSetupStep() {
-        tempResources = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/search/resources");
+        tempResources = new File(System.getProperty("user.home") + "/pladipus/temp/search/resources");
         tempResources.getParentFile().mkdirs();
-        fasta_repo = new File(System.getProperty("user.home") + "/.compomics/pladipus/fasta");
+        fasta_repo = new File(System.getProperty("user.home") + "/pladipus/fasta");
         fasta_repo.mkdirs();
     }
 

@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 public class MsConvertStep extends ProcessingStep {
 
     private static final Logger LOGGER = Logger.getLogger(MsConvertStep.class);
-    private final File tempResults = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/MsConvert/results");
+    private final File tempResults = new File(System.getProperty("user.home") + "/pladipus/temp/MsConvert/results");
     private File executable;
     private File real_outputFolder;
 

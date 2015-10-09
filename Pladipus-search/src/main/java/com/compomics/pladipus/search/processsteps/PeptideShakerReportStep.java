@@ -80,7 +80,7 @@ public class PeptideShakerReportStep extends ProcessingStep {
 
     public File getJar() throws IOException {
         //check if this is possible in another way...
-        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
+        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
         File temp = new File(toolFolder, "PeptideShaker");

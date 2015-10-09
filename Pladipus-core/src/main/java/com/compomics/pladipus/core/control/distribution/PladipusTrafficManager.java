@@ -254,7 +254,6 @@ public class PladipusTrafficManager {
             CompomicsSessionConsumer compomicsSessionConsumer = new CompomicsSessionConsumer();
             compomicsSessionConsumer.run();
         } catch (IOException | JMSException ex) {
-            LOGGER.error(ex);
             Exception e = new UnknownHostException("Could not see the ActiveMQ service");
             e.setStackTrace(ex.getStackTrace());
             throw e;
@@ -294,5 +293,4 @@ public class PladipusTrafficManager {
             throw new Exception("The ActiveMQ Server could not be reached.");
         }
     }
-
 }

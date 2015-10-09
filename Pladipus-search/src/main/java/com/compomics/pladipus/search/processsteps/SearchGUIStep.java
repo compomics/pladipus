@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 public class SearchGUIStep extends ProcessingStep {
 
     private static final Logger LOGGER = Logger.getLogger(SearchGUIStep.class);
-    private static final File temp_searchGUI_output = new File(System.getProperty("user.home") + "/.compomics/pladipus/temp/search/SearchGUI");
+    private static final File temp_searchGUI_output = new File(System.getProperty("user.home") + "/pladipus/temp/search/SearchGUI");
 
     public SearchGUIStep() {
 
@@ -110,7 +110,7 @@ public class SearchGUIStep extends ProcessingStep {
 
     public File getJar() throws IOException {
         //check if this is possible in another way...
-        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
+        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
         File temp = new File(toolFolder, "SearchGUI");
