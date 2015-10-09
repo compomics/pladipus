@@ -66,6 +66,11 @@ public class ProcessingMonitor {
     public ProcessingMonitor(ProcessBuilder processBuilder, CallbackNotifier notifier) {
         this.notifier = notifier;
         this.processBuilder = processBuilder;
+        //TODO fix this in peptideshaker, not in pladipus
+        errorKeyWords.add("FATAL");
+        errorKeyWords.add("PEPTDESHAKER PROCESSING CANCELED");
+        errorKeyWords.add("UNABLE TO READ SPECTRUM");
+        errorKeyWords.add("COMPOMICSERROR");
     }
 
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
@@ -162,7 +167,8 @@ public class ProcessingMonitor {
                     if (type.equalsIgnoreCase("error")) {
                         throw handleError(line, br);
                     } else {
-                        LOGGER.debug(line);
+                        System.out.println(line);
+                        // LOGGER.debug(line);
                         writer.append(line).append(System.lineSeparator()).flush();
                         scanForCheckpoints(line);
                     }
@@ -193,15 +199,14 @@ public class ProcessingMonitor {
                     break;
                 }
             }
-            /*    if (!ignoreLine) {
-             //scan for errors
-             for (String aKeyword : errorKeyWords) {
-             if (line.toUpperCase().contains(aKeyword)) {
-             isAThrownError = true;
-             throw (handleError(line, processReader));
-             }
-             }
-             }*/
+            if (!ignoreLine) {
+                //scan for errors
+                for (String aKeyword : errorKeyWords) {
+                    if (line.toUpperCase().contains(aKeyword.toUpperCase())) {
+                        throw new Exception("An unclear error occurred in a subprocess : " + System.lineSeparator() + line);
+                    }
+                }
+            }
         } catch (NullPointerException e) {
             LOGGER.error(e);
         }
