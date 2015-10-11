@@ -3,7 +3,7 @@
 
 # Pladipus 
 
-<sub><a href="https://github.com/compomics/pladipus/wiki/6.-Updates" target="blank">Current version : 0.3.8</a></sub>
+<sub><a href="https://github.com/compomics/pladipus/wiki/6.-Updates" target="blank">Latest version: 0.3.8</a></sub>
 
 The [CompOmics](http://www.compomics.com) Pladipus system is an affordable cluster computing framework allowing for distributed processing, management and analyses for bio-informatics pipelines.
 
