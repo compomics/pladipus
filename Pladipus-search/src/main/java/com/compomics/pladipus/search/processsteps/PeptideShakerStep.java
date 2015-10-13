@@ -77,7 +77,7 @@ public class PeptideShakerStep extends ProcessingStep {
         }
 
         if (parameters.containsKey("output_folder")) {
-            temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + ".cps");
+            temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + ".cpsx");
             parameters.put("out", temp_peptideshaker_cps.getAbsolutePath());
         }
         File real_output_folder = new File(parameters.get("output_folder"));
