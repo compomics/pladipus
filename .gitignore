@@ -4,7 +4,7 @@
 /Pladipus-installer/target/
 /Pladipus-blast/target/
 /Pladipus-denovo/target/
-/Pladipus-pride
+/Pladipus-pride/
 /Pladipus-msconvert/target/
-/Pladipus-installer/src/main/resources
-/Pladipus-installer/test/main/resources
+/Pladipus-installer/src/main/resources/
+/Pladipus-installer/test/main/resources/
