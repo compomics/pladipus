@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.compomics</groupId>
         <artifactId>Pladipus</artifactId>
-        <version>0.3.8</version>
+        <version>0.3.9</version>
     </parent>
     <artifactId>Pladipus-denovo</artifactId>
     <packaging>jar</packaging>
@@ -12,7 +12,7 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>Pladipus-core</artifactId>
-            <version>0.3.8</version>
+            <version>0.3.9</version>
             <type>jar</type>
         </dependency>
     </dependencies>
