@@ -11,15 +11,14 @@ import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarn
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
+import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerReportParams;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerCheckPoints;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -48,6 +47,16 @@ public class PeptideShakerStep extends ProcessingStep {
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
         cmdArgs.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
+        //check if folder exists      
+        File outputFolder = new File(parameters.get("output_folder"));
+        outputFolder.mkdirs();
+//check if reports are requested
+        if (parameters.containsKey("reports") && !parameters.containsKey("out_reports")) {
+            File outputReportFolder = new File(outputFolder, "reports");
+            if (outputReportFolder.mkdirs()) {
+                parameters.put("out_reports", outputReportFolder.getAbsolutePath());
+            }
+        }
 
         for (AllowedPeptideShakerParams aParameter : AllowedPeptideShakerParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
@@ -57,6 +66,20 @@ public class PeptideShakerStep extends ProcessingStep {
                 throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
             }
         }
+        //also add these for other possible CLI's?
+        for (AllowedPeptideShakerFollowUpParams aParameter : AllowedPeptideShakerFollowUpParams.values()) {
+            if (parameters.containsKey(aParameter.getId())) {
+                cmdArgs.add("-" + aParameter.getId());
+                cmdArgs.add(parameters.get(aParameter.getId()));
+            }
+        }
+        for (AllowedPeptideShakerReportParams aParameter : AllowedPeptideShakerReportParams.values()) {
+            if (parameters.containsKey(aParameter.getId())) {
+                cmdArgs.add("-" + aParameter.getId());
+                cmdArgs.add(parameters.get(aParameter.getId()));
+            }
+        }
+
         return cmdArgs;
     }
 
@@ -89,11 +112,7 @@ public class PeptideShakerStep extends ProcessingStep {
             callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
         new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
-        parameters.put("in", temp_peptideshaker_cps.getAbsolutePath());
-        //roll back the parameters to their original form
-        if (!parameters.containsKey("reports")) {
-            cleanupAndSave(temp_peptideshaker_cps, real_output_folder);
-        }
+        cleanupAndSave(real_output_folder);
         return true;
     }
 
@@ -117,17 +136,8 @@ public class PeptideShakerStep extends ProcessingStep {
         return true;
     }
 
-    private void cleanupAndSave(File cpsFile, File resultFolder) throws IOException {
-        //parameters.put("out",real_output_file.getAbsolutePath());
-        File realOutput = new File(resultFolder, cpsFile.getName());
-        resultFolder.mkdirs();
-        //copy as a stream?
-        if (!realOutput.exists()) {
-            realOutput.createNewFile();
-        }
-        try (FileChannel source = new FileInputStream(cpsFile).getChannel(); FileChannel destination = new FileOutputStream(realOutput).getChannel()) {
-            destination.transferFrom(source, 0, source.size());
-        }
+    private void cleanupAndSave(File resultFolder) throws Exception {
+        ZipUtils.zipFolder(temp_peptideshaker_output, new File(resultFolder, resultFolder.getName() + ".zip"));
     }
 
     @Override

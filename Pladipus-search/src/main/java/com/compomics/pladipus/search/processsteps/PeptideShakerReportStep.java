@@ -39,18 +39,10 @@ public class PeptideShakerReportStep extends ProcessingStep {
         cmdArgs.add("-cp");
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
         cmdArgs.add("eu.isas.peptideshaker.cmd.ReportCLI");
-
-        real_output_folder = new File(parameters.get("output_folder"), "reports");
-        real_output_folder.mkdirs();
-        parameters.put("out_reports", real_output_folder.getAbsolutePath());
         //if there are no specific reports required
         if (!parameters.containsKey(AllowedPeptideShakerReportParams.REPORT_TYPE.getId())) {
             parameters.put(AllowedPeptideShakerReportParams.REPORT_TYPE.getId(),
                     "0,1,2,3,4");
-        }
-        //construct the cmd
-        if (!parameters.containsKey("in") && parameters.containsKey("out")) {
-            parameters.put("in", parameters.get("out"));
         }
         for (AllowedPeptideShakerReportParams aParameter : AllowedPeptideShakerReportParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {

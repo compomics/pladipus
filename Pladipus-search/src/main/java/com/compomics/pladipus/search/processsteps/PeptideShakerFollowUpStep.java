@@ -42,19 +42,7 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
             FileUtils.deleteDirectory(temp_peptideshaker_output);
         }
         temp_peptideshaker_output.mkdirs();
-
-        if (!parameters.containsKey("cps")) {
-            if (parameters.containsKey("out")) {
-                parameters.put("cps", parameters.get("out"));
-            } else if (parameters.containsKey("in")) {
-                parameters.put("cps", parameters.get("in"));
-            }
-        }
         real_output_folder = new File(parameters.get("output_folder"));
-        parameters.put("spectrum_folder", temp_peptideshaker_output.getAbsolutePath());
-        parameters.put("in", parameters.get("cps"));
-        //Temporary fix
-        parameters.remove("fasta_file");
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -77,7 +65,6 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
     public boolean doAction() throws Exception, Exception {
         List<String> constructArguments = constructArguments();
         File peptideShakerJar = getJar();
-
         //add callback notifier for more detailed printouts of the processing
         CallbackNotifier callbackNotifier = getCallbackNotifier();
         for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
