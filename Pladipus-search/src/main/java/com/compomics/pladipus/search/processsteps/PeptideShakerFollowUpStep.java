@@ -7,37 +7,35 @@ package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
-import com.compomics.pladipus.core.control.util.JarLookupService;
-import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
-import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 
 /**
  *
  * @author Kenneth Verheggen
  */
-public class PeptideShakerFollowUpStep extends ProcessingStep {
+public class PeptideShakerFollowUpStep extends PeptideShakerStep {
 
     private File real_output_folder;
-    private File temp;
     private static final File temp_peptideshaker_output = new File(System.getProperty("user.home") + "/pladipus/temp/search/PeptideShaker/mgf");
 
     public PeptideShakerFollowUpStep() {
 
     }
 
-    private List<String> constructArguments() throws IOException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
         if (temp_peptideshaker_output.exists()) {
             FileUtils.deleteDirectory(temp_peptideshaker_output);
         }
@@ -76,20 +74,6 @@ public class PeptideShakerFollowUpStep extends ProcessingStep {
         return true;
     }
 
-    public File getJar() throws IOException {
-        //check if this is possible in another way...
-        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
-        toolFolder.mkdirs();
-        //check if searchGUI already exists?
-        File temp = new File(toolFolder, "PeptideShaker");
-        if (!temp.exists()) {
-            File peptideshakerFile = PladipusFileDownloadingService.downloadFile(parameters.get("PeptideShaker"), toolFolder);
-            if (peptideshakerFile.getName().endsWith(".zip")) {
-                ZipUtils.unzipArchive(peptideshakerFile, temp);
-            }
-        }
-        return JarLookupService.lookupFile("PeptideShaker-.*.jar", temp);
-    }
 
     private void cleanupAndSave() throws IOException {
         //parameters.put("out",real_output_file.getAbsolutePath());

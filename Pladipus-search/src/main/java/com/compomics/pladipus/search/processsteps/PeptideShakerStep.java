@@ -9,7 +9,6 @@ import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
-import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
@@ -17,10 +16,16 @@ import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerReportParams;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerCheckPoints;
+import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import com.compomics.software.autoupdater.HeadlessFileDAO;
+import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -39,7 +44,7 @@ public class PeptideShakerStep extends ProcessingStep {
 
     }
 
-    private List<String> constructArguments() throws IOException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -116,18 +121,17 @@ public class PeptideShakerStep extends ProcessingStep {
         return true;
     }
 
-    public File getJar() throws IOException {
+    public File getJar() throws IOException, XMLStreamException, URISyntaxException {
         //check if this is possible in another way...
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
         File temp = new File(toolFolder, "PeptideShaker");
         if (!temp.exists()) {
-            File peptideshakerFile = PladipusFileDownloadingService.downloadFile(parameters.get("PeptideShaker"), toolFolder);
-            if (peptideshakerFile.getName().endsWith(".zip")) {
-                ZipUtils.unzipArchive(peptideshakerFile, temp);
+             LOGGER.info("Downloading latest SearchGUI version...");
+            URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
+            downloadLatestZipFromRepo(temp, "PeptideShaker", "eu.isas.peptideshaker", "PeptideShaker", null, null, jarRepository, false, false, new HeadlessFileDAO(),new WaitingHandlerCLIImpl());
             }
-        }
         return JarLookupService.lookupFile("PeptideShaker-.*.jar", temp);
     }
 

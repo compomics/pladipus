@@ -9,20 +9,24 @@ import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
-import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
-import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedSearchGUIParams;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.SearchGUICheckpoints;
+import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import com.compomics.software.autoupdater.HeadlessFileDAO;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
+import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,7 +42,7 @@ public class SearchGUIStep extends ProcessingStep {
 
     }
 
-    private List<String> constructArguments() throws IOException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
         File searchGuiJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -108,17 +112,16 @@ public class SearchGUIStep extends ProcessingStep {
         return true;
     }
 
-    public File getJar() throws IOException {
+    public File getJar() throws IOException, XMLStreamException, URISyntaxException {
         //check if this is possible in another way...
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
         toolFolder.mkdirs();
         //check if searchGUI already exists?
         File temp = new File(toolFolder, "SearchGUI");
         if (!temp.exists()) {
-            File searchGUIFile = PladipusFileDownloadingService.downloadFile(parameters.get("SearchGUI"), toolFolder);
-            if (searchGUIFile.getName().endsWith(".zip")) {
-                ZipUtils.unzipArchive(searchGUIFile, temp);
-            }
+            LOGGER.info("Downloading latest SearchGUI version...");
+            URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
+            downloadLatestZipFromRepo(temp, "SearchGUI", "eu.isas.searchgui", "SearchGUI", null, null, jarRepository, false, false, new HeadlessFileDAO(), new WaitingHandlerCLIImpl());
         }
         return JarLookupService.lookupFile("SearchGUI-.*.jar", temp);
     }
