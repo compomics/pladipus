@@ -1,7 +1,6 @@
-
-<img src="https://raw.githubusercontent.com/wiki/compomics/pladipus/pladipus_logo.jpg" width="200">
-
 # Pladipus 
+
+<img src="https://raw.githubusercontent.com/wiki/compomics/pladipus/Pladipus_ad.png" width="590">
 
 <sub><a href="https://github.com/compomics/pladipus/wiki/6.-Updates" target="blank">Latest version: 0.4.0</a></sub>
 
