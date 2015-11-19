@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
@@ -72,8 +67,6 @@ public class SearchGUIStep extends ProcessingStep {
         //update the fasta
         SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
         identificationParameters.setFastaFile(fastaFile);
-        //fix the location
-        identificationParameters.setParametersFile(parameterFile);
         SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
 
         if (temp_searchGUI_output.exists()) {
