@@ -130,7 +130,7 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
-            <version>4.1.11</version>
+            <version>4.1.12</version>
             <type>jar</type>
         </dependency>
         <dependency>

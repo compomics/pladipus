@@ -42,7 +42,9 @@ public class SessionProcessingEngine extends ProcessingEngine {
             for (ProcessingStep aStep : aJob) {
                 aStep.setProcessingID((int) aJob.getId());
                 aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
-                aStep.doAction();
+                if (!aStep.doAction()) {
+                    return false;
+                }
                 aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
             }
             aJob.get(0).getCallbackNotifier().onNotification("Finished", true);
