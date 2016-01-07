@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
@@ -120,9 +115,9 @@ public class PladipusTrafficManager {
      * Pushes tasks to the pladipus queue. In case the run already exists or was
      * posted before, the jobs will be appended after the existing jobs
      *
-     * @param dao the instance of the jobDAO
      * @param templateFile the template file for the run
      * @param jobConfigurationFile the job configuration file
+     * @return the generated run id
      * @throws IOException
      * @throws AuthenticationException
      * @throws ParserConfigurationException
@@ -131,7 +126,7 @@ public class PladipusTrafficManager {
      * @throws JMSException
      * @throws StepLoadingException
      */
-    public void pushToPladipus(File templateFile, File jobConfigurationFile) throws IOException, AuthenticationException, ParserConfigurationException, SAXException, SQLException, JMSException, StepLoadingException, ConnectionException {
+    public int pushToPladipus(File templateFile, File jobConfigurationFile) throws IOException, AuthenticationException, ParserConfigurationException, SAXException, SQLException, JMSException, StepLoadingException, ConnectionException {
 
         if (!templateFile.exists()) {
             throw new IllegalArgumentException("Template file does not exist !");
@@ -147,13 +142,14 @@ public class PladipusTrafficManager {
         String runTitle = convertXMLtoTemplate.getName();
         String xmlUser = convertXMLtoTemplate.getUser();
         RunService rService = RunService.getInstance();
+        int runId = -1;
         if (isValidUser(xmlUser)) {
             priority = convertXMLtoTemplate.getPriority();
             LOGGER.debug("Storing local jobs for " + xmlUser + " run name = " + runTitle);
             LinkedList<HashMap<String, String>> readLocalProcessingParameters = interpreter.readLocalProcessingParameters(convertXMLtoTemplate, jobConfigurationFile);
             LOGGER.debug("Converting template to job using the provided configuration...");
             LOGGER.debug("Finding run...");
-            int runId = rService.getRunID(runTitle, xmlUser);
+            runId = rService.getRunID(runTitle, xmlUser);
             if (runId == -1) {
                 runId = rService.createRun(convertXMLtoTemplate);
                 LOGGER.debug("Run created : runID = " + runId);
@@ -167,6 +163,7 @@ public class PladipusTrafficManager {
             LinkedList<Integer> processesForRun = pService.getProcessesForRun(runId);
             pushFromDatabase(processesForRun);
         }
+        return runId;
     }
 
     /**
