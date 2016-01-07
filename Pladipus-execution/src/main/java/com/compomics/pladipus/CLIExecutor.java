@@ -63,7 +63,11 @@ public class CLIExecutor {
     /**
      * boolean indicating if the worker can pull tasks indefinitely
      */
-    private static boolean auto = false;
+    private static boolean auto_pull = false;
+    /**
+     * boolean indicating if a run can be automatically started after pushing
+     */
+    private static boolean auto_start = false;
     /**
      * the default run priority
      */
@@ -99,14 +103,17 @@ public class CLIExecutor {
                     constructOptions();
                     parseCLI(args);
                     if (push && templateFile != null) {
-                        trafficManager.pushToPladipus(templateFile, jobConfigurationFile);
+                        int runID = trafficManager.pushToPladipus(templateFile, jobConfigurationFile);
+                        if(auto_start){
+                            RunAction.startRuns(runID);
+                        }
                     } else {
                         System.out.println("Hello, pladipus will now start pulling jobs and updates from the controller.");
                         System.out.println("Thank you for participating in the research!");
                         while (true) {
                             try {
                                 trafficManager.pullFromPladipus();
-                                if (!auto) {
+                                if (!auto_pull) {
                                     break;
                                 }
                             } catch (UnknownHostException e) {
@@ -196,32 +203,35 @@ public class CLIExecutor {
                     } else if (!pushFromLocal) {
                         throw new ParseException("The job configuration should be declared !");
                     }
+                    if (line.hasOption("auto_start")) {
+                        auto_start = true;
+                    }
                 } else if (line.hasOption("pull")) {
                     push = false;
                 } else if (line.hasOption("auto_pull")) {
                     push = false;
-                    auto = true;
+                    auto_pull = true;
                 } else if (line.hasOption("start_process")) {
                     push = false;
-                    auto = false;
+                    auto_pull = false;
                     //get the target run
                     int[] targetValues = validateTargetIds(line, "start_process");
                     ProcessAction.startProcesses(targetValues);
                 } else if (line.hasOption("stop_process")) {
                     push = false;
-                    auto = false;
+                    auto_pull = false;
                     //get the target run
                     int[] targetValues = validateTargetIds(line, "stop_process");
                     ProcessAction.stopProcess(targetValues);
                 } else if (line.hasOption("start_run")) {
                     push = false;
-                    auto = false;
+                    auto_pull = false;
                     //get the target run
                     int[] targetValues = validateTargetIds(line, "start_run");
                     RunAction.startRuns(targetValues);
                 } else if (line.hasOption("stop_run")) {
                     push = false;
-                    auto = false;
+                    auto_pull = false;
                     //get the target run
                     int[] targetValues = validateTargetIds(line, "stop_run");
                     RunAction.stopRuns(targetValues);
@@ -266,6 +276,7 @@ public class CLIExecutor {
         options.addOption(new Option("template", true, "The template XML file to generate jobs with"));
         options.addOption(new Option("job_config", true, "The TSV file containing tab separated parameters (one job per line)"));
         options.addOption(new Option("push", "Push jobs to Pladipus"));
+        options.addOption(new Option("auto_start", "Starts a run automatically after pushing it"));
         //pulling options
         options.addOption(new Option("pull", "Pull a job from Pladipus"));
         options.addOption(new Option("auto_pull", "Pull jobs from Pladipus automatically when available"));
@@ -274,6 +285,7 @@ public class CLIExecutor {
         options.addOption(new Option("stop_process", true, "Stop a (or multiple) running process(es) on Pladipus"));
         options.addOption(new Option("start_run", true, "Start a (or multiple) stored run(s) on Pladipus"));
         options.addOption(new Option("stop_run", true, "Stop a (or multiple) running run(s) on Pladipus"));
+
     }
 
 }
