@@ -239,7 +239,6 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
             String xml = writer.getBuffer().toString();
-            System.out.println(xml);
             return xml.replaceAll("\n|\r", "");
         } catch (ParserConfigurationException | TransformerException pce) {
             LOGGER.error(pce);

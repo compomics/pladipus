@@ -113,7 +113,6 @@ public class XMLJobInterpreter extends XMLInterpreter {
         for (int temp = 0; temp < parameters.getLength(); temp++) {
             Element parameterNode = (Element) parameters.item(temp);
             parameterMap.put(parameterNode.getAttribute("name"), parameterNode.getAttribute("value"));
-            System.out.println(parameterNode.getAttribute("name")+"\t"+parameterNode.getAttribute("value"));
         }
         //add the run information (for example output purposes)
         parameterMap.put("run", run);

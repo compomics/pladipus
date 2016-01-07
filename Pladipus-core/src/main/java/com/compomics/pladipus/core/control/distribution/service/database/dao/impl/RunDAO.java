@@ -373,6 +373,27 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     /**
      *
      * @param runID
+     * @return a boolean to indicate the existence of the run in the database
+     * @throws SQLException
+     */
+    public boolean runExists(int runID) throws SQLException {
+        boolean exists = false;
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
+                PreparedStatement retrieveStatement = c.prepareStatement("SELECT run_id FROM run WHERE run_id=?")) {
+
+            retrieveStatement.setInt(1, runID);
+            try (ResultSet executeQuery = retrieveStatement.executeQuery()) {
+                if (executeQuery.next()) {
+                    exists = executeQuery.next();
+                }
+            }
+        }
+        return exists;
+    }
+
+    /**
+     *
+     * @param runID
      * @return the size of the run
      * @throws SQLException
      */

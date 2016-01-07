@@ -109,6 +109,11 @@ public class RunService {
         }
     }
 
+       public boolean runExists(int runID) throws SQLException {
+        try (RunDAO dao = RunDAO.getInstance()) {
+            return dao.runExists(runID);
+        }
+    }
     
     
     

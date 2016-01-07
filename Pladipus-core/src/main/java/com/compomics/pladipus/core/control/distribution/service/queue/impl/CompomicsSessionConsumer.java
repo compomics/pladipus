@@ -15,6 +15,7 @@ import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsP
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsQueueConnectionFactory;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.engine.impl.SessionProcessingEngine;
+import com.compomics.pladipus.core.model.processing.standard.maintenance.RebootStep;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import java.io.File;
@@ -26,6 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
@@ -81,20 +83,21 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
         int maxFailCount = NetworkProperties.getInstance().getMaxFailCount();
         if (failcount < maxFailCount) {
             pService.increaseFailCount(processID);
-
             rollback();
-            //todo repush this message?
+            //repush the message
             TextMessage textMessage = (TextMessage) message;
             try (
-               CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB,
-                       textMessage.getText(), 
-                       (int) processID,
-                       pService.getProcessingJob(processID).getPriority())) {
+                    CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB,
+                            textMessage.getText(),
+                            (int) processID,
+                            pService.getProcessingJob(processID).getPriority())) {
                 producer.run();
             } catch (Exception ex) {
-                LOGGER.warn("Could not relaunch job : "+processID+". Please try again manually or by force-starting the entire run");
+                LOGGER.warn("Could not relaunch job : " + processID + ". Please try again manually or by force-starting the entire run");
                 LOGGER.error(ex);
             }
+        }else{
+            LOGGER.info("Maximal failcount was reached, not resetting the job !");
         }
     }
 
@@ -132,14 +135,13 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
     public void processMessage(Message message) throws JMSException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         if (message instanceof TextMessage) {
-
             try {
                 Future<Boolean> future = executor.submit(new SessionProcessingEngine(message));
                 //executor.shutdown();
                 //executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS);
                 if (future.get(1, TimeUnit.DAYS)) {
                     commit(message);
-                    LOGGER.info("Succesfully completed task");
+                    LOGGER.info("Completed task");
                 }
                 //exception can be due to nearly everything. it is up to the user to chose what to throw...
             } catch (Exception ex) {
@@ -160,6 +162,7 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
                                 PrintWriter writer = new PrintWriter(errorLog)) {
                             writer.append("ERROR IN PROCESS : " + message.getJMSCorrelationID() + System.lineSeparator()).flush();
                             ex.printStackTrace(writer);
+                            ex.printStackTrace();
                         }
                     } catch (IOException | SQLException ex1) {
                         ex1.printStackTrace();

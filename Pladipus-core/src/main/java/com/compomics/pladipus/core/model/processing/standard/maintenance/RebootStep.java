@@ -8,8 +8,8 @@ package com.compomics.pladipus.core.model.processing.standard.maintenance;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 /**
  *
@@ -30,60 +30,27 @@ public class RebootStep extends ProcessingStep {
 
     /**
      * Attempts to restart pladipus
+     *
      * @throws IOException
      */
-    public void restartApplication() throws IOException {
-        try {
-            System.out.println("REBOOTING PLADIPUS EXECUTION");
-            // java binary
-            String java = System.getProperty("java.home") + "/bin/java";
-            // vm arguments
-            List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
-            StringBuffer vmArgsOneLine = new StringBuffer();
-            for (String arg : vmArguments) {
-			// if it's the agent argument : we ignore it otherwise the
-                // address of the old application and the new one will be in conflict
-                if (!arg.contains("-agentlib")) {
-                    vmArgsOneLine.append(arg);
-                    vmArgsOneLine.append(" ");
-                }
-            }
-            // init the command to execute, add the vm args
-            final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine);
+    public void restartApplication() throws URISyntaxException, IOException {
+        final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        final File currentJar = new File(RebootStep.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
-            // program main and program arguments
-            String[] mainCommand = System.getProperty("sun.java.command").split(" ");
-            // program main is a jar
-            if (mainCommand[0].endsWith(".jar")) {
-                // if it's a jar, add -jar mainJar
-                cmd.append("-jar " + new File(mainCommand[0]).getPath());
-            } else {
-                // else it's a .class, add the classpath and mainClass
-                cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
-            }
-            // finally add program arguments
-            for (int i = 1; i < mainCommand.length; i++) {
-                cmd.append(" ");
-                cmd.append(mainCommand[i]);
-            }
-		// execute the command in a shutdown hook, to be sure that all the
-            // resources have been disposed before restarting the application
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        Runtime.getRuntime().exec(cmd.toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            // exit
-            System.exit(0);
-        } catch (Exception e) {
-            // something went wrong
-            throw new IOException("Error while trying to restart the application", e);
+        /* is it a jar file? */
+        if (!currentJar.getName().endsWith(".jar")) {
+            return;
         }
+
+        /* Build command: java -jar application.jar */
+        final ArrayList<String> command = new ArrayList<>();
+        command.add(javaBin);
+        command.add("-jar");
+        command.add(currentJar.getPath());
+
+        final ProcessBuilder builder = new ProcessBuilder(command);
+        Process start = builder.start();
+        System.exit(0);
     }
 
 }

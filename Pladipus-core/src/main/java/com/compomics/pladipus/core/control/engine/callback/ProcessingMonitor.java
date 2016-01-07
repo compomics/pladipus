@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.engine.callback;
 
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
@@ -57,6 +53,11 @@ public class ProcessingMonitor {
      * Boolean indicating whether an error was thrown
      */
     private boolean isAThrownError;
+    /**
+     * A list of classes that do not need to be thrown up (DEBUGGING PURPOSE
+     * ONLY !!!!)
+     */
+    private final String[] classesToIgnore = new String[]{"com.compomics.util.preferences.GenePreferences"};
     private final ProcessBuilder processBuilder;
 
     /**
@@ -71,17 +72,31 @@ public class ProcessingMonitor {
         errorKeyWords.add("PEPTDESHAKER PROCESSING CANCELED");
         errorKeyWords.add("UNABLE TO READ SPECTRUM");
         errorKeyWords.add("COMPOMICSERROR");
+        errorKeyWords.add("EXCEPTION");
+        errorKeyWords.add("NO MS2 SPECTRA FOUND");
     }
 
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
         String errorLine;
         if (firstLine.toLowerCase().contains("exception:")) {
+            System.out.println("Error encountered...");
             addStackTraceElement(firstLine);
         }
-        while ((errorLine = processOutputStream.readLine()) != null) {
-            try {
-                addStackTraceElement(errorLine);
-            } catch (StringIndexOutOfBoundsException e) {
+        //check the first lines for ignore classes (DEBUG ONLY)
+        if ((errorLine = processOutputStream.readLine()) != null) {
+            for (String ignoreClass : classesToIgnore) {
+                if (errorLine.toLowerCase().contains(ignoreClass.toLowerCase())) {
+                    //this class should be ignored
+                    return null;
+                } else {
+                    addStackTraceElement(errorLine);
+                }
+            }
+            while ((errorLine = processOutputStream.readLine()) != null) {
+                try {
+                    addStackTraceElement(errorLine);
+                } catch (StringIndexOutOfBoundsException e) {
+                }
             }
         }
         process.destroy();
@@ -165,7 +180,10 @@ public class ProcessingMonitor {
             try (FileWriter writer = new FileWriter(logFile, true)) {
                 while ((line = br.readLine()) != null) {
                     if (type.equalsIgnoreCase("error")) {
-                        throw handleError(line, br);
+                       Exception toThrow = handleError(line, br);
+                       if(toThrow!=null){
+                           throw toThrow;
+                       }
                     } else {
                         System.out.println(line);
                         // LOGGER.debug(line);

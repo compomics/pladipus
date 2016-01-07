@@ -109,11 +109,12 @@ public class CompomicsQueueConnectionFactory {
         return queueConnectionFactory;
     }
 
-    public static void reset() {
+    public static void reset() throws JMSException {
         if (queueConnectionFactory != null) {
             queueConnectionFactory.close();
             queueConnectionFactory = null;
         }
+        queueConnectionFactory=new CompomicsQueueConnectionFactory();
     }
 
     /**

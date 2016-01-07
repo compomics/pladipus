@@ -92,12 +92,8 @@ public class PladipusFileDownloadingService {
 
             //enter passive mode
             ftp.enterLocalPassiveMode();
-            //get system name
-            System.out.println("Remote system is " + ftp.getSystemType());
             //change current directory
             ftp.changeWorkingDirectory(folderURL.getPath());
-            System.out.println("Current directory is " + ftp.printWorkingDirectory());
-
             //get list of filenames
             FTPFile[] ftpFiles = ftp.listFiles();
 
@@ -119,7 +115,7 @@ public class PladipusFileDownloadingService {
                     // ftp.deleteFile(file.getName());
                 }
             }
-            ftp.logout();
+           // ftp.logout();
             ftp.disconnect();
         } catch (Exception ex) {
             ex.printStackTrace();

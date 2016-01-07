@@ -32,7 +32,7 @@ public class SessionProcessingEngine extends ProcessingEngine {
 
     @Override
     public Boolean call() throws Exception {
-
+        boolean jobSucessfull = false;
         String text = getCurrentMessage().getText();
         ProcessingJob aJob = XMLJobInterpreter.getInstance().convertXMLtoJob(text);
         if (!aJob.allowRun()) {
@@ -42,13 +42,13 @@ public class SessionProcessingEngine extends ProcessingEngine {
             for (ProcessingStep aStep : aJob) {
                 aStep.setProcessingID((int) aJob.getId());
                 aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
-                if (!aStep.doAction()) {
-                    return false;
-                }
+                jobSucessfull = aStep.doAction();
                 aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
             }
             aJob.get(0).getCallbackNotifier().onNotification("Finished", true);
-            return true;
+            //sleep 10 seconds to avoid accidental DDOS of servers and resources
+            Thread.sleep(10000);
+            return jobSucessfull;
         }
     }
 

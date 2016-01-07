@@ -35,7 +35,7 @@ public abstract class CompomicsConsumer implements Runnable, ExceptionListener {
 
     public CompomicsConsumer(CompomicsQueue queue) throws IOException, JMSException {
         this.queue = queue;
-        this.consumer = CompomicsQueueConnectionFactory.getInstance().getConsumer(queue);
+
     }
 
     /**
@@ -52,9 +52,14 @@ public abstract class CompomicsConsumer implements Runnable, ExceptionListener {
         try {
             Connection connection = CompomicsQueueConnectionFactory.getInstance().getConnection();
             connection.start();
+            this.consumer = CompomicsQueueConnectionFactory.getInstance().getConsumer(queue);
             Message message = consumer.receive(1000);
-            processMessage(message);
-            connection.stop();
+            if (message != null) {
+                processMessage(message);
+            }else{
+                CompomicsQueueConnectionFactory.reset();
+            }
+            //   connection.stop();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -62,6 +67,7 @@ public abstract class CompomicsConsumer implements Runnable, ExceptionListener {
 
     /**
      * Handles any JMSException that happens pulling from this queue
+     *
      * @param ex
      */
     @Override
