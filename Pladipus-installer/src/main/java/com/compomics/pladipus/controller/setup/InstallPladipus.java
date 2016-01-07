@@ -41,7 +41,7 @@ public class InstallPladipus {
      * The current version of pladipus (//TODO get this from the POM or a
      * properties file???)
      */
-    private static final String version = "0.4.0";
+    private static final String version = "0.4.1";
     /**
      * The available pladipus steps that need to be installed
      */
