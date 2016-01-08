@@ -50,7 +50,7 @@ public class SpringProcessingStepLoader implements StepLoader {
     private final FileSystemXmlApplicationContext appContext;
 
     /**
-     * 
+     *
      * @throws IOException
      * @throws StepLoadingException
      */
@@ -64,7 +64,7 @@ public class SpringProcessingStepLoader implements StepLoader {
         //change this to the "outside" property file?
         try {
             File processingBeanFile = ProcessingBeanUpdater.getInstance().getProcessingBeanConfigFile();
-            appContext = new FileSystemXmlApplicationContext(processingBeanFile.getAbsolutePath());
+            appContext = new FileSystemXmlApplicationContext("file:" + processingBeanFile.getAbsolutePath());
         } catch (BeansException e) {
             Logger.getRootLogger().setLevel(Level.toLevel(NetworkProperties.getInstance().getLoggingLevel()));
             throw new StepLoadingException("Bean not found : " + e);
