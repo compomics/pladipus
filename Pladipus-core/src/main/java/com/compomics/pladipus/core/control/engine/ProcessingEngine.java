@@ -73,7 +73,7 @@ public class ProcessingEngine implements Callable {
 
     /**
      *
-     * @param executable the jar that should be started on this jvm
+     * @param executable the executable that should be started on this jvm
      * @param arguments list of arguments + values required to start the jar
      * @return the system exit value of the process
      * @throws IOException

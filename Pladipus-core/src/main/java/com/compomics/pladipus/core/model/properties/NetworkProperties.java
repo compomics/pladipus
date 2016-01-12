@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
@@ -25,8 +27,17 @@ public class NetworkProperties extends PladipusProperties {
      * The Logger Instance
      */
     private static final Logger LOGGER = Logger.getLogger(NetworkProperties.class);
+    /**
+     * The location of the configuration folder
+     */
+    private static File configFolder;
 
     private NetworkProperties() {
+
+    }
+
+    private static File getConfigFolder() throws URISyntaxException {
+        return new File(new File(NetworkProperties.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile(), "config");
     }
 
     /**
@@ -36,7 +47,13 @@ public class NetworkProperties extends PladipusProperties {
     public static NetworkProperties getInstance() {
         if (instance == null) {
             instance = new NetworkProperties();
-            defaultPropFile = new File(System.getProperty("user.home") + "/pladipus/config/network.properties");
+            try {
+                configFolder = getConfigFolder();
+            } catch (URISyntaxException ex) {
+                LOGGER.warn("Could not find property file, changing to defaults");
+                configFolder = new File(System.getProperty("user.home"));
+            }
+            defaultPropFile = new File(configFolder, "network.properties");
             if (!defaultPropFile.exists()) {
                 copyFromResources();
             }
