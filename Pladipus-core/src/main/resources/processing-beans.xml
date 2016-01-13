@@ -33,6 +33,10 @@
     
     <bean id="MsConvertSetupStep" class="com.compomics.pladipus.msconvert.MsConvertSetupStep" lazy-init="true"/>    
    
+    <!--MOFF STEPS-->
+    
+    <bean id="MoffStep" class="com.compomics.pladipus.moff.steps.MoffStep" lazy-init="true"/>   
+    
     <!--DO NOT EDIT THESE STEPS -->
     <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
     

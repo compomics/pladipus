@@ -1,0 +1,15 @@
+  <template run='MoFF_demo' user='pladmin' priority='4'>
+    <steps>
+        <step class="com.compomics.pladipus.moff.steps.MoffStep"/> 
+    </steps> 
+    <parameters>
+        <run>
+        </run>
+        <job>
+            <param name ='ps_report' default='default'/>
+            <param name ='raw' default='default'/>     
+            <param name ='tol' default='default'/>
+            <param name='output_folder' default ='/mnt/pladipus/Pladipus/GENESIS_OUTPUT'/>
+        </job>
+    </parameters>
+</template> 

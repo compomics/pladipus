@@ -285,7 +285,6 @@ public class CLIExecutor {
         options.addOption(new Option("stop_process", true, "Stop a (or multiple) running process(es) on Pladipus"));
         options.addOption(new Option("start_run", true, "Start a (or multiple) stored run(s) on Pladipus"));
         options.addOption(new Option("stop_run", true, "Stop a (or multiple) running run(s) on Pladipus"));
-
     }
 
 }
