@@ -15,14 +15,16 @@ public class StepRunner {
         //the input files
         String rawFolder = ("C:\\Users\\compomics\\Desktop\\MOFF\\RAW");
         String inputFolder = ("C:\\Users\\compomics\\Desktop\\MOFF\\Input");
+        String outputFolder = ("C:\\Users\\compomics\\Desktop\\MOFF\\Output");
         String tol = "10";
-        
-        if(args!=null&&args.length>1){
+
+        if (args != null && args.length > 1) {
             rawFolder = args[0];
-            inputFolder=args[1];
-            tol = args[2];
+            inputFolder = args[1];
+            outputFolder = args[2];
+            tol = args[3];
         }
- 
+
         String raw = "";
         for (File aRaw : new File(rawFolder).listFiles()) {
             raw += aRaw.getAbsolutePath() + ",";
@@ -34,6 +36,7 @@ public class StepRunner {
         parameters.put("ps_report", input);
         parameters.put("raw", raw);
         parameters.put("-tol", tol);
+        parameters.put("-output_folder", outputFolder);
         //other parameters     
         MoffStep step = new MoffStep();
         step.setParameters(parameters);
