@@ -104,8 +104,9 @@ public class CLIExecutor {
                     parseCLI(args);
                     if (push && templateFile != null) {
                         int runID = trafficManager.pushToPladipus(templateFile, jobConfigurationFile);
-                        if(auto_start){
+                        if (auto_start) {
                             RunAction.startRuns(runID);
+                            auto_start = false;
                         }
                     } else {
                         System.out.println("Hello, pladipus will now start pulling jobs and updates from the controller.");
