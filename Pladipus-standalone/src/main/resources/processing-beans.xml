@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd            http://cxf.apache.org/jaxws         http://cxf.apache.org/schemas/jaxws.xsd">   
+      
+    <!--Database Search beans -->
+    
+    <bean id="SearchSetupStep" class="com.compomics.pladipus.search.processsteps.SearchSetupStep" lazy-init="true"/>    
+
+    <bean id="SearchGUIStep" class="com.compomics.pladipus.search.processsteps.SearchGUIStep" lazy-init="true"/>  
+  
+    <bean id="PeptideShakerStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerStep" lazy-init="true"/>    
+    
+    <bean id="PeptideShakerReportStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerReportStep" lazy-init="true"/>
+    
+    <bean id="PeptideShakerFollowUpStep" class="com.compomics.pladipus.search.processsteps.PeptideShakerFollowUpStep" lazy-init="true"/>    
+                                                        
+    <!--DeNovo Search beans -->
+    
+    <bean id="DeNovoGUISetupStep" class="com.compomics.pladipus.denovo.processsteps.DeNovoGUISetupStep" lazy-init="true"/>    
+
+    <bean id="DeNovoGUIStep" class="com.compomics.pladipus.denovo.processsteps.DeNovoGUIStep" lazy-init="true"/>  
+           
+    <!--Blasting beans-->
+    
+    <bean id="MakeBlastDbStep" class="com.compomics.pladipus.blast.MakeBlastDbStep" lazy-init="true"/>    
+
+    <bean id="BlastSetupStep" class="com.compomics.pladipus.blast.BlastSetupStep" lazy-init="true"/>    
+  
+    <bean id="BlastStep" class="com.compomics.pladipus.blast.BlastStep" lazy-init="true"/>     
+    
+    <!--MsConvert beans -->
+    
+    <bean id="MsConvertStep" class="com.compomics.pladipus.msconvert.MsConvertStep" lazy-init="true"/>    
+    
+    <bean id="MsConvertSetupStep" class="com.compomics.pladipus.msconvert.MsConvertSetupStep" lazy-init="true"/>    
+   
+    <!--MOFF STEPS-->
+    
+    <bean id="MoffStep" class="com.compomics.pladipus.moff.steps.MoffStep" lazy-init="true"/>   
+    
+    <!--DO NOT EDIT THESE STEPS -->
+    <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
+    
+</beans>

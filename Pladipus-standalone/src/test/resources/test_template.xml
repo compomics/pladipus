@@ -1,0 +1,15 @@
+<template run='TEST_RUN' user='PLADIPUS_TESTER' priority='7'>
+<prerequisite>
+<CORES>3</CORES>
+</prerequisite>  
+ 	<steps>
+ 	<step class="com.compomics.pladipus.core.model.processing.standard.PreludeStep"/> 
+  	</steps>  
+ 	<parameters>  
+ 		<run> 
+  		</run>  
+ 		<job>  
+ 			<param name='assay' default='default'/>  
+ 		</job> 
+ 	</parameters>  
+ </template> 
