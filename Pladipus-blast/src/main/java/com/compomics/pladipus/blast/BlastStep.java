@@ -33,20 +33,24 @@ public class BlastStep extends ProcessingStep {
 //blastp -query C:\Users\Kenneth\Desktop\PladipusFTP\data\fasta\HUMAN_concatenated_target_decoy.fasta -db C:\Users\Kenneth\Desktop\PladipusFTP\data\fasta\HUMAN_concatenated_target_decoy.fasta
 
     public File getBlastExecutable() {
-        return new File(parameters.get("blastFolder"), parameters.get("blastType").toLowerCase());
+        return new File(parameters.get("blast_folder"), parameters.get("blast_type").toLowerCase());
     }
 
     private void executeProteinBlast(File queryFasta, File dbFasta, File outputFile, File executable) throws IOException, InterruptedException, ExecutionException {
         //make arguments
         ArrayList<String> commands = new ArrayList<>();
-        commands.add(executable.getName());
+        commands.add(executable.getAbsolutePath());
         commands.add("-query");
         commands.add(queryFasta.getAbsolutePath());
         commands.add("-db");
         commands.add(dbFasta.getAbsolutePath());
         commands.add("-out");
         commands.add(outputFile.getAbsolutePath());
-        new ProcessingEngine().startProcess(executable, commands,getCallbackNotifier());
+        commands.add("-outfmt");
+        commands.add("6");
+        commands.add("-qcov_hsp_perc");
+        commands.add("100");
+         new ProcessingEngine().startProcess(executable, commands, getCallbackNotifier());
         //copy the output to the correct folder?--> text files are fast, no need
     }
 

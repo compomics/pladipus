@@ -29,6 +29,16 @@ public class XMLInterpreter {
      */
     protected static StepLoader loader;
 
+    /**
+     * Overrides the step loader (for example for standalone applications). This
+     * method has to be invoked before calling an instance
+     *
+     * @param loader the new loader
+     */
+    public static void setStepLoader(StepLoader loader) {
+        XMLInterpreter.loader = loader;
+    }
+
     protected void init() throws IOException, StepLoadingException {
         if (loader == null) {
             loader = new SpringProcessingStepLoader();

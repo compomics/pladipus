@@ -71,8 +71,35 @@ public class SpringProcessingStepLoader implements StepLoader {
         }
     }
 
+    /**
+     *
+     * @param processingBeanConfigurationFile the configuration file for the beans
+     * @param jarFolder the folder containing the new application jars and resources
+     * @throws IOException
+     * @throws StepLoadingException
+     */
+    public SpringProcessingStepLoader(File processingBeanConfigurationFile, File jarFolder) throws IOException, StepLoadingException {
+        LOGGER.debug("Refreshing spring context");
+        //Logger.getRootLogger().setLevel(Level.OFF);
+        props = NetworkProperties.getInstance();
+        //update classpath in case new jars were added
+        reloadRepositoryPath(jarFolder);
+        //reload appContext
+        //change this to the "outside" property file?
+        try {
+            appContext = new FileSystemXmlApplicationContext("file:" + processingBeanConfigurationFile.getAbsolutePath());
+        } catch (BeansException e) {
+            Logger.getRootLogger().setLevel(Level.toLevel(NetworkProperties.getInstance().getLoggingLevel()));
+            throw new StepLoadingException("Bean not found : " + e);
+        }
+    }
+
     private void reloadRepositoryPath() throws StepLoadingException {
-        repositoryFolder = new File(props.getAdditionalClasspath());
+        reloadRepositoryPath(new File(props.getAdditionalClasspath()));
+    }
+
+    private void reloadRepositoryPath(File jarFolder) throws StepLoadingException {
+        repositoryFolder = jarFolder;
         /*    try {
          FolderSynchronizer folderSynchronizer = FolderSynchronizerFactory.getFolderSynchronizer(URI.create(props.getRemoteLibraryRepository()));
          folderSynchronizer.synchronize(repositoryFolder);

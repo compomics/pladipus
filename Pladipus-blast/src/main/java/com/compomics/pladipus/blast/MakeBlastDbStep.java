@@ -35,7 +35,7 @@ public class MakeBlastDbStep extends ProcessingStep {
     private File getBlastExecutable() {
         File makeBlastDb = new File(parameters.get("blast_folder"), "makeblastdb");
         if (!makeBlastDb.exists()) {
-            makeBlastDb = new File(parameters.get("blast_folder"), "makeblastdb.exe");
+            makeBlastDb = new File(makeBlastDb.getAbsolutePath()+".exe");
         }
         return makeBlastDb;
     }
@@ -43,7 +43,7 @@ public class MakeBlastDbStep extends ProcessingStep {
     private void makeBlastDb(String blastType, File fasta, File executable) throws IOException, InterruptedException, ExecutionException {
         //make arguments
         ArrayList<String> commands = new ArrayList<>();
-        commands.add(executable.getName());
+        commands.add(executable.getAbsolutePath());
         commands.add("-dbtype");
         commands.add(blastType);
         commands.add("-in");

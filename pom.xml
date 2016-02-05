@@ -16,6 +16,7 @@
         <module>Pladipus-denovo</module>
         <module>Pladipus-msconvert</module>
         <module>Pladipus-moff</module>
+        <module>Pladipus-standalone</module>
     </modules>
     
     <properties>

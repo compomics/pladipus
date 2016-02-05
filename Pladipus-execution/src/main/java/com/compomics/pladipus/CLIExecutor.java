@@ -107,6 +107,8 @@ public class CLIExecutor {
                         if (auto_start) {
                             RunAction.startRuns(runID);
                             auto_start = false;
+                            //end the program
+                            System.exit(0);
                         }
                     } else {
                         System.out.println("Hello, pladipus will now start pulling jobs and updates from the controller.");
