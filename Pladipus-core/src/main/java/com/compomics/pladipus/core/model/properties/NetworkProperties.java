@@ -37,7 +37,13 @@ public class NetworkProperties extends PladipusProperties {
     }
 
     private static File getConfigFolder() throws URISyntaxException {
-        return new File(new File(NetworkProperties.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile(), "config");
+        //check the jar folder if there is a config there 
+        File jarConfig = new File(new File(NetworkProperties.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getParentFile(), "config");
+        if (jarConfig.exists()) {
+            return jarConfig;
+        } else {
+            return new File(System.getProperty("user.home") + "/pladipus/config");
+        }
     }
 
     /**
