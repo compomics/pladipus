@@ -26,9 +26,9 @@ public class Launcher {
 
     private static Options options;
     private static final Logger LOGGER = Logger.getLogger(Launcher.class);
-    private static File template;
-    private static File config;
-    private static String runName;
+    private File template;
+    private File config;
+    private String runName;
 
     private static void constructOptions() {
         //options
@@ -38,7 +38,7 @@ public class Launcher {
         options.addOption(new Option("job_config", true, "The TSV file containing tab separated parameters (one job per line)"));
     }
 
-    private static void parseCLI(String[] args) {
+    private  void parseCLI(String[] args) {
         CommandLineParser parser = new GnuParser();
         try {
             CommandLine line = parser.parse(options, args);
@@ -57,9 +57,9 @@ public class Launcher {
         }
     }
 
-    private static void execute() throws Exception {
+    public void execute() throws Exception {
         LOGGER.info("Executing run " + runName);
-        ConfigurationHandler.checkConfiguration();
+        ConfigurationHandler.checkDefaultBeanDefinitions();
         XMLInterpreter.setStepLoader(ConfigurationHandler.getLoader());
         LinkedList<String> jobXMLs = XMLTemplateInterpreter.getInstance().readLocalProcessingParametersToXMLs(runName, template, config);
         //2. convert the template into jobs
@@ -74,8 +74,37 @@ public class Launcher {
     }
 
     public static void main(String[] args) throws Exception {
+        Launcher launcher = new Launcher();
         constructOptions();
-        parseCLI(args);
-        execute();
+        launcher.parseCLI(args);
+        launcher.execute();
     }
+
+    public File getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(File template) {
+        this.template = template;
+    }
+
+    public File getConfig() {
+        return config;
+    }
+
+    public void setConfig(File config) {
+        this.config = config;
+    }
+
+    public String getRunName() {
+        return runName;
+    }
+
+    public void setRunName(String runName) {
+        this.runName = runName;
+    }
+    
+    
+    
+    
 }

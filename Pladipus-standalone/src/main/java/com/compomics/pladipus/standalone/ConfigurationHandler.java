@@ -21,7 +21,14 @@ public class ConfigurationHandler {
     private static SpringProcessingStepLoader loader;
 
     private static final Logger LOGGER = Logger.getLogger(ConfigurationHandler.class);
-    
+
+    /**
+     * This method is used for the standalone pladipus pipeline.
+     *
+     * @return the current jar directory (where the configuration will be
+     * hosted)
+     * @throws URISyntaxException
+     */
     public static File getCurrentDirectory() throws URISyntaxException {
         final Class<?> referenceClass = ConfigurationHandler.class;
         final URL url = referenceClass.getProtectionDomain().getCodeSource().getLocation();
@@ -30,7 +37,14 @@ public class ConfigurationHandler {
         return jarPath;
     }
 
-    public static void checkConfiguration() throws URISyntaxException, IOException, StepLoadingException {
+    /**
+     * Creates a default bean definition file if it is missing
+     *
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws StepLoadingException
+     */
+    public static void checkDefaultBeanDefinitions() throws URISyntaxException, IOException, StepLoadingException {
         File dest = new File(getCurrentDirectory(), "processing-beans.xml");
         if (!dest.exists()) {
             try ( //check appcontext location
@@ -53,6 +67,10 @@ public class ConfigurationHandler {
         loader = new SpringProcessingStepLoader(dest, jarRepo);
     }
 
+    /**
+     *
+     * @return the StepLoader that was created during this configuration cycle
+     */
     public static SpringProcessingStepLoader getLoader() {
         return loader;
     }
