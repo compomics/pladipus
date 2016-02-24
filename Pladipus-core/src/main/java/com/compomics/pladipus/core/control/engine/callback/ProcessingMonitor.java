@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -75,7 +76,7 @@ public class ProcessingMonitor {
         errorKeyWords.add("EXCEPTION");
         errorKeyWords.add("NO MS2 SPECTRA FOUND");
     }
-
+    
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
         String errorLine;
         if (firstLine.toLowerCase().contains("exception:")) {
@@ -105,15 +106,15 @@ public class ProcessingMonitor {
         processOutputStream.close();
         return reThrowable;
     }
-
+    
     private final LinkedList<StackTraceElement> stackTraceElementList = new LinkedList<>();
-
+    
     private StackTraceElement[] getStackTrace() {
         StackTraceElement[] elements = new StackTraceElement[stackTraceElementList.size()];
         stackTraceElementList.toArray(elements);
         return elements;
     }
-
+    
     private void addStackTraceElement(String errorLine) throws StringIndexOutOfBoundsException {
         errorLine = errorLine.replace("at ", "");
         int endIndex = errorLine.indexOf("(");
@@ -122,7 +123,7 @@ public class ProcessingMonitor {
             declaringClass = errorLine.substring(0, errorLine.indexOf("("));
         }
         String method = declaringClass.substring(declaringClass.lastIndexOf(".") + 1);
-
+        
         declaringClass = declaringClass.substring(0, declaringClass.lastIndexOf("."));
         String fileName = declaringClass.substring(declaringClass.lastIndexOf(".") + 1) + ".java";
         int lineNumber;
@@ -156,17 +157,21 @@ public class ProcessingMonitor {
         process.waitFor();
         return process.exitValue();
     }
-
+    
+    public void addErrorTerms(Collection<String> errorTerms) {
+        this.errorKeyWords.addAll(errorTerms);
+    }
+    
     private class StreamGobbler extends Thread {
-
+        
         private InputStream is;
         private final String type;
-
+        
         private StreamGobbler(InputStream is, String type) {
             this.is = is;
             this.type = type;
         }
-
+        
         @Override
         public void run() {
             InputStreamReader isr = new InputStreamReader(is);
@@ -180,10 +185,10 @@ public class ProcessingMonitor {
             try (FileWriter writer = new FileWriter(logFile, true)) {
                 while ((line = br.readLine()) != null) {
                     if (type.equalsIgnoreCase("error")) {
-                       Exception toThrow = handleError(line, br);
-                       if(toThrow!=null){
-                           throw toThrow;
-                       }
+                        Exception toThrow = handleError(line, br);
+                        if (toThrow != null) {
+                            throw toThrow;
+                        }
                     } else {
                         System.out.println(line);
                         // LOGGER.debug(line);
@@ -204,7 +209,7 @@ public class ProcessingMonitor {
             }
         }
     }
-
+    
     private void scanForCheckpoints(String line) throws Exception {
         boolean ignoreLine;
         ignoreLine = false;
@@ -246,5 +251,5 @@ public class ProcessingMonitor {
         processBuilder.directory(workingDirectory);
         return getHook();
     }
-
+    
 }

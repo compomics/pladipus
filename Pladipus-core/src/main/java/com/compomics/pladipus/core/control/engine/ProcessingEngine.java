@@ -7,6 +7,7 @@ import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -70,27 +71,56 @@ public class ProcessingEngine implements Callable {
      *
      * @param executable the executable that should be started on this jvm
      * @param arguments list of arguments + values required to start the jar
+     * @param callbackNotifier the notifier to pipe output to
      * @return the system exit value of the process
      * @throws IOException
      * @throws InterruptedException
      * @throws ExecutionException
      */
     public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier) {
-        ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-        processBuilder.directory(executable.getParentFile());
-        System.out.println("Launching process @ " + processBuilder.directory().getAbsolutePath());
-        System.out.println(arguments.toString()
-                .replace("[", "")
-                .replace("]", "")
-                .replace(", ", " "));
         try {
-            ProcessingMonitor monitor = new ProcessingMonitor(processBuilder, callbackNotifier);
+            ProcessingMonitor monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
             monitor.getHook();
         } catch (Exception ex) {
             LOGGER.error(ex);
             ex.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     *
+     * @param executable the executable that should be started on this jvm
+     * @param arguments list of arguments + values required to start the jar
+     * @param callbackNotifier the notifier to pipe output to
+     * @param errorTerms collection of terms that are specificly to be throwing
+     * an exception
+     * @return the system exit value of the process
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) {
+        try {
+            ProcessingMonitor monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
+            monitor.addErrorTerms(errorTerms);
+            monitor.getHook();
+        } catch (Exception ex) {
+            LOGGER.error(ex);
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    private ProcessingMonitor getPreparedMonitor(File executable, List<String> arguments, CallbackNotifier callbackNotifier) {
+        ProcessBuilder processBuilder = new ProcessBuilder(arguments);
+        processBuilder.directory(executable.getParentFile());
+        LOGGER.info("Launching process @ " + processBuilder.directory().getAbsolutePath());
+        LOGGER.info(arguments.toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace(", ", " "));
+        return new ProcessingMonitor(processBuilder, callbackNotifier);
     }
 
     /**
