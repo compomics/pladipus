@@ -133,7 +133,6 @@ public class RunService {
         if (addToRun != null) {
             CreateOperation cOperation = new CreateOperation();
             try (ProcessDAO dao = ProcessDAO.getInstance()) {
-
                 for (int aProcessID : addToRun) {
                     String xmlForProcess = dao.getXMLForProcess(aProcessID);
                     cOperation.addJobToQueue(CompomicsQueue.JOB, xmlForProcess, aProcessID);

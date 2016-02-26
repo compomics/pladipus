@@ -104,7 +104,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
 
     private void initConnection() throws JMSException, JMSException, JMSException, JMSException, JMSException {
         // Create a Connection
-       ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(NetworkProperties.getInstance().getActiveMQLocation());
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(NetworkProperties.getInstance().getActiveMQLocation());
         connectionFactory.setCloseTimeout(30000);
         connectionFactory.setUseAsyncSend(true);
         // Create a redeliverypolicy
@@ -119,7 +119,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
         connection = connectionFactory.createConnection();
         connection.setClientID(ClientNameResolver.getClientIdentifier());
         // Create a Session
-         session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+        session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
         Destination destination;
         if (queue.isBroadcastToAll()) {
@@ -165,22 +165,40 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     @Override
     public void close() {
         try {
-            producer.close();
-            session.close();
-            connection.close();
+            if (producer != null) {
+                producer.close();
+            }
         } catch (JMSException ex) {
             LOGGER.error(ex);
             producer = null;
         }
+        try {
+            if (session != null) {
+                session.close();
+            }
+        } catch (JMSException ex) {
+            LOGGER.error(ex);
+            session = null;
+        }
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (JMSException ex) {
+            LOGGER.error(ex);
+            connection = null;
+        }
+
     }
 
     @Override
     public void run() {
         try {
-            initConnection();
+            if (connection == null) {
+                initConnection();
+            }
             processMessage();
-
-        } catch (SQLException | JMSException ex) {
+        } catch (Exception ex) {
             LOGGER.error(ex);
         } finally {
             close();

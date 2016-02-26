@@ -190,8 +190,8 @@ public class ProcessingMonitor {
                             throw toThrow;
                         }
                     } else {
-                        System.out.println(line);
-                        // LOGGER.debug(line);
+                      //  System.out.println(line);
+                        LOGGER.info(line);
                         writer.append(line).append(System.lineSeparator()).flush();
                         scanForCheckpoints(line);
                     }

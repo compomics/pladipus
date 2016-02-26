@@ -75,12 +75,20 @@ public class MoffStep extends ProcessingStep {
     @Override
     public boolean doAction() throws Exception {
         tempResources = new File(System.getProperty("user.home") + "/pladipus/tools/moff/");
-        cleanup();
+        //cleanup();
         tempResources.mkdirs();
+        
         rawResources = new File(tempResources, "RAW");
-        rawResources.mkdirs();
+        if (rawResources.exists()) {
+            FileUtils.deleteDirectory(rawResources);
+        } 
+            rawResources.mkdirs();
+        
         psResources = new File(tempResources, "peptideshaker");
-        psResources.mkdirs();
+        if (psResources.exists()) {
+            FileUtils.deleteDirectory(psResources);
+        }   psResources.mkdirs();
+        
         for (Map.Entry<String, String> aParam : parameters.entrySet()) {
             System.out.println(aParam.getKey() + "\t" + aParam.getValue());
         }
@@ -134,7 +142,8 @@ public class MoffStep extends ProcessingStep {
         cmdArgs.add("--rt_p");
         cmdArgs.add("0.10");
         cmdArgs.add("--raw_repo");
-        cmdArgs.add(rawResources.getAbsolutePath());
+        //add a forward slash
+        cmdArgs.add(rawResources.getAbsolutePath()+"/");
         cmdArgs.add("--output_folder");
         cmdArgs.add(parameters.get("output_folder"));
 

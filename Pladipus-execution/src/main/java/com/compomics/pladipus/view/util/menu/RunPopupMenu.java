@@ -199,8 +199,9 @@ public class RunPopupMenu extends JPopupMenu {
                         for (ProcessingJob aJob : unqueuedProcesses) {
                             long processID = aJob.getId();
                             try (
-                                    CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, aJob.toXML(), (int) processID, templateForRun.getPriority())) {
+                                CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, aJob.toXML(), (int) processID, templateForRun.getPriority())) {
                                 producer.run();
+                                producer.close();
                             }
                             processesToQueue.add((int) processID);
                             progressDialog.increasePrimaryProgressCounter();

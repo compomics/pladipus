@@ -100,15 +100,10 @@ public class ProcessingEngine implements Callable {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) {
-        try {
-            ProcessingMonitor monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
-            monitor.addErrorTerms(errorTerms);
-            monitor.getHook();
-        } catch (Exception ex) {
-            LOGGER.error(ex);
-            ex.printStackTrace();
-        }
+    public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) throws Exception {
+        ProcessingMonitor monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
+        monitor.addErrorTerms(errorTerms);
+        monitor.getHook();
         return 0;
     }
 
