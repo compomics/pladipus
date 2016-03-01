@@ -109,8 +109,18 @@ public class PeptideShakerStep extends ProcessingStep {
             experiment = parameters.get("experiment");
         }
 
+        String sample = "respin";
+        if (parameters.containsKey("sample")) {
+            experiment = parameters.get("sample");
+        }
+
+        String replicate = "0";
+        if (parameters.containsKey("replicate")) {
+            experiment = parameters.get("replicate");
+        }
+
         if (parameters.containsKey("output_folder")) {
-            temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + ".cpsx");
+            temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + "_" + sample + "_" + replicate + ".cpsx");
             parameters.put("out", temp_peptideshaker_cps.getAbsolutePath());
         }
         File real_output_folder = new File(parameters.get("output_folder"));
