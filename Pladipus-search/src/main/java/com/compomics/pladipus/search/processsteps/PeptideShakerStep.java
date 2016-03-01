@@ -89,15 +89,20 @@ public class PeptideShakerStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception, Exception {
+    public boolean doAction() throws Exception {
         LOGGER.info("Running Peptide Shaker");
         File peptideShakerJar = getJar();
-
         if (temp_peptideshaker_output.exists()) {
-            FileUtils.deleteDirectory(temp_peptideshaker_output);
+            for (File aFile : temp_peptideshaker_output.listFiles()) {
+                try {
+                    aFile.delete();
+                } catch (Exception e) {
+                    LOGGER.warn(e);
+                }
+            }
+        } else {
+            temp_peptideshaker_output.mkdirs();
         }
-        temp_peptideshaker_output.mkdirs();
-
         String experiment = "output";
 
         if (parameters.containsKey("experiment")) {
@@ -128,10 +133,10 @@ public class PeptideShakerStep extends ProcessingStep {
         //check if searchGUI already exists?
         File temp = new File(toolFolder, "PeptideShaker");
         if (!temp.exists()) {
-             LOGGER.info("Downloading latest SearchGUI version...");
+            LOGGER.info("Downloading latest SearchGUI version...");
             URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
-            downloadLatestZipFromRepo(temp, "PeptideShaker", "eu.isas.peptideshaker", "PeptideShaker", null, null, jarRepository, false, false, new HeadlessFileDAO(),new WaitingHandlerCLIImpl());
-            }
+            downloadLatestZipFromRepo(temp, "PeptideShaker", "eu.isas.peptideshaker", "PeptideShaker", null, null, jarRepository, false, false, new HeadlessFileDAO(), new WaitingHandlerCLIImpl());
+        }
         return JarLookupService.lookupFile("PeptideShaker-.*.jar", temp);
     }
 
