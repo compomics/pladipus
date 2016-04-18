@@ -261,7 +261,9 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
 
     @Override
     public boolean add(ProcessingStep e) {
+        if(e.getParameters()==null){
         e.setParameters(processingParameters);
+        }
         super.add(e);
         return true;
     }

@@ -94,32 +94,24 @@ public class ZipUtils {
      * @param output the destination zip file
      */
     public static void zipFile(File inputFile, File zipFile) {
-        try {
 
-            try (
-                    FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
-                    ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
-                ZipEntry zipEntry = new ZipEntry(inputFile.getName());
-                zipOutputStream.putNextEntry(zipEntry);
+        try (FileInputStream fileInputStream = new FileInputStream(inputFile);
+                FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
+                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
+            ZipEntry zipEntry = new ZipEntry(inputFile.getName());
+            zipOutputStream.putNextEntry(zipEntry);
+            byte[] buf = new byte[1024];
+            int bytesRead;
 
-                FileInputStream fileInputStream = new FileInputStream(inputFile);
-                byte[] buf = new byte[1024];
-                int bytesRead;
-
-                // Read the input file by chucks of 1024 bytes
-                // and write the read bytes to the zip stream
-                while ((bytesRead = fileInputStream.read(buf)) > 0) {
-                    zipOutputStream.write(buf, 0, bytesRead);
-                }
-
-                // close ZipEntry to store the stream to the file
-                zipOutputStream.closeEntry();
-
-                zipOutputStream.close();
+            // Read the input file by chucks of 1024 bytes
+            // and write the read bytes to the zip stream
+            while ((bytesRead = fileInputStream.read(buf)) > 0) {
+                zipOutputStream.write(buf, 0, bytesRead);
             }
 
+            // close ZipEntry to store the stream to the file
+            zipOutputStream.closeEntry();
             LOGGER.debug("Regular file :" + inputFile.getCanonicalPath() + " is zipped to archive :" + zipFile.getAbsolutePath());
-
         } catch (IOException e) {
             LOGGER.error(e);
         }

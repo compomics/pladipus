@@ -27,6 +27,9 @@ public abstract class ProcessingStep implements ProcessingExecutable {
      * The id of the current process / job
      */
     private int processingID = -1;
+    /**
+     * a notifier for the process proceedings
+     */
     private CallbackNotifier callbackNotifier;
 
     public String getProcessingStepClassName() {

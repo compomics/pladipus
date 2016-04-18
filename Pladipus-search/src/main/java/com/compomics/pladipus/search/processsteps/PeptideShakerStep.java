@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
@@ -92,17 +87,22 @@ public class PeptideShakerStep extends ProcessingStep {
     public boolean doAction() throws Exception {
         LOGGER.info("Running Peptide Shaker");
         File peptideShakerJar = getJar();
+        File realOutput = new File(parameters.get("output_folder"));
+        File temporaryOutput = new File(temp_peptideshaker_output, realOutput.getName());
         if (temp_peptideshaker_output.exists()) {
             for (File aFile : temp_peptideshaker_output.listFiles()) {
                 try {
-                    aFile.delete();
+                    if (!aFile.isDirectory()) {
+                        aFile.delete();
+                    } else {
+                        FileUtils.deleteDirectory(aFile);
+                    }
                 } catch (Exception e) {
                     LOGGER.warn(e);
                 }
             }
-        } else {
-            temp_peptideshaker_output.mkdirs();
         }
+        temporaryOutput.mkdirs();
         String experiment = "output";
 
         if (parameters.containsKey("experiment")) {
@@ -111,12 +111,12 @@ public class PeptideShakerStep extends ProcessingStep {
 
         String sample = "respin";
         if (parameters.containsKey("sample")) {
-            experiment = parameters.get("sample");
+            sample = parameters.get("sample");
         }
 
         String replicate = "0";
         if (parameters.containsKey("replicate")) {
-            experiment = parameters.get("replicate");
+            replicate = parameters.get("replicate");
         }
 
         if (parameters.containsKey("output_folder")) {
