@@ -97,6 +97,13 @@
             <artifactId>spring-test</artifactId>
             <version>${org.springframework.version}</version>
         </dependency>
-  
-    </dependencies>
+      </dependencies>
+    <!-- The deployment maven2 repository-->
+    <distributionManagement>
+        <repository>
+            <id>genesis-maven2-repo</id>
+            <name>Genesis Maven Repository</name>
+            <url>scp://genesis.ugent.be:35260/home/maven/public_html/maven2</url>
+        </repository>
+    </distributionManagement>
 </project>
