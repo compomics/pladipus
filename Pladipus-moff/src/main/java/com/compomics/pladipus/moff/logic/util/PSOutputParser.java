@@ -1,4 +1,4 @@
-package com.compomics.pladipus.moff.logic;
+package com.compomics.moff.gui.control.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 public class PSOutputParser {
 
+    private static final int LINE = 0;
     private static final int PROTEINS = 1;
     private static final int SEQUENCE = 2;
     private static final int VAR_MODS = 3;
@@ -37,7 +38,7 @@ public class PSOutputParser {
     private static final int CONFIDENCE = 19;
     private static final int VALIDATION = 20;
 
-    private static final String P_HEADER="prot\t"
+    private static final String P_HEADER = "prot\t"
             + "peptide\t"
             + "var_mod\t"
             + "fix_mod\t"
@@ -57,7 +58,7 @@ public class PSOutputParser {
             + "d-score\t"
             + "confidence\t"
             + "validation";
- 
+
     /**
      * This constructor takes the PS output file. This has to be created by
      * command line option -reports 9 !
@@ -66,7 +67,7 @@ public class PSOutputParser {
      * @param moffFile the moff file output
      * @throws java.io.FileNotFoundException
      */
-    public static void convert(File psOutputFile, File moffFile) throws FileNotFoundException, IOException {
+    public static void convertReport(File psOutputFile, File moffFile) throws FileNotFoundException, IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(psOutputFile)); BufferedWriter writer = new BufferedWriter(new FileWriter(moffFile));) {
             String line;
             //peptideshaker headers
@@ -74,11 +75,16 @@ public class PSOutputParser {
             writer.append(P_HEADER).append(System.lineSeparator());
             //content
             while ((line = reader.readLine()) != null) {
-                String[] split = line.split("\t");
-                //filter out shared peptides and decoys
-                if (!split[PROTEINS].contains(",") && split[DECOY].equals("0")) {
-                    //write the requested line to file
-                    writer.append(line.substring(line.indexOf("\t")+1)).append(System.lineSeparator()).flush();
+                //System.out.println(line);
+                if (!line.isEmpty()) {
+                    String[] split = line.split("\t");
+                    if (split.length > 1) {
+                        //filter out shared peptides and decoys
+                        if (!split[PROTEINS].contains(",") && split[DECOY].equals("0")) {
+                            //write the requested line to file
+                            writer.append(line.substring(line.indexOf("\t") + 1)).append(System.lineSeparator()).flush();
+                        }
+                    }
                 }
             }
             writer.flush();
