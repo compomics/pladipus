@@ -45,7 +45,7 @@ public class InstallPladipus {
     /**
      * The available pladipus steps that need to be installed
      */
-    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo", "msconvert"};
+    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo", "msconvert","moff"};
     /**
      * The pladipus folder (in user home)
      */

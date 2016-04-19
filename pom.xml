@@ -37,6 +37,14 @@
                 </configuration>
             </plugin>
         </plugins>
+        <!-- Extensions -->
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
     </build>
 
     <repositories>
@@ -97,8 +105,10 @@
             <artifactId>spring-test</artifactId>
             <version>${org.springframework.version}</version>
         </dependency>
-      </dependencies>
+    </dependencies>
+
     <!-- The deployment maven2 repository-->
+    
     <distributionManagement>
         <repository>
             <id>genesis-maven2-repo</id>
