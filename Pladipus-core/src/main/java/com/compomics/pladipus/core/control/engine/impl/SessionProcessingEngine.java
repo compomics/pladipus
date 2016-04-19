@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.engine.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLJobInterpreter;
@@ -40,10 +35,16 @@ public class SessionProcessingEngine extends ProcessingEngine {
         } else {
             LOGGER.info("Executing job...");
             for (ProcessingStep aStep : aJob) {
-                aStep.setProcessingID((int) aJob.getId());
-                aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
-                jobSucessfull = aStep.doAction();
-                aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
+                try {
+                    aStep.setProcessingID((int) aJob.getId());
+                    aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
+                    jobSucessfull = aStep.doAction();
+                    aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
+                } catch (Exception e) {
+                    throw e;
+                } finally {
+                    aStep.close();
+                }
             }
             aJob.get(0).getCallbackNotifier().onNotification("Finished", true);
             //sleep 10 seconds to avoid accidental DDOS of servers and resources

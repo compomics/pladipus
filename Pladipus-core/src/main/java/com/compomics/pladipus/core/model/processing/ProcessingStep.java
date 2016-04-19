@@ -80,4 +80,9 @@ public abstract class ProcessingStep implements ProcessingExecutable {
         }
     }
 
+    public void close() {
+        stopProcess();
+        //do other stuff that needs to be done to close this step nicely (close streams etc)
+    }
+
 }
