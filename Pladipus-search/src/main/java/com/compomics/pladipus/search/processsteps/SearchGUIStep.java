@@ -60,7 +60,7 @@ public class SearchGUIStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws  Exception {
+    public boolean doAction() throws Exception {
         File parameterFile = new File(parameters.get("id_params"));
         File fastaFile = new File(parameters.get("fasta_file"));
         File real_outputFolder = new File(parameters.get("output_folder"));
@@ -83,7 +83,7 @@ public class SearchGUIStep extends ProcessingStep {
         for (SearchGUICheckpoints aCheckPoint : SearchGUICheckpoints.values()) {
             callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
-        new ProcessingEngine().startProcess(getJar(), constructArguments(), callbackNotifier);
+        startProcess(getJar(), constructArguments());
         //storing intermediate results
         LOGGER.debug("Storing results in " + real_outputFolder);
         real_outputFolder.mkdirs();

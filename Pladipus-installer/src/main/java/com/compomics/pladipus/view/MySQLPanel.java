@@ -70,8 +70,7 @@ public class MySQLPanel extends javax.swing.JPanel {
     public void setWorkerMode(boolean isWorkerMode) {
         btnInstallDatabase.setEnabled(!isWorkerMode);
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -254,15 +253,15 @@ public class MySQLPanel extends javax.swing.JPanel {
                     } else {
                         return;
                     }
-                }else{
+                } else {
                     return;
                 }
             }
             mySQLSetup.setupMySql(connection);
-            if(mySQLSetup.pladipusExists(connection)){
-            JOptionPane.showMessageDialog(null, "Succesfully initiated database.","Database import complete",JOptionPane.INFORMATION_MESSAGE);
-            dbExists = true;
-            }else{
+            if (mySQLSetup.pladipusExists(connection)) {
+                JOptionPane.showMessageDialog(null, "Succesfully initiated database.", "Database import complete", JOptionPane.INFORMATION_MESSAGE);
+                dbExists = true;
+            } else {
                 throw new IOException("Could not create database schema. Are the privileges set correctly for the specified account?");
             }
         } catch (SQLException ex) {
@@ -302,9 +301,9 @@ public class MySQLPanel extends javax.swing.JPanel {
                 if (dbExists) {
                     if (save) {
                         mySQLSetup.updateProperties(host, port, user, password);
-                        JOptionPane.showMessageDialog(this, "Succesfully saved database settings.","Database settings saved",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Succesfully saved database settings.", "Database settings saved", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Succesfully contacted the Pladipus database.","Database connected",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Succesfully contacted the Pladipus database.", "Database connected", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             } catch (SQLException theDatabaseIsNotThere) {
@@ -313,13 +312,18 @@ public class MySQLPanel extends javax.swing.JPanel {
                     int dialogResult = JOptionPane.showConfirmDialog(this, "Would you like to automatically import the Pladipus database?");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         mySQLSetup.setupMySql(connection);
-                        JOptionPane.showMessageDialog(null, "Succesfully initiated database.","Database import complete",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Succesfully initiated database.", "Database import complete", JOptionPane.INFORMATION_MESSAGE);
                         dbExists = true;
                     }
                 }
             }
         } catch (SQLException e) {
-            if (!connected) {
+            if (e.getMessage().contains("Access denied for user")) {
+                JOptionPane.showMessageDialog(this,
+                        "The password was incorrect or the user has no privileges...",
+                        "Connection Failed",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (!connected) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                         "Could not connect to the database: " + System.lineSeparator() + e.getMessage(),
@@ -329,7 +333,7 @@ public class MySQLPanel extends javax.swing.JPanel {
         } catch (Exception ex) {
             //custom title, error icon
             JOptionPane.showMessageDialog(this,
-                    "Could not import SQL init script." +System.lineSeparator()+ex.getMessage(),
+                    "Could not import SQL init script." + System.lineSeparator() + ex.getMessage(),
                     "Database Creation Error",
                     JOptionPane.ERROR_MESSAGE);
         }

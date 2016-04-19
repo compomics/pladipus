@@ -131,19 +131,15 @@ public class PeptideShakerStep extends ProcessingStep {
         for (PeptideShakerCheckPoints aCheckPoint : PeptideShakerCheckPoints.values()) {
             callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
-        new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
+        startProcess(peptideShakerJar, constructArguments);
         cleanupAndSave(real_output_folder);
         return true;
     }
 
     public File getJar() throws IOException, XMLStreamException, URISyntaxException {
-        //check if this is possible in another way...
-        File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
-        toolFolder.mkdirs();
-        //check if searchGUI already exists?
-        File temp = new File(toolFolder, "PeptideShaker");
+        File temp = new File(parameters.get("ps_folder"));
         if (!temp.exists()) {
-            LOGGER.info("Downloading latest SearchGUI version...");
+            LOGGER.info("Downloading latest PeptideShaker version...");
             URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
             downloadLatestZipFromRepo(temp, "PeptideShaker", "eu.isas.peptideshaker", "PeptideShaker", null, null, jarRepository, false, false, new HeadlessFileDAO(), new WaitingHandlerCLIImpl());
         }

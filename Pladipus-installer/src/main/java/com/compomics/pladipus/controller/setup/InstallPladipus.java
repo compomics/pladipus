@@ -41,11 +41,11 @@ public class InstallPladipus {
      * The current version of pladipus (//TODO get this from the POM or a
      * properties file???)
      */
-    private static final String version = "0.4.1";
+    private static final String version = "1.0.0";
     /**
      * The available pladipus steps that need to be installed
      */
-    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo", "msconvert","moff"};
+    private static final String[] modulesToInstall = new String[]{"search", "blast", "denovo", "msconvert"};
     /**
      * The pladipus folder (in user home)
      */

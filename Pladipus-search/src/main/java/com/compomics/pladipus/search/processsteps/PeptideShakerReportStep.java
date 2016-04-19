@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class PeptideShakerReportStep extends PeptideShakerStep {
 
-     public PeptideShakerReportStep() {
+    public PeptideShakerReportStep() {
 
     }
 
@@ -60,7 +60,7 @@ public class PeptideShakerReportStep extends PeptideShakerStep {
         for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
             callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
-        new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
+        startProcess(peptideShakerJar, constructArguments);
         return true;
     }
 

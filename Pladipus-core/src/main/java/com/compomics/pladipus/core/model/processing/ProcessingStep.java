@@ -5,8 +5,11 @@
  */
 package com.compomics.pladipus.core.model.processing;
 
+import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -31,6 +34,7 @@ public abstract class ProcessingStep implements ProcessingExecutable {
      * a notifier for the process proceedings
      */
     private CallbackNotifier callbackNotifier;
+    private ProcessingEngine processingEngine;
 
     public String getProcessingStepClassName() {
         return processingStepClassName;
@@ -63,6 +67,17 @@ public abstract class ProcessingStep implements ProcessingExecutable {
             callbackNotifier = new CallbackNotifier();
         }
         return callbackNotifier;
+    }
+
+    public void startProcess(File executable, List<String> constructArguments) {
+        processingEngine = new ProcessingEngine();
+        processingEngine.startProcess(executable, constructArguments, getCallbackNotifier());
+    }
+
+    public void stopProcess() {
+        if (processingEngine != null) {
+            processingEngine.stopProcess();
+        }
     }
 
 }

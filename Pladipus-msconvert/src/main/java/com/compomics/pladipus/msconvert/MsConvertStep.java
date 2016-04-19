@@ -37,7 +37,7 @@ public class MsConvertStep extends ProcessingStep {
         executable = new File(parameters.get("pwiz_folder") + "/msconvert");
         cmdArgs.add(parameters.get("pwiz_folder") + "/msconvert");
         for (AllowedMsConvertParams aParameter : AllowedMsConvertParams.values()) {
-                if (parameters.containsKey(aParameter.getId())) {
+            if (parameters.containsKey(aParameter.getId())) {
                 cmdArgs.add("-" + aParameter.getId());
                 String value = parameters.get(aParameter.getId());
                 if (!value.isEmpty()) {
@@ -48,13 +48,13 @@ public class MsConvertStep extends ProcessingStep {
             }
         }
         //cs filters?
-        if(parameters.containsKey("-filter")){
+        if (parameters.containsKey("-filter")) {
             String[] filters = parameters.get("-filter").split(";");
-            for(String aFilter:filters){
+            for (String aFilter : filters) {
                 cmdArgs.add("--filter");
-                cmdArgs.add('"'+aFilter+'"');
+                cmdArgs.add('"' + aFilter + '"');
             }
-        }    
+        }
         return cmdArgs;
     }
 
@@ -75,7 +75,7 @@ public class MsConvertStep extends ProcessingStep {
                 parameters.put("o", tempResults.getAbsolutePath());
                 constructArguments();
 
-                new ProcessingEngine().startProcess(executable, constructArguments(),getCallbackNotifier());
+                startProcess(executable, constructArguments());
 
                 File[] resultFiles = tempResults.listFiles();
 

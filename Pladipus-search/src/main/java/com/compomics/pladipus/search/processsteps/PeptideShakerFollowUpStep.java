@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.search.processsteps;
 
-import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
@@ -60,7 +54,7 @@ public class PeptideShakerFollowUpStep extends PeptideShakerStep {
     }
 
     @Override
-    public boolean doAction() throws Exception, Exception {
+    public boolean doAction() throws Exception {
         List<String> constructArguments = constructArguments();
         File peptideShakerJar = getJar();
         //add callback notifier for more detailed printouts of the processing
@@ -68,12 +62,11 @@ public class PeptideShakerFollowUpStep extends PeptideShakerStep {
         for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
             callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
         }
-        new ProcessingEngine().startProcess(peptideShakerJar, constructArguments, callbackNotifier);
+        startProcess(peptideShakerJar, constructArguments);
         //run peptideShaker with the existing files
         cleanupAndSave();
         return true;
     }
-
 
     private void cleanupAndSave() throws IOException {
         //parameters.put("out",real_output_file.getAbsolutePath());

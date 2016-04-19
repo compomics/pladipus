@@ -69,6 +69,7 @@ public class InitMySQL {
      * @param host the mysql host
      * @param port the mysql port
      * @param login the mysql login
+     * @param password the mysql password
      * @return success
      * @throws FileNotFoundException
      * @throws IOException

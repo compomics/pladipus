@@ -76,7 +76,7 @@ public class ProcessingMonitor {
         errorKeyWords.add("EXCEPTION");
         errorKeyWords.add("NO MS2 SPECTRA FOUND");
     }
-    
+
     private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
         String errorLine;
         if (firstLine.toLowerCase().contains("exception:")) {
@@ -106,15 +106,15 @@ public class ProcessingMonitor {
         processOutputStream.close();
         return reThrowable;
     }
-    
+
     private final LinkedList<StackTraceElement> stackTraceElementList = new LinkedList<>();
-    
+
     private StackTraceElement[] getStackTrace() {
         StackTraceElement[] elements = new StackTraceElement[stackTraceElementList.size()];
         stackTraceElementList.toArray(elements);
         return elements;
     }
-    
+
     private void addStackTraceElement(String errorLine) throws StringIndexOutOfBoundsException {
         errorLine = errorLine.replace("at ", "");
         int endIndex = errorLine.indexOf("(");
@@ -123,7 +123,7 @@ public class ProcessingMonitor {
             declaringClass = errorLine.substring(0, errorLine.indexOf("("));
         }
         String method = declaringClass.substring(declaringClass.lastIndexOf(".") + 1);
-        
+
         declaringClass = declaringClass.substring(0, declaringClass.lastIndexOf("."));
         String fileName = declaringClass.substring(declaringClass.lastIndexOf(".") + 1) + ".java";
         int lineNumber;
@@ -158,20 +158,24 @@ public class ProcessingMonitor {
         return process.exitValue();
     }
     
+    public void stopProcess(){
+        process.destroyForcibly();
+    }
+    
     public void addErrorTerms(Collection<String> errorTerms) {
         this.errorKeyWords.addAll(errorTerms);
     }
-    
+
     private class StreamGobbler extends Thread {
-        
+
         private InputStream is;
         private final String type;
-        
+
         private StreamGobbler(InputStream is, String type) {
             this.is = is;
             this.type = type;
         }
-        
+
         @Override
         public void run() {
             InputStreamReader isr = new InputStreamReader(is);
@@ -190,7 +194,7 @@ public class ProcessingMonitor {
                             throw toThrow;
                         }
                     } else {
-                      //  System.out.println(line);
+                        //  System.out.println(line);
                         LOGGER.info(line);
                         writer.append(line).append(System.lineSeparator()).flush();
                         scanForCheckpoints(line);
@@ -209,7 +213,7 @@ public class ProcessingMonitor {
             }
         }
     }
-    
+
     private void scanForCheckpoints(String line) throws Exception {
         boolean ignoreLine;
         ignoreLine = false;
@@ -251,5 +255,5 @@ public class ProcessingMonitor {
         processBuilder.directory(workingDirectory);
         return getHook();
     }
-    
+
 }

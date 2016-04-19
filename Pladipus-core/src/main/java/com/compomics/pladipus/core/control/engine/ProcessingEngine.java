@@ -30,9 +30,16 @@ public class ProcessingEngine implements Callable {
      * The Logging instance
      */
     private static final Logger LOGGER = Logger.getLogger(ProcessingEngine.class);
+    private ProcessingMonitor monitor;
 
     public ProcessingEngine() {
 
+    }
+
+    public void stopProcess() {
+        if (monitor != null) {
+            monitor.stopProcess();
+        }
     }
 
     /**
@@ -73,13 +80,10 @@ public class ProcessingEngine implements Callable {
      * @param arguments list of arguments + values required to start the jar
      * @param callbackNotifier the notifier to pipe output to
      * @return the system exit value of the process
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws ExecutionException
      */
     public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier) {
         try {
-            ProcessingMonitor monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
+            monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
             monitor.getHook();
         } catch (Exception ex) {
             LOGGER.error(ex);
@@ -101,7 +105,7 @@ public class ProcessingEngine implements Callable {
      * @throws ExecutionException
      */
     public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) throws Exception {
-        ProcessingMonitor monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
+        monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
         monitor.addErrorTerms(errorTerms);
         monitor.getHook();
         return 0;
