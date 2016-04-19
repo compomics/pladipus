@@ -35,8 +35,11 @@
    
     <!--MOFF STEPS-->
     
-    <bean id="MoffStep" class="com.compomics.pladipus.moff.steps.MoffStep" lazy-init="true"/>   
+    <bean id="MoFFPeptideShakerConversionStep" class="com.compomics.pladipus.moff.step.MoFFPeptideShakerConversionStep" lazy-init="true"/>   
     
+    <bean id="MoFFStep" class="com.compomics.pladipus.moff.step.MoFFStep" lazy-init="true"/>   
+   
+     
     <!--DO NOT EDIT THESE STEPS -->
     <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
     
