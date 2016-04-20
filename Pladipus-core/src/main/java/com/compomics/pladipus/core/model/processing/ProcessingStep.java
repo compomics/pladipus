@@ -74,6 +74,11 @@ public abstract class ProcessingStep implements ProcessingExecutable {
         processingEngine.startProcess(executable, constructArguments, getCallbackNotifier());
     }
 
+     public void startProcess(File executable, String[] constructArguments) {
+        processingEngine = new ProcessingEngine();
+        processingEngine.startProcess(executable, constructArguments, getCallbackNotifier());
+    }
+    
     public void stopProcess() {
         if (processingEngine != null) {
             processingEngine.stopProcess();

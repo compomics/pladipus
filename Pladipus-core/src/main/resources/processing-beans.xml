@@ -42,5 +42,7 @@
      
     <!--DO NOT EDIT THESE STEPS -->
     <bean id="TestingStep" class="com.compomics.pladipus.core.model.processing.standard.TestingStep" lazy-init="true"/>    
+   
+    <bean id="CommandLineExecutionStep" class="com.compomics.pladipus.core.model.processing.standard.CommandLineExecutionStep" lazy-init="true"/>    
     
 </beans>
