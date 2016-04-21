@@ -62,7 +62,8 @@ public class CommandLineExecutionStep extends ProcessingStep {
 
     public static void main(String[] args) {
         CommandLineExecutionStep commandLineExecutionStep = new CommandLineExecutionStep();
-        commandLineExecutionStep.setCommand("ping www.google.be");
+        // commandLineExecutionStep.setCommand("ping www.google.be");
+        commandLineExecutionStep.setCommand("java -version");
         try {
             commandLineExecutionStep.doAction();
         } catch (Exception ex) {

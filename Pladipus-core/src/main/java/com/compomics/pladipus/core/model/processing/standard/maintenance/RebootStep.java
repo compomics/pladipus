@@ -25,7 +25,7 @@ public class RebootStep extends ProcessingStep {
 
     @Override
     public String getDescription() {
-        return "A STEP TO TEST THE PLADIPUS INFRASTRUCTURE";
+        return "A STEP TO RESET THE PLADIPUS INFRASTRUCTURE";
     }
 
     /**
