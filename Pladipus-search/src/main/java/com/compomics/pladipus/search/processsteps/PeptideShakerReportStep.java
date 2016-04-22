@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.search.processsteps;
 
-import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerReportParams;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import java.io.File;
@@ -15,6 +11,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -27,7 +25,7 @@ public class PeptideShakerReportStep extends PeptideShakerStep {
 
     }
 
-    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File peptideShakerJar = getJar();
 
         ArrayList<String> cmdArgs = new ArrayList<>();
@@ -52,16 +50,20 @@ public class PeptideShakerReportStep extends PeptideShakerStep {
     }
 
     @Override
-    public boolean doAction() throws Exception, Exception {
-        List<String> constructArguments = constructArguments();
-        File peptideShakerJar = getJar();
-        //add callback notifier for more detailed printouts of the processing
-        CallbackNotifier callbackNotifier = getCallbackNotifier();
-        for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
-            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+    public boolean doAction() throws PladipusProcessingException, UnspecifiedPladipusException {
+        try {
+            List<String> constructArguments = constructArguments();
+            File peptideShakerJar = getJar();
+            //add callback notifier for more detailed printouts of the processing
+            CallbackNotifier callbackNotifier = getCallbackNotifier();
+            for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
+                callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+            }
+            startProcess(peptideShakerJar, constructArguments);
+            return true;
+        } catch (IOException | XMLStreamException | URISyntaxException ex) {
+            throw new PladipusProcessingException(ex);
         }
-        startProcess(peptideShakerJar, constructArguments);
-        return true;
     }
 
     @Override

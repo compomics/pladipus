@@ -6,6 +6,7 @@
 
 package com.compomics.pladipus.core.control.runtime.steploader;
 
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.net.MalformedURLException;
 
@@ -21,13 +22,7 @@ public interface StepLoader {
      *
      * @param className the name of the class to be loaded
      * @return the processingstep representation of the given class
-     * @throws MalformedURLException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws NoSuchMethodException
-     * @throws jInvocationTargetException
-     * @throws ClassNotFoundException
      */
-    ProcessingStep loadProcessingStep(String className) throws Exception;
+    ProcessingStep loadProcessingStep(String className) throws ProcessStepInitialisationException;
     
 }

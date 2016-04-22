@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.util.UploadRunAction;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
@@ -274,7 +269,7 @@ public class RunImportDialog extends javax.swing.JDialog {
                 if (!processingTemplate.getUser().equalsIgnoreCase(user)) {
                     processingTemplate.setUser(user);
                 }
-            } catch (IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+            } catch (IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                         ex.getMessage(),

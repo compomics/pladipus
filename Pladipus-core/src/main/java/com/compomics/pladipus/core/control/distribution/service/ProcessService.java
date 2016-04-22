@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.service;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLJobInterpreter;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.DeleteOperation;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.QueryOperation;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
+import com.compomics.pladipus.core.model.exception.XMLInterpreterException;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import java.io.IOException;
@@ -156,21 +152,35 @@ public class ProcessService {
      * @throws StepLoadingException
      */
     public String getXMLForProcess(int processID) throws SQLException, SAXException,
-            IOException, ParserConfigurationException, StepLoadingException {
+            IOException, ParserConfigurationException, ProcessStepInitialisationException {
         try (ProcessDAO dao = ProcessDAO.getInstance()) {
             return dao.getXMLForProcess(processID);
         }
     }
 
     /**
-     * Resets the process, but keeps track of the failcounter
+     * increases the failcounter after resetting
      *
      * @param processID
      * @throws SQLException
      */
     public void increaseFailCount(int processID) throws SQLException {
         try (ProcessDAO dao = ProcessDAO.getInstance()) {
+            dao.resetStepCount(processID);
             dao.increaseFailCount(processID);
+        }
+    }
+
+    /**
+     * Sets the failcounter to a given amount
+     *
+     * @param processID the process id for the job
+     * @param fails the amount the job has failed
+     * @throws SQLException
+     */
+    public void increaseFailCount(int processID,int fails) throws SQLException {
+        try (ProcessDAO dao = ProcessDAO.getInstance()) {
+            dao.setFailCount(processID,fails);
             dao.resetStepCount(processID);
         }
     }
@@ -246,11 +256,10 @@ public class ProcessService {
      * @param processID the processID
      * @return returns a processingJob object for this processID
      * @throws SQLException
-     * @throws SAXException
-     * @throws IOException
-     * @throws Exception
+     * @throws com.compomics.pladipus.core.model.exception.XMLInterpreterException
+     * @throws com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException
      */
-    public ProcessingJob retrieveProcessingJob(int processID) throws SQLException, SAXException, IOException, Exception {
+    public ProcessingJob retrieveProcessingJob(int processID) throws SQLException, XMLInterpreterException, ProcessStepInitialisationException {
         try (ProcessDAO dao = ProcessDAO.getInstance()) {
             return dao.retrieveProcessingJob(processID);
         }
@@ -296,7 +305,7 @@ public class ProcessService {
      * @return the job object for this process ID
      * @throws Exception
      */
-    public ProcessingJob getProcessingJob(int processID) throws Exception {
+    public ProcessingJob getProcessingJob(int processID) throws XMLInterpreterException, IOException, ParserConfigurationException, SAXException, SQLException, ProcessStepInitialisationException {
         return XMLJobInterpreter.getInstance().convertXMLtoJob(getXMLForProcess(processID));
     }
 

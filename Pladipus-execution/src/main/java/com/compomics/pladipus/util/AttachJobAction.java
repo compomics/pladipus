@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.util;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
 import com.compomics.pladipus.view.util.menu.RunPopupMenu;
@@ -47,7 +42,7 @@ public class AttachJobAction {
                 try {
                     PladipusProcessingTemplate templateForRun = RunService.getInstance().getTemplateForRun(Integer.parseInt(String.valueOf(userPanel.getRunTable().getValueAt(selectedRows[0], 1))));
                     executeUpload(userPanel, templateForRun, jobConfigFile);
-                } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+                } catch (SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                     Logger.getLogger(RunPopupMenu.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {

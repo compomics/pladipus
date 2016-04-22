@@ -1,4 +1,4 @@
-  <template run='Pladipus_demo' user='pladmin' priority='4'>
+  <template run='Pladipus_demo' user='pladmin' priority='4' chain='true'>
     <steps>
         <step class="com.compomics.pladipus.search.processsteps.SearchSetupStep"/> 
         <step class="com.compomics.pladipus.search.processsteps.SearchGUIStep"/> 

@@ -3,6 +3,12 @@ package com.compomics.pladipus.core.control.engine;
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLJobInterpreter;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.engine.callback.ProcessingMonitor;
+import com.compomics.pladipus.core.model.exception.BrokenProcessChainException;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.PladipusTrafficException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
+import com.compomics.pladipus.core.model.exception.XMLInterpreterException;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
@@ -13,10 +19,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -132,7 +141,7 @@ public class ProcessingEngine implements Callable {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) throws Exception {
+    public int startProcess(File executable, List<String> arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) throws IOException, InterruptedException, ExecutionException {
         monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
         monitor.addErrorTerms(errorTerms);
         monitor.getHook();
@@ -151,7 +160,7 @@ public class ProcessingEngine implements Callable {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public int startProcess(File executable, String[] arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) throws Exception {
+    public int startProcess(File executable, String[] arguments, CallbackNotifier callbackNotifier, Collection<String> errorTerms) throws IOException, InterruptedException, ExecutionException {
         monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
         monitor.addErrorTerms(errorTerms);
         monitor.getHook();
@@ -179,7 +188,7 @@ public class ProcessingEngine implements Callable {
      * @return a boolean indicating wether the job was succesfull;
      * @throws Exception
      */
-    public boolean runJob(ProcessingJob aJob) throws Exception {
+    public boolean runJob(ProcessingJob aJob) throws PladipusProcessingException {
         for (ProcessingStep aStep : aJob) {
             try {
                 aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
@@ -187,7 +196,7 @@ public class ProcessingEngine implements Callable {
                 aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
             } catch (Exception e) {
                 //     e.printStackTrace();
-                throw e;
+                throw new PladipusProcessingException(e);
             }
         }
         LOGGER.info("Done !");
@@ -199,15 +208,32 @@ public class ProcessingEngine implements Callable {
      * @param aJobMessage, the text representation of a processingjob that has
      * to be run
      * @return a boolean indicating wether the job was succesfull;
-     * @throws Exception
+     * @throws
+     * com.compomics.pladipus.core.model.exception.PladipusProcessingException
+     * @throws
+     * com.compomics.pladipus.core.model.exception.XMLInterpreterException
+     * @throws
+     * com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException
+     * @throws
+     * com.compomics.pladipus.core.model.exception.PladipusTrafficException
      */
-    public boolean runJob(TextMessage aJobMessage) throws Exception {
-        return runJob(XMLJobInterpreter.getInstance().convertXMLtoJob(aJobMessage.getText()));
+    public boolean runJob(TextMessage aJobMessage) throws PladipusProcessingException, XMLInterpreterException, ProcessStepInitialisationException, PladipusTrafficException {
+        try {
+            return runJob(XMLJobInterpreter.getInstance().convertXMLtoJob(aJobMessage.getText()));
+        } catch (IOException | ParserConfigurationException | SAXException ex) {
+            throw new XMLInterpreterException(ex);
+        } catch (JMSException ex) {
+            throw new PladipusTrafficException(ex);
+        }
     }
 
     @Override
-    public Object call() throws Exception {
-        return runJob(currentMessage);
+    public Object call() throws UnspecifiedPladipusException {
+        try {
+            return runJob(currentMessage);
+        } catch (Throwable e) {
+            throw new UnspecifiedPladipusException(e);
+        }
     }
 
 }

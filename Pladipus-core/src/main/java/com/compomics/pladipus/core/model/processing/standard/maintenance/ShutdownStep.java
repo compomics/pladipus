@@ -1,5 +1,6 @@
 package com.compomics.pladipus.core.model.processing.standard.maintenance;
 
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 
 /**
@@ -9,7 +10,7 @@ import com.compomics.pladipus.core.model.processing.ProcessingStep;
 public class ShutdownStep extends ProcessingStep {
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws PladipusProcessingException {
         stopProcess();
         System.exit(0);
         return true;

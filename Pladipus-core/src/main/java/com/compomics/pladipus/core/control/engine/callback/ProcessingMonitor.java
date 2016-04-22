@@ -1,5 +1,6 @@
 package com.compomics.pladipus.core.control.engine.callback;
 
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,11 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import javax.jms.JMSException;
 import org.apache.log4j.Logger;
 
 public class ProcessingMonitor {
@@ -63,6 +67,8 @@ public class ProcessingMonitor {
 
     /**
      *
+     * @param processBuilder
+     * @param notifier
      * @param processus the process to monitor
      */
     public ProcessingMonitor(ProcessBuilder processBuilder, CallbackNotifier notifier) {
@@ -77,7 +83,7 @@ public class ProcessingMonitor {
         errorKeyWords.add("NO MS2 SPECTRA FOUND");
     }
 
-    private Exception handleError(String firstLine, BufferedReader processOutputStream) throws Exception {
+    private Exception handleError(String firstLine, BufferedReader processOutputStream) throws IOException {
         String errorLine;
         if (firstLine.toLowerCase().contains("exception:")) {
             System.out.println("Error encountered...");
@@ -147,7 +153,7 @@ public class ProcessingMonitor {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public int getHook() throws IOException, InterruptedException, ExecutionException, Exception {
+    public int getHook() throws IOException, InterruptedException, ExecutionException {
         //  processBuilder = processBuilder.redirectOutput(Redirect.INHERIT).redirectError(Redirect.INHERIT);
         process = processBuilder.start();
         StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), "errors");
@@ -157,11 +163,11 @@ public class ProcessingMonitor {
         process.waitFor();
         return process.exitValue();
     }
-    
-    public void stopProcess(){
+
+    public void stopProcess() {
         process.destroyForcibly();
     }
-    
+
     public void addErrorTerms(Collection<String> errorTerms) {
         this.errorKeyWords.addAll(errorTerms);
     }
@@ -214,7 +220,7 @@ public class ProcessingMonitor {
         }
     }
 
-    private void scanForCheckpoints(String line) throws Exception {
+    private void scanForCheckpoints(String line) throws PladipusProcessingException {
         boolean ignoreLine;
         ignoreLine = false;
         //print to the console
@@ -230,12 +236,14 @@ public class ProcessingMonitor {
                 //scan for errors
                 for (String aKeyword : errorKeyWords) {
                     if (line.toUpperCase().contains(aKeyword.toUpperCase())) {
-                        throw new Exception("An unclear error occurred in a subprocess : " + System.lineSeparator() + line);
+                        throw new PladipusProcessingException("An unclear error occurred in a subprocess : " + System.lineSeparator() + line);
                     }
                 }
             }
         } catch (NullPointerException e) {
             LOGGER.error(e);
+        } catch (SQLException | JMSException ex) {
+            throw new PladipusProcessingException(ex);
         }
     }
 

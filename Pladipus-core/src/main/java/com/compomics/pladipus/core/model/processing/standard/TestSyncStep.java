@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.core.model.processing.standard;
 
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ public class TestSyncStep extends ProcessingStep {
     private static final Logger LOGGER = Logger.getLogger(TestSyncStep.class);
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws PladipusProcessingException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         System.out.println("Instruction executred at " + dateFormat.format(cal.getTime()));

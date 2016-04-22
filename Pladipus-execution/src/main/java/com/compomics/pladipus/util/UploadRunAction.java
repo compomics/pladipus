@@ -1,6 +1,8 @@
 package com.compomics.pladipus.util;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
+import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ChainDAO;
+import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
@@ -43,9 +45,19 @@ public class UploadRunAction {
                     XMLTemplateInterpreter xmlInterpreter = XMLTemplateInterpreter.getInstance();
                     //store in the database
                     LinkedList<HashMap<String, String>> readLocalProcessingParameters = xmlInterpreter.readLocalProcessingParameters(processingTemplate, config);
-                    RunDAO rInstance = RunDAO.getInstance();
-                    int runID = rInstance.createRun(processingTemplate);
-                    rInstance.addToRun(runID, readLocalProcessingParameters);
+                    try (RunDAO rInstance = RunDAO.getInstance()) {
+                        int runID = rInstance.createRun(processingTemplate);
+                        rInstance.addToRun(runID, readLocalProcessingParameters, processingTemplate.isKeepOrder());
+                        //add chain if needed
+                        if (processingTemplate.isKeepOrder() && runID != -1) {
+                            try (ChainDAO cInstance = ChainDAO.getInstance(); ProcessDAO pInstance = ProcessDAO.getInstance();) {
+                                int chainID = cInstance.getNextChainId();
+                                processingTemplate.setChainID(chainID);
+                                LinkedList<Integer> processesForRun = pInstance.getProcessesForRun(runID);
+                                cInstance.addChain(runID, chainID, processesForRun);
+                            }
+                        }
+                    }
                     progressDialog.setRunFinished();
                     try {
                         userPanel.updateRunTable();

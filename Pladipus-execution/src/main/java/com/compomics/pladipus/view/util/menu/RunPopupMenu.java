@@ -5,7 +5,7 @@ import com.compomics.pladipus.core.control.distribution.service.database.dao.imp
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.DeleteOperation;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
@@ -207,7 +207,7 @@ public class RunPopupMenu extends JPopupMenu {
                             progressDialog.increasePrimaryProgressCounter();
                         }
                         dao.setQueued(processesToQueue, true);
-                    } catch (JMSException | NumberFormatException | SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+                    } catch (JMSException | NumberFormatException | SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                         ex.printStackTrace();
                         JOptionPane.showMessageDialog(RunPopupMenu.this,
                                 "Could not launch the selection: " + ex,

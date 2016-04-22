@@ -3,10 +3,9 @@ package com.compomics.pladipus.util;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.DeleteOperation;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
-import com.sun.mail.iap.ConnectionException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class ProcessAction {
                     pDAO.setQueued(processID, true);
                 }
             }
-        } catch (JMSException | SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+        } catch (JMSException | SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
             LOGGER.error("Could not start the selection", ex);
         }
     }

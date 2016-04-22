@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.communication.interpreter.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.XMLInterpreter;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
@@ -49,14 +44,14 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
      * @throws IOException
      * @throws StepLoadingException
      */
-    public static XMLTemplateInterpreter getInstance() throws IOException, StepLoadingException {
+    public static XMLTemplateInterpreter getInstance() throws IOException, ProcessStepInitialisationException {
         if (interpreter == null) {
             interpreter = new XMLTemplateInterpreter();
         }
         return interpreter;
     }
 
-    private XMLTemplateInterpreter() throws IOException, StepLoadingException {
+    private XMLTemplateInterpreter() throws IOException, ProcessStepInitialisationException {
         super();
         super.init();
     }
@@ -97,7 +92,9 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
         Document doc = getDocumentFromXml(XML);
         String templateName = ((Element) doc.getElementsByTagName("template").item(0)).getAttribute("run");
         String userName = ((Element) doc.getElementsByTagName("template").item(0)).getAttribute("user");
+        boolean keepOrder = ((Element) doc.getElementsByTagName("template").item(0)).hasAttribute("chain");
         int priority = 4;
+
         try {
             String priorityString = ((Element) doc.getElementsByTagName("template").item(0)).getAttribute("priority");
             LOGGER.debug("Priority in template : " + priorityString);
@@ -117,7 +114,7 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
         }
         //make a template job item
         template = new PladipusProcessingTemplate(templateName, userName, priority, jobPrerequisite);
-
+        template.setKeepOrder(keepOrder);
         NodeList steps = doc.getElementsByTagName("step");
         for (int temp = 0; temp < steps.getLength(); temp++) {
             Node nNode = steps.item(temp);
@@ -232,8 +229,8 @@ public class XMLTemplateInterpreter extends XMLInterpreter {
     }
 
     /**
-     * Checks whether the configuration file is compatible, throws an error if it
-     * doesn't match the given template
+     * Checks whether the configuration file is compatible, throws an error if
+     * it doesn't match the given template
      *
      * @param template the processing template
      * @param templateConfig the configuration file for the processing template

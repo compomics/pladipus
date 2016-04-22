@@ -5,6 +5,8 @@ import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.runtime.diagnostics.memory.MemoryWarningSystem;
 import com.compomics.pladipus.core.control.util.JarLookupService;
 import com.compomics.pladipus.core.model.enums.AllowedSearchGUIParams;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.SearchGUICheckpoints;
@@ -21,6 +23,7 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.log4j.Logger;
 
@@ -37,7 +40,7 @@ public class SearchGUIStep extends ProcessingStep {
 
     }
 
-    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File searchGuiJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -60,52 +63,56 @@ public class SearchGUIStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
-        File parameterFile = new File(parameters.get("id_params"));
-        File fastaFile = new File(parameters.get("fasta_file"));
-        File real_outputFolder = new File(parameters.get("output_folder"));
-        //update the fasta
-        SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
-        identificationParameters.setFastaFile(fastaFile);
-        SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
+    public boolean doAction() throws PladipusProcessingException, UnspecifiedPladipusException {
+        try {
+            File parameterFile = new File(parameters.get("id_params"));
+            File fastaFile = new File(parameters.get("fasta_file"));
+            File real_outputFolder = new File(parameters.get("output_folder"));
+            //update the fasta
+            SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
+            identificationParameters.setFastaFile(fastaFile);
+            SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
 
-        if (temp_searchGUI_output.exists()) {
-            temp_searchGUI_output.delete();
-        }
-        temp_searchGUI_output.mkdirs();
+            if (temp_searchGUI_output.exists()) {
+                temp_searchGUI_output.delete();
+            }
+            temp_searchGUI_output.mkdirs();
 
-        LOGGER.info("Starting SearchGUI...");
-        //use this variable if you'd run peptideshaker following this classs
+            LOGGER.info("Starting SearchGUI...");
+            //use this variable if you'd run peptideshaker following this classs
 
-        parameters.put("output_folder", temp_searchGUI_output.getAbsolutePath());
-        //add callback notifier for more detailed printouts of the processing
-        CallbackNotifier callbackNotifier = getCallbackNotifier();
-        for (SearchGUICheckpoints aCheckPoint : SearchGUICheckpoints.values()) {
-            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+            parameters.put("output_folder", temp_searchGUI_output.getAbsolutePath());
+            //add callback notifier for more detailed printouts of the processing
+            CallbackNotifier callbackNotifier = getCallbackNotifier();
+            for (SearchGUICheckpoints aCheckPoint : SearchGUICheckpoints.values()) {
+                callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+            }
+            startProcess(getJar(), constructArguments());
+            //storing intermediate results
+            LOGGER.debug("Storing results in " + real_outputFolder);
+            real_outputFolder.mkdirs();
+            File outputFile = new File(real_outputFolder, "searchgui_out.zip");
+            File tempOutput = new File(temp_searchGUI_output, "searchgui_out.zip");
+            //copy as a stream?
+            if (!outputFile.exists()) {
+                outputFile.createNewFile();
+            }
+            try (FileChannel source = new FileInputStream(tempOutput).getChannel();
+                    FileChannel destination = new FileOutputStream(outputFile).getChannel()) {
+                destination.transferFrom(source, 0, source.size());
+            }
+            //  FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
+            //in case of future peptideShaker searches :
+            parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
+            parameters.put("out", real_outputFolder.getAbsolutePath() + "/" + parameterFile.getName() + ".cps");
+            parameters.put("output_folder", real_outputFolder.getAbsolutePath());
+            return true;
+        } catch (IOException | ClassNotFoundException | XMLStreamException | URISyntaxException ex) {
+            throw new PladipusProcessingException(ex);
         }
-        startProcess(getJar(), constructArguments());
-        //storing intermediate results
-        LOGGER.debug("Storing results in " + real_outputFolder);
-        real_outputFolder.mkdirs();
-        File outputFile = new File(real_outputFolder, "searchgui_out.zip");
-        File tempOutput = new File(temp_searchGUI_output, "searchgui_out.zip");
-        //copy as a stream?
-        if (!outputFile.exists()) {
-            outputFile.createNewFile();
-        }
-        try (FileChannel source = new FileInputStream(tempOutput).getChannel();
-                FileChannel destination = new FileOutputStream(outputFile).getChannel()) {
-            destination.transferFrom(source, 0, source.size());
-        }
-        //  FileUtils.copyDirectory(temp_searchGUI_output, real_outputFolder);
-        //in case of future peptideShaker searches : 
-        parameters.put("identification_files", temp_searchGUI_output.getAbsolutePath());
-        parameters.put("out", real_outputFolder.getAbsolutePath() + "/" + parameterFile.getName() + ".cps");
-        parameters.put("output_folder", real_outputFolder.getAbsolutePath());
-        return true;
     }
 
-    public File getJar() throws IOException, XMLStreamException, URISyntaxException {
+    public File getJar() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         //check if this is possible in another way...
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/pladipus/tools");
         toolFolder.mkdirs();

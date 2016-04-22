@@ -5,10 +5,12 @@
  */
 package com.compomics.pladipus.core.control.util;
 
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -124,7 +126,7 @@ public class ZipUtils {
      * @param input the original folder
      * @param output the destination zip file
      */
-    static public void zipFolder(File inputFolder, File zipFile) throws Exception {
+    static public void zipFolder(File inputFolder, File zipFile) throws UnspecifiedPladipusException, IOException {
         if (zipFile.exists()) {
             zipFile.delete();
         }
@@ -137,7 +139,7 @@ public class ZipUtils {
     }
 
     static private void addFileToZip(String path, String srcFile, ZipOutputStream zip)
-            throws Exception {
+            throws UnspecifiedPladipusException, FileNotFoundException, IOException {
         File folder = new File(srcFile);
         if (folder.isDirectory()) {
             addFolderToZip(path, srcFile, zip);
@@ -153,7 +155,7 @@ public class ZipUtils {
     }
 
     static private void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
-            throws Exception {
+            throws UnspecifiedPladipusException, IOException {
         File folder = new File(srcFolder);
 
         for (String fileName : folder.list()) {

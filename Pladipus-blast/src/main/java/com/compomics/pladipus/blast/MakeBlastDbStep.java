@@ -1,16 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.blast;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,19 +21,23 @@ public class MakeBlastDbStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
-        File queryFasta = new File(parameters.get("query"));
-        File dbFasta = new File(parameters.get("db"));
-        String blastType = parameters.get("dbtype");
-        makeBlastDb(blastType, queryFasta, getBlastExecutable());
-        makeBlastDb(blastType, dbFasta, getBlastExecutable());
-        return true;
+    public boolean doAction() throws UnspecifiedPladipusException {
+        try {
+            File queryFasta = new File(parameters.get("query"));
+            File dbFasta = new File(parameters.get("db"));
+            String blastType = parameters.get("dbtype");
+            makeBlastDb(blastType, queryFasta, getBlastExecutable());
+            makeBlastDb(blastType, dbFasta, getBlastExecutable());
+            return true;
+        } catch (IOException | InterruptedException | ExecutionException ex) {
+            throw new UnspecifiedPladipusException(ex);
+        }
     }
 
     private File getBlastExecutable() {
         File makeBlastDb = new File(parameters.get("blast_folder"), "makeblastdb");
         if (!makeBlastDb.exists()) {
-            makeBlastDb = new File(makeBlastDb.getAbsolutePath()+".exe");
+            makeBlastDb = new File(makeBlastDb.getAbsolutePath() + ".exe");
         }
         return makeBlastDb;
     }

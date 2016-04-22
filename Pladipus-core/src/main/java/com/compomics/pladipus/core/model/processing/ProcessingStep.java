@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Kenneth Verheggen
  */
-public abstract class ProcessingStep implements ProcessingExecutable {
+public abstract class ProcessingStep implements ProcessingExecutable,AutoCloseable {
 
     /**
      * The Logger Instance
@@ -85,6 +85,7 @@ public abstract class ProcessingStep implements ProcessingExecutable {
         }
     }
 
+    @Override
     public void close() {
         stopProcess();
         //do other stuff that needs to be done to close this step nicely (close streams etc)

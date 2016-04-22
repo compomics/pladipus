@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.compomics.pladipus.util;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.view.panels.impl.UserPanel;
 import java.io.BufferedReader;
@@ -48,6 +44,8 @@ public class OpenExampleAction {
             if (n > -1) {
                 //load the template from the user_file to set the output folders?
                 PladipusProcessingTemplate template = getTemplateFromResource();
+                //set to keep the order of processing (mainly for testing purposes)
+                template.setKeepOrder(true);
                 template.setUser(loggedInUser);
                 template.setName("Example Run (" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp(System.currentTimeMillis())) + ")");
                 if (n == 1) {
@@ -78,7 +76,7 @@ public class OpenExampleAction {
         }
     }
 
-    private PladipusProcessingTemplate getTemplateFromResource() throws IOException, ParserConfigurationException, StepLoadingException, SAXException {
+    private PladipusProcessingTemplate getTemplateFromResource() throws IOException, ParserConfigurationException, ProcessStepInitialisationException, SAXException {
         try (StringWriter writer = new StringWriter();
                 InputStream inputStream = getClass().getClassLoader().getResource("example/example_template.xml").openStream()) {
             IOUtils.copy(inputStream, writer);

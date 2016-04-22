@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.core.control.util;
 
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,9 +25,9 @@ public class JarLookupService {
      * @param regex the regex to match the file
      * @param searchRoot the root directory to start te search
      * @return a file matching the regex
-     * @throws IOException
+     * @throws UnspecifiedPladipusException
      */
-    public static File lookupFile(String regex, File searchRoot) throws IOException {
+    public static File lookupFile(String regex, File searchRoot) throws UnspecifiedPladipusException {
         if (!searchRoot.isDirectory()) {
             throw new IllegalArgumentException(searchRoot + " is no directory.");
         }
@@ -40,9 +41,9 @@ public class JarLookupService {
             }
         }
         if (matchingFiles.size() > 1) {
-            throw new IOException("There are multiple file candidates (" + matchingFiles.size() + "), please ensure only a single version is present and try again");
+            throw new UnspecifiedPladipusException("There are multiple file candidates (" + matchingFiles.size() + "), please ensure only a single version is present and try again");
         } else if (matchingFiles.isEmpty()) {
-            throw new IOException("There are no matching files present");
+            throw new UnspecifiedPladipusException("There are no matching files present");
         }
         return matchingFiles.get(0);
     }

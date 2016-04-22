@@ -41,6 +41,12 @@ CREATE  TABLE IF NOT EXISTS process_parameters (
   `name` TEXT NOT NULL ,
   `value` TEXT NOT NULL);
 
+CREATE  TABLE IF NOT EXISTS chain_activities (
+  `chain_id` INT(11) NOT NULL,
+  `worker_id` VARCHAR(32) DEFAULT 'none',
+  `process_id` INT(11) NOT NULL ,
+CONSTRAINT chain_process_id PRIMARY KEY (chain_id,process_id));
+
 INSERT INTO roles(role_id,ROLE) VALUES(1,'ADMIN');
 INSERT INTO roles(role_id,ROLE) VALUES(2,'USER');
 

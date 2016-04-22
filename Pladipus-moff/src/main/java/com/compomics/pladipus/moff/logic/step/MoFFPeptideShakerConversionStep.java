@@ -3,6 +3,8 @@ package com.compomics.pladipus.moff.logic.step;
 import com.compomics.moff.gui.control.util.PSOutputParser;
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import com.compomics.pladipus.search.processsteps.PeptideShakerStep;
@@ -61,7 +63,7 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
 
     }
 
-    private File prepareReportFile(File inputFile) throws IOException, XMLStreamException, URISyntaxException {
+    private File prepareReportFile(File inputFile) throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File reportFile = inputFile;
         this.outputFolder = new File(inputFile.getParentFile().getAbsolutePath() + "/reports");
         File tempFolder = new File(outputFolder, "temp" + System.currentTimeMillis());
@@ -128,14 +130,18 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
-        inputFile = new File(parameters.get("ps_output"));
-        File reportFile = prepareReportFile(inputFile);
-        moffFile = new File(reportFile.getAbsolutePath() + ".moff.tsv");
-        PSOutputParser.convertReport(reportFile, moffFile);
-        clearDataFolder();
-        LOGGER.info("Conversion completed");
-        return true;
+    public boolean doAction() throws UnspecifiedPladipusException, PladipusProcessingException {
+        try {
+            inputFile = new File(parameters.get("ps_output"));
+            File reportFile = prepareReportFile(inputFile);
+            moffFile = new File(reportFile.getAbsolutePath() + ".moff.tsv");
+            PSOutputParser.convertReport(reportFile, moffFile);
+            clearDataFolder();
+            LOGGER.info("Conversion completed");
+            return true;
+        } catch (IOException | XMLStreamException | URISyntaxException ex) {
+            throw new PladipusProcessingException(ex);
+        }
     }
 
     @Override

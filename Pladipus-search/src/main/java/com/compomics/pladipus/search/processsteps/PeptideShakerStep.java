@@ -8,6 +8,8 @@ import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerParams;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerReportParams;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerCheckPoints;
@@ -20,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -39,7 +42,7 @@ public class PeptideShakerStep extends ProcessingStep {
 
     }
 
-    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File peptideShakerJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -84,59 +87,65 @@ public class PeptideShakerStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
-        LOGGER.info("Running Peptide Shaker");
-        File peptideShakerJar = getJar();
-        File realOutput = new File(parameters.get("output_folder"));
-        File temporaryOutput = new File(temp_peptideshaker_output, realOutput.getName());
-        if (temp_peptideshaker_output.exists()) {
-            for (File aFile : temp_peptideshaker_output.listFiles()) {
-                try {
-                    if (!aFile.isDirectory()) {
-                        aFile.delete();
-                    } else {
-                        FileUtils.deleteDirectory(aFile);
+    public boolean doAction() throws PladipusProcessingException, UnspecifiedPladipusException {
+        try {
+            LOGGER.info("Running Peptide Shaker");
+            File peptideShakerJar = getJar();
+            File realOutput = new File(parameters.get("output_folder"));
+            File temporaryOutput = new File(temp_peptideshaker_output, realOutput.getName());
+            if (temp_peptideshaker_output.exists()) {
+                for (File aFile : temp_peptideshaker_output.listFiles()) {
+                    try {
+                        if (!aFile.isDirectory()) {
+                            aFile.delete();
+                        } else {
+                            FileUtils.deleteDirectory(aFile);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.warn(e);
                     }
-                } catch (Exception e) {
-                    LOGGER.warn(e);
                 }
             }
+            temporaryOutput.mkdirs();
+            String experiment = "output";
+            
+            if (parameters.containsKey("experiment")) {
+                experiment = parameters.get("experiment");
+            }
+            
+            String sample = "respin";
+            if (parameters.containsKey("sample")) {
+                sample = parameters.get("sample");
+            }
+            
+            String replicate = "0";
+            if (parameters.containsKey("replicate")) {
+                replicate = parameters.get("replicate");
+            }
+            
+            if (parameters.containsKey("output_folder")) {
+                temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + "_" + sample + "_" + replicate + ".cpsx");
+                parameters.put("out", temp_peptideshaker_cps.getAbsolutePath());
+            }
+            File real_output_folder = new File(parameters.get("output_folder"));
+            
+            List<String> constructArguments = constructArguments();
+            //add callback notifier for more detailed printouts of the processing
+            CallbackNotifier callbackNotifier = getCallbackNotifier();
+            for (PeptideShakerCheckPoints aCheckPoint : PeptideShakerCheckPoints.values()) {
+                callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+            }
+            startProcess(peptideShakerJar, constructArguments);
+            cleanupAndSave(real_output_folder);
+            return true;
+        } catch (IOException | XMLStreamException | URISyntaxException ex) {
+           throw new PladipusProcessingException(ex);
+        } catch (Exception ex) {
+             throw new UnspecifiedPladipusException(ex);
         }
-        temporaryOutput.mkdirs();
-        String experiment = "output";
-
-        if (parameters.containsKey("experiment")) {
-            experiment = parameters.get("experiment");
-        }
-
-        String sample = "respin";
-        if (parameters.containsKey("sample")) {
-            sample = parameters.get("sample");
-        }
-
-        String replicate = "0";
-        if (parameters.containsKey("replicate")) {
-            replicate = parameters.get("replicate");
-        }
-
-        if (parameters.containsKey("output_folder")) {
-            temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + "_" + sample + "_" + replicate + ".cpsx");
-            parameters.put("out", temp_peptideshaker_cps.getAbsolutePath());
-        }
-        File real_output_folder = new File(parameters.get("output_folder"));
-
-        List<String> constructArguments = constructArguments();
-        //add callback notifier for more detailed printouts of the processing
-        CallbackNotifier callbackNotifier = getCallbackNotifier();
-        for (PeptideShakerCheckPoints aCheckPoint : PeptideShakerCheckPoints.values()) {
-            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
-        }
-        startProcess(peptideShakerJar, constructArguments);
-        cleanupAndSave(real_output_folder);
-        return true;
     }
 
-    public File getJar() throws IOException, XMLStreamException, URISyntaxException {
+    public File getJar() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File temp = new File(parameters.get("ps_folder"));
         if (!temp.exists()) {
             LOGGER.info("Downloading latest PeptideShaker version...");

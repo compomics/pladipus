@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.service;
 
+import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ChainDAO;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.CreateOperation;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.DeleteOperation;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.sun.mail.iap.ConnectionException;
@@ -78,16 +74,22 @@ public class RunService {
     // processing related methods
     /**
      *
-     * @param runName the title of the run
-     * @param user the owner of the run
      * @param template the template that will be used to launch tasks
      * @return the newly created run ID
      * @throws SQLException
      */
     public int createRun(PladipusProcessingTemplate template) throws SQLException {
-        try (RunDAO dao = RunDAO.getInstance()) {
-            return dao.createRun(template);
+        int runID = -1;
+        try (RunDAO dao = RunDAO.getInstance(); ChainDAO cdao = ChainDAO.getInstance(); ProcessDAO pdao = ProcessDAO.getInstance()) {
+            runID = dao.createRun(template);
+            if (template.isKeepOrder() && runID != -1) {
+                int nextChainId = cdao.getNextChainId();
+                template.setChainID(nextChainId);
+                LinkedList<Integer> processesForRun = pdao.getProcessesForRun(runID);
+                cdao.addChain(runID, nextChainId, processesForRun);
+            }
         }
+        return runID;
     }
 
     /**
@@ -109,14 +111,12 @@ public class RunService {
         }
     }
 
-       public boolean runExists(int runID) throws SQLException {
+    public boolean runExists(int runID) throws SQLException {
         try (RunDAO dao = RunDAO.getInstance()) {
             return dao.runExists(runID);
         }
     }
-    
-    
-    
+
     /**
      *
      * @param runID the ID where current jobs should be added to
@@ -124,7 +124,7 @@ public class RunService {
      * jobs
      * @throws SQLException
      */
-    public void addToRun(int runID, List<HashMap<String, String>> parameterList) throws SQLException, IOException, JMSException, SAXException, ParserConfigurationException, StepLoadingException, ConnectionException {
+    public void addToRun(int runID, List<HashMap<String, String>> parameterList) throws SQLException, IOException, JMSException, SAXException, ParserConfigurationException, ProcessStepInitialisationException, ConnectionException {
         LinkedList<Integer> addToRun;
         try (RunDAO dao = RunDAO.getInstance()) {
             addToRun = dao.addToRun(runID, parameterList);
@@ -152,10 +152,10 @@ public class RunService {
      * @throws SAXException
      * @throws IOException
      * @throws ParserConfigurationException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
     public PladipusProcessingTemplate getTemplateForRun(int runID) throws SQLException, IOException,
-            StepLoadingException, ParserConfigurationException, SAXException {
+            ProcessStepInitialisationException, ParserConfigurationException, SAXException {
         try (RunDAO dao = RunDAO.getInstance()) {
             return dao.getTemplateForRun(runID);
         }
@@ -220,6 +220,7 @@ public class RunService {
 
     /**
      * Removes all run, job and parameter information from the database
+     *
      * @throws SQLException
      */
     public void truncate() throws SQLException {

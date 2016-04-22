@@ -3,6 +3,8 @@ package com.compomics.pladipus.search.processsteps;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.enums.AllowedPeptideShakerFollowUpParams;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import java.io.File;
@@ -13,6 +15,8 @@ import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
 
@@ -29,7 +33,7 @@ public class PeptideShakerFollowUpStep extends PeptideShakerStep {
 
     }
 
-    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException {
+    private List<String> constructArguments() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         if (temp_peptideshaker_output.exists()) {
             FileUtils.deleteDirectory(temp_peptideshaker_output);
         }
@@ -54,18 +58,22 @@ public class PeptideShakerFollowUpStep extends PeptideShakerStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
-        List<String> constructArguments = constructArguments();
-        File peptideShakerJar = getJar();
-        //add callback notifier for more detailed printouts of the processing
-        CallbackNotifier callbackNotifier = getCallbackNotifier();
-        for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
-            callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+    public boolean doAction() throws PladipusProcessingException, UnspecifiedPladipusException {
+        try {
+            List<String> constructArguments = constructArguments();
+            File peptideShakerJar = getJar();
+            //add callback notifier for more detailed printouts of the processing
+            CallbackNotifier callbackNotifier = getCallbackNotifier();
+            for (PeptideShakerReportCheckPoints aCheckPoint : PeptideShakerReportCheckPoints.values()) {
+                callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
+            }
+            startProcess(peptideShakerJar, constructArguments);
+            //run peptideShaker with the existing files
+            cleanupAndSave();
+            return true;
+        } catch (IOException | XMLStreamException | URISyntaxException ex) {
+            throw new PladipusProcessingException(ex);
         }
-        startProcess(peptideShakerJar, constructArguments);
-        //run peptideShaker with the existing files
-        cleanupAndSave();
-        return true;
     }
 
     private void cleanupAndSave() throws IOException {

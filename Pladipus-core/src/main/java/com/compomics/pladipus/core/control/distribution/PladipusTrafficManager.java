@@ -9,7 +9,8 @@ import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsP
 import com.compomics.pladipus.core.control.distribution.service.queue.impl.CompomicsDurableConsumer;
 import com.compomics.pladipus.core.control.distribution.service.queue.impl.CompomicsSessionConsumer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.QueryOperation;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.PladipusTrafficException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.sun.mail.iap.ConnectionException;
@@ -86,9 +87,9 @@ public class PladipusTrafficManager {
      * @throws SAXException
      * @throws SQLException
      * @throws JMSException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
-    public void pushToPladipus(PladipusProcessingTemplate convertXMLtoTemplate, File jobConfigurationFile) throws IOException, AuthenticationException, ParserConfigurationException, SAXException, SQLException, JMSException, StepLoadingException, ConnectionException {
+    public void pushToPladipus(PladipusProcessingTemplate convertXMLtoTemplate, File jobConfigurationFile) throws IOException, AuthenticationException, ParserConfigurationException, SAXException, SQLException, JMSException, ProcessStepInitialisationException, ConnectionException {
         if (!jobConfigurationFile.exists()) {
             throw new IllegalArgumentException("Job configuration file does not exist!");
         }
@@ -124,9 +125,9 @@ public class PladipusTrafficManager {
      * @throws SAXException
      * @throws SQLException
      * @throws JMSException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
-    public int pushToPladipus(File templateFile, File jobConfigurationFile) throws IOException, AuthenticationException, ParserConfigurationException, SAXException, SQLException, JMSException, StepLoadingException, ConnectionException {
+    public int pushToPladipus(File templateFile, File jobConfigurationFile) throws IOException, AuthenticationException, ParserConfigurationException, SAXException, SQLException, JMSException, ProcessStepInitialisationException, ConnectionException {
 
         if (!templateFile.exists()) {
             throw new IllegalArgumentException("Template file does not exist !");
@@ -178,9 +179,9 @@ public class PladipusTrafficManager {
      * @throws JMSException
      * @throws SQLException
      * @throws ParserConfigurationException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
-    public void pushFromDatabase(LinkedList<Integer> processesForRun) throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, StepLoadingException {
+    public void pushFromDatabase(LinkedList<Integer> processesForRun) throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, ProcessStepInitialisationException {
         LOGGER.info("Pushing " + processesForRun.size() + " jobs to Pladipus...");
         ProcessService pService = ProcessService.getInstance();
         for (int aProcessID : processesForRun) {
@@ -202,9 +203,9 @@ public class PladipusTrafficManager {
      * @throws JMSException
      * @throws SQLException
      * @throws ParserConfigurationException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
-    public void pushUnqueuedFromDatabase(String username) throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, StepLoadingException {
+    public void pushUnqueuedFromDatabase(String username) throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, ProcessStepInitialisationException {
         ProcessService pService = ProcessService.getInstance();
         LinkedList<Integer> unqueuedProcesses = pService.getUnqueuedProcesses(username);
         LOGGER.info("Pushing " + unqueuedProcesses.size() + " jobs to Pladipus...");
@@ -226,9 +227,9 @@ public class PladipusTrafficManager {
      * @throws JMSException
      * @throws SQLException
      * @throws ParserConfigurationException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
-    public void pushAllUnqueuedFromDatabase() throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, StepLoadingException {
+    public void pushAllUnqueuedFromDatabase() throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, ProcessStepInitialisationException {
         ProcessService pService = ProcessService.getInstance();
         LinkedList<Integer> unqueuedProcesses = pService.getUnqueuedProcesses();
         LOGGER.info("Pushing " + unqueuedProcesses.size() + " jobs to Pladipus...");
@@ -245,15 +246,13 @@ public class PladipusTrafficManager {
      *
      * @throws Exception
      */
-    public void pullFromPladipus() throws Exception {
+    public void pullFromPladipus() throws PladipusTrafficException {
         try {
             pullUpdates();
             CompomicsSessionConsumer compomicsSessionConsumer = new CompomicsSessionConsumer();
             compomicsSessionConsumer.run();
         } catch (IOException | JMSException ex) {
-            Exception e = new UnknownHostException("Could not see the ActiveMQ service");
-            e.setStackTrace(ex.getStackTrace());
-            throw e;
+            throw new PladipusTrafficException("Could not see the ActiveMQ service");
         }
     }
 
@@ -262,7 +261,7 @@ public class PladipusTrafficManager {
      *
      * @throws Exception
      */
-    public void pullUpdates() throws Exception {
+    public void pullUpdates() throws JMSException, IOException {
         CompomicsDurableConsumer compomicsSessionConsumer = new CompomicsDurableConsumer(CompomicsQueue.UPDATE);
         compomicsSessionConsumer.run();
     }

@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.compomics</groupId>
         <artifactId>Pladipus</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
     <artifactId>Pladipus-moff</artifactId>
     <packaging>jar</packaging>
@@ -99,6 +99,7 @@
                     </outputDirectory>
                 </configuration>
             </plugin>
+            
         </plugins>
     </build>
     <properties>
@@ -133,13 +134,13 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>Pladipus-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>Pladipus-search</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <type>jar</type>
         </dependency>
         <dependency>

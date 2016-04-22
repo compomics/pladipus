@@ -2,6 +2,8 @@ package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -10,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
@@ -36,21 +39,29 @@ public class SearchSetupStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws PladipusProcessingException {
         if (!parameters.containsKey("skip_cleaning") && tempResources.exists()) {
             for (File aFile : tempResources.listFiles()) {
                 if (aFile.exists()) {
                     if (aFile.isFile()) {
                         aFile.delete();
                     } else {
-                        FileUtils.deleteDirectory(aFile);
+                        try {
+                            FileUtils.deleteDirectory(aFile);
+                        } catch (IOException ex) {
+                            throw new PladipusProcessingException(ex);
+                        }
                     }
                 }
             }
         } else {
             tempResources.mkdirs();
         }
-        initialiseInputFiles();
+        try {
+            initialiseInputFiles();
+        } catch (Exception ex) {
+            throw new PladipusProcessingException(ex);
+        }
         return true;
     }
 
@@ -132,7 +143,7 @@ public class SearchSetupStep extends ProcessingStep {
         return "Initialisation of the search process";
     }
 
-    public IdentificationParameters updateAlgorithmSettings(SearchParameters searchParameters, File fasta) throws URIException, IOException, XMLStreamException, URISyntaxException {
+    public IdentificationParameters updateAlgorithmSettings(SearchParameters searchParameters, File fasta) throws URIException, IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         System.out.println("Updating the algorithm settings and setting the fasta file...");
         searchParameters.setFastaFile(fasta);
         SpeciesFactory.getInstance().initiate(new SearchGUIStep().getJar().getParentFile().getAbsolutePath());

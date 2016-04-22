@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.communication.mail.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.mail.ReportGenerator;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import java.io.IOException;
@@ -52,7 +47,7 @@ public class StandardReportGenerator implements ReportGenerator {
                 stepCounter++;
             }
             
-        } catch (StepLoadingException | ParserConfigurationException | SAXException ex) {
+        } catch (ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
             LOGGER.error(ex);
         }
         return message.toString();

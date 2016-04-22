@@ -2,7 +2,7 @@ package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.sun.mail.iap.ConnectionException;
 import java.io.File;
@@ -209,7 +209,7 @@ public class ProcessImportDialog extends javax.swing.JDialog {
             File configFile = new File(tfConfig.getText());
             trafficManager.pushToPladipus(templateForRun, configFile);
             this.dispose();
-        } catch (ConnectionException | SQLException | IOException | StepLoadingException | ParserConfigurationException |
+        } catch (ConnectionException | SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException |
                 SAXException | AuthenticationException | JMSException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this,

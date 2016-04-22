@@ -1,16 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.blast;
 
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,11 +21,15 @@ public class BlastStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws UnspecifiedPladipusException {
         File queryFasta = new File(parameters.get("query"));
         File dbFasta = new File(parameters.get("db"));
         File outputFile = new File(parameters.get("output"));
-        executeProteinBlast(queryFasta, dbFasta, outputFile, getBlastExecutable());
+        try {
+            executeProteinBlast(queryFasta, dbFasta, outputFile, getBlastExecutable());
+        } catch (IOException | InterruptedException | ExecutionException ex) {
+            throw new UnspecifiedPladipusException(ex);
+        }
         return true;
     }
 //blastp -query C:\Users\Kenneth\Desktop\PladipusFTP\data\fasta\HUMAN_concatenated_target_decoy.fasta -db C:\Users\Kenneth\Desktop\PladipusFTP\data\fasta\HUMAN_concatenated_target_decoy.fasta
@@ -50,7 +52,7 @@ public class BlastStep extends ProcessingStep {
         commands.add("6");
         commands.add("-qcov_hsp_perc");
         commands.add("100");
-         new ProcessingEngine().startProcess(executable, commands, getCallbackNotifier());
+        new ProcessingEngine().startProcess(executable, commands, getCallbackNotifier());
         //copy the output to the correct folder?--> text files are fast, no need
     }
 

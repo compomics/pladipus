@@ -7,10 +7,14 @@ package com.compomics.pladipus.core.control.distribution.service.queue.jmx.opera
 
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.QueueOperation;
+import com.compomics.pladipus.core.model.exception.PladipusTrafficException;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.sun.mail.iap.ConnectionException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.management.MalformedObjectNameException;
 
 /**
@@ -28,10 +32,14 @@ public class DeleteOperation extends QueueOperation {
      *
      * @param queue the target queue
      * @throws MalformedObjectNameException
-     * @throws Exception
+     *
      */
-    public void purgeQueue(CompomicsQueue queue) throws MalformedObjectNameException, Exception {
-        cache.get(queue).purge();
+    public void purgeQueue(CompomicsQueue queue) throws PladipusTrafficException, MalformedObjectNameException {
+        try {
+            cache.get(queue).purge();
+        } catch (Exception ex) {
+            throw new PladipusTrafficException(ex);
+        }
     }
 
     /**
@@ -41,10 +49,15 @@ public class DeleteOperation extends QueueOperation {
      * @param processID the specific job ID
      * @return the amount of messages removed
      * @throws MalformedObjectNameException
-     * @throws Exception
      */
-    public int deleteJobFromQueue(CompomicsQueue queue, int processID) throws MalformedObjectNameException, Exception {
-        return cache.get(queue).removeMatchingMessages("JMSCorrelationID = '" + processID + "'");
+    public int deleteJobFromQueue(CompomicsQueue queue, int processID) throws MalformedObjectNameException, PladipusTrafficException {
+        int removeMatchingMessages = 0;
+        try {
+            removeMatchingMessages = cache.get(queue).removeMatchingMessages("JMSCorrelationID = '" + processID + "'");
+        } catch (Exception ex) {
+            throw new PladipusTrafficException(ex);
+        }
+        return removeMatchingMessages;
     }
 
     /**
@@ -54,9 +67,8 @@ public class DeleteOperation extends QueueOperation {
      * @param processIDs
      * @return amount of removed processes
      * @throws MalformedObjectNameException
-     * @throws Exception
      */
-    public int deleteJobsFromQueue(CompomicsQueue queue, Collection<Integer> processIDs) throws MalformedObjectNameException, Exception {
+    public int deleteJobsFromQueue(CompomicsQueue queue, Collection<Integer> processIDs) throws MalformedObjectNameException, PladipusTrafficException {
         int deleteCounter = 0;
         for (int processID : processIDs) {
             deleteCounter += deleteJobFromQueue(queue, processID);
@@ -71,9 +83,9 @@ public class DeleteOperation extends QueueOperation {
      * @param runID the target run to delete
      * @return
      * @throws MalformedObjectNameException
-     * @throws Exception
+     * @throws java.sql.SQLException
      */
-    public int deleteRunFromQueue(CompomicsQueue queue, int runID) throws MalformedObjectNameException, Exception {
+    public int deleteRunFromQueue(CompomicsQueue queue, int runID) throws MalformedObjectNameException, PladipusTrafficException, SQLException {
         return deleteJobsFromQueue(queue, ProcessDAO.getInstance().getProcessesForRun(runID));
     }
 

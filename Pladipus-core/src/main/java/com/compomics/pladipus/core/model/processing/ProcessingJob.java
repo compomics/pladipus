@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.model.processing;
 
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
@@ -70,6 +65,10 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
      * this task
      */
     private final Prerequisite jobPrerequisite;
+    /**
+     * The chain ID for this run (in case of sequential jobs)
+     */
+    private int chainID = -1;
 
     /**
      *
@@ -198,6 +197,7 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
             rootElement.setAttribute("id", String.valueOf(getId()));
             rootElement.setAttribute("user", getUser());
             rootElement.setAttribute("run", getRun());
+            rootElement.setAttribute("chain", String.valueOf(getChainID()));
             doc.appendChild(rootElement);
 
             Element prerequisites = doc.createElement("prerequisite");
@@ -261,11 +261,22 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
 
     @Override
     public boolean add(ProcessingStep e) {
-        if(e.getParameters()==null){
-        e.setParameters(processingParameters);
+        if (e.getParameters() == null) {
+            e.setParameters(processingParameters);
         }
         super.add(e);
         return true;
     }
 
+    public int getChainID() {
+        return chainID;
+    }
+
+    public boolean isMandatoryOrderCheck() {
+        return chainID != -1;
+    }
+
+    public void setIdChain(int chainID) {
+        this.chainID = chainID;
+    }
 }

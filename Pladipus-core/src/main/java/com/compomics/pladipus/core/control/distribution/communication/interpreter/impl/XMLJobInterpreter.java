@@ -1,6 +1,8 @@
 package com.compomics.pladipus.core.control.distribution.communication.interpreter.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.XMLInterpreter;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
+import com.compomics.pladipus.core.model.exception.XMLInterpreterException;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
@@ -26,11 +28,12 @@ import org.xml.sax.SAXException;
  * @author Kenneth Verheggen
  */
 public class XMLJobInterpreter extends XMLInterpreter {
+
     /**
      * The logging instance
      */
     private static final Logger LOGGER = Logger.getLogger(XMLJobInterpreter.class);
-/**
+    /**
      * The Default job interpreter instance
      */
     private static XMLJobInterpreter interpreter;
@@ -38,16 +41,17 @@ public class XMLJobInterpreter extends XMLInterpreter {
     /**
      *
      * @return an instance of a XMLJobInterpreter
-     * @throws Exception
+     * @throws XMLInterpreterException
+     * @throws java.io.IOException
      */
-    public static XMLJobInterpreter getInstance() throws Exception {
+    public static XMLJobInterpreter getInstance() throws XMLInterpreterException, IOException, ProcessStepInitialisationException {
         if (interpreter == null) {
             interpreter = new XMLJobInterpreter();
         }
         return interpreter;
     }
 
-    private XMLJobInterpreter() throws Exception {
+    private XMLJobInterpreter() throws XMLInterpreterException, IOException, ProcessStepInitialisationException {
         super();
         super.init();
     }
@@ -58,7 +62,7 @@ public class XMLJobInterpreter extends XMLInterpreter {
      * @return the processingjob representation of the XML file
      * @throws FileNotFoundException
      */
-    public ProcessingJob convertXMLtoJob(File XML) throws Exception {
+    public ProcessingJob convertXMLtoJob(File XML) throws XMLInterpreterException, SAXException, IOException, Exception {
         StringBuilder xmlFromFile = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(XML))) {
             String line = br.readLine();
@@ -81,7 +85,7 @@ public class XMLJobInterpreter extends XMLInterpreter {
      * @throws org.xml.sax.SAXException
      * @throws java.io.IOException
      */
-    public ProcessingJob convertXMLtoJob(String XML) throws ParserConfigurationException, SAXException, IOException, Exception {
+    public ProcessingJob convertXMLtoJob(String XML) throws ParserConfigurationException, SAXException, IOException, ProcessStepInitialisationException {
         LOGGER.info("Converting instructions to java code...");
         Document doc = getDocumentFromXml(XML);
         //option   Document doc = getDocumentFromXml(XML);al, but recommended
@@ -91,6 +95,9 @@ public class XMLJobInterpreter extends XMLInterpreter {
         String id = ((Element) doc.getElementsByTagName("job").item(0)).getAttribute("id");
 
         String run = ((Element) doc.getElementsByTagName("job").item(0)).getAttribute("run");
+
+        String chain = ((Element) doc.getElementsByTagName("job").item(0)).getAttribute("chain");
+
         LOGGER.debug(run + "(" + id + ") was requested by " + user);
 
         HashMap<String, String> parameterMap = new HashMap<>();
@@ -114,6 +121,13 @@ public class XMLJobInterpreter extends XMLInterpreter {
         parameterMap.put("user", user);
         parameterMap.put("processID", id);
         ProcessingJob job = new ProcessingJob(parameterMap, user, Integer.parseInt(id), user + "_" + id, run, jobPrerequisite);
+        //add the chain to which this job belongs
+        int chainid = -1;
+        if (chain != null && !chain.isEmpty()) {
+            chainid = Integer.parseInt(chain);
+        }
+        job.setIdChain(chainid);
+
         //add the standard initialisingStep
         //download required
         if (parameterMap.containsKey("required")) {
@@ -135,7 +149,7 @@ public class XMLJobInterpreter extends XMLInterpreter {
         return job;
     }
 
-    private void downloadRequiredProjects(String remoteProjectFolder) throws IOException, Exception {
+    private void downloadRequiredProjects(String remoteProjectFolder) throws IOException, ProcessStepInitialisationException {
         //this can be a list of multiple later?...
         //TODO replace this by URI's
         if (remoteProjectFolder != null && !remoteProjectFolder.isEmpty()) {

@@ -59,6 +59,14 @@ public class PladipusProcessingTemplate {
      * the run priority. This defaults to 4 which is "below average"
      */
     private int priority = 4;
+    /**
+     * the id of the chain that this run will belong to
+     */
+    private int chainID = -1;
+    /**
+     * boolean indicating the order of jobs has to be respected
+     */
+    private boolean keepOrder;
 
     public PladipusProcessingTemplate(String name, String user, int priority) {
         this.name = name;
@@ -345,6 +353,7 @@ public class PladipusProcessingTemplate {
             rootElement.setAttribute("run", getName());
             rootElement.setAttribute("id", String.valueOf(processID));
             rootElement.setAttribute("priority", String.valueOf(getPriority()));
+            rootElement.setAttribute("chain", String.valueOf(getChainID()));
             doc.appendChild(rootElement);
             Element steps = doc.createElement("steps");
 
@@ -390,6 +399,23 @@ public class PladipusProcessingTemplate {
      */
     public void clearProcessSteps() {
         processingSteps.clear();
+    }
+
+    public void setChainID(int chainID) {
+        this.chainID = chainID;
+    }
+
+    public int getChainID() {
+        //check if it's in the db?
+        return chainID;
+    }
+
+    public void setKeepOrder(boolean keepOrder) {
+        this.keepOrder = keepOrder;
+    }
+
+    public boolean isKeepOrder() {
+        return keepOrder;
     }
 
 }

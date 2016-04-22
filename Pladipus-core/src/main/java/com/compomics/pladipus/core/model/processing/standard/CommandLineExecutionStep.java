@@ -1,13 +1,11 @@
 package com.compomics.pladipus.core.model.processing.standard;
 
-import com.compomics.pladipus.core.control.engine.ProcessingEngine;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -23,7 +21,7 @@ public class CommandLineExecutionStep extends ProcessingStep {
     private String[] args;
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws PladipusProcessingException {
         String executable = System.getProperty("user.home");
         if (parameters != null) {
             executable = parameters.getOrDefault("executable", executable);

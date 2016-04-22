@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.service.database.dao.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLJobInterpreter;
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
 import com.compomics.pladipus.core.control.distribution.service.database.AutoCloseableDBConnection;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.PladipusDAO;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
+import com.compomics.pladipus.core.model.exception.XMLInterpreterException;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.processing.templates.ProcessingParameterTemplate;
@@ -24,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -109,9 +106,27 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws SQLException
      */
     public void increaseFailCount(int processID) throws SQLException {
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=failcount+1,stepcount=0 WHERE process_id=?")) {
-
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
+                ChainDAO cdao = ChainDAO.getInstance();
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=failcount+1,stepcount=0 WHERE process_id=?")) {
+            cdao.resetOnChain(processID);
             updateRun.setInt(1, processID);
+            updateRun.executeUpdate();
+            c.commit();
+        }
+    }
+
+    /**
+     * Adds an instance to a failcount of a proccessID
+     *
+     * @param processID the failed processID
+     * @throws SQLException
+     */
+    public void setFailCount(int processID, int fails) throws SQLException {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
+                  PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=?,stepcount=0 WHERE process_id=?")) {
+             updateRun.setInt(1, fails);
+            updateRun.setInt(2, processID);
             updateRun.executeUpdate();
             c.commit();
         }
@@ -193,17 +208,17 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @param processID the processID
      * @return returns a processingJob object for this processID
      * @throws SQLException
-     * @throws SAXException
-     * @throws IOException
-     * @throws Exception
      */
-    public ProcessingJob retrieveProcessingJob(int processID) throws SQLException, SAXException, IOException, Exception {
-        return XMLJobInterpreter.getInstance().convertXMLtoJob(getXMLForProcess(processID));
+    public ProcessingJob retrieveProcessingJob(int processID) throws XMLInterpreterException, ProcessStepInitialisationException, SQLException {
+        try {
+            return XMLJobInterpreter.getInstance().convertXMLtoJob(getXMLForProcess(processID));
+        } catch (IOException | ParserConfigurationException | SAXException ex) {
+            throw new XMLInterpreterException(ex);
+        }
     }
 
     /**
      *
-     * @param runID
      * @return a list or processes for this parent run
      * @throws SQLException
      */
@@ -425,11 +440,17 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void setDone(Integer aProcessID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET complete = ? WHERE process_id=?")) {
-
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET complete = ? WHERE process_id=?");
+                PreparedStatement updateChain = c.prepareStatement("UPDATE chain_activities SET wait = ? WHERE process_id=?")) {
+            //update the run
             updateRun.setBoolean(1, true);
             updateRun.setInt(2, aProcessID);
             updateRun.executeUpdate();
+            //update the chain
+            updateChain.setBoolean(1, false);
+            updateChain.setInt(2, aProcessID);
+            updateChain.executeUpdate();
+            //commit the changes
             c.commit();
         }
 
@@ -518,8 +539,8 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws ParserConfigurationException
      * @throws StepLoadingException
      */
-    public Collection<ProcessingJob> getJobsForRun(PladipusProcessingTemplate template, int run_id, boolean queued, boolean complete) throws SQLException, SAXException, IOException, ParserConfigurationException, StepLoadingException {
-        LinkedList<ProcessingJob> processingJob = new LinkedList<>();
+    public Collection<ProcessingJob> getJobsForRun(PladipusProcessingTemplate template, int run_id, boolean queued, boolean complete) throws SQLException, SAXException, IOException, ParserConfigurationException, ProcessStepInitialisationException {
+        LinkedList<ProcessingJob> processingJobs = new LinkedList<>();
         TreeMap<Integer, HashMap<String, String>> processParameterMap = new TreeMap<>();
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
                 PreparedStatement fillTemplateXMLQuery = c.prepareStatement(
@@ -542,7 +563,12 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
         for (Map.Entry<Integer, HashMap<String, String>> aProcessID : processParameterMap.entrySet()) {
             try {
                 ProcessingJob convertXMLtoJob = XMLJobInterpreter.getInstance().convertXMLtoJob(template.toJobXML(aProcessID.getKey()));
-
+                try (ChainDAO cdao = ChainDAO.getInstance()) {
+                    int chainIdForProcess = cdao.getChainIdForProcess((int) convertXMLtoJob.getId());
+                    if (chainIdForProcess != -1) {
+                        convertXMLtoJob.setIdChain(chainIdForProcess);
+                    }
+                }
                 //don't forget run parameters !
                 HashMap<String, String> parameterMap = aProcessID.getValue();
                 TreeMap<String, ProcessingParameterTemplate> runParameters = template.getRunParameters();
@@ -550,13 +576,13 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
                     parameterMap.put(parameter.getName(), parameter.getValue());
                 }
                 convertXMLtoJob.setProcessingParameters(parameterMap);
-                processingJob.add(convertXMLtoJob);
+                processingJobs.add(convertXMLtoJob);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 LOGGER.error(ex);
             }
         }
-        return processingJob;
+        return processingJobs;
     }
 
     /**
@@ -571,7 +597,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws ParserConfigurationException
      * @throws StepLoadingException
      */
-    public String getXMLForProcess(PladipusProcessingTemplate template, int processID) throws SQLException, SAXException, IOException, ParserConfigurationException, StepLoadingException {
+    public String getXMLForProcess(PladipusProcessingTemplate template, int processID) throws SQLException, SAXException, IOException, ParserConfigurationException, ProcessStepInitialisationException {
         String toJobXML = null;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
                 PreparedStatement fillTemplateXMLQuery = c.prepareStatement("SELECT name,value FROM process_parameters WHERE process_id=?")) {
@@ -599,7 +625,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws ParserConfigurationException
      * @throws StepLoadingException
      */
-    public String getXMLForProcess(int processID) throws SQLException, SAXException, IOException, ParserConfigurationException, StepLoadingException {
+    public String getXMLForProcess(int processID) throws SQLException, SAXException, IOException, ParserConfigurationException, ProcessStepInitialisationException {
         String toJobXML = null;
         //XML STRING
         PladipusProcessingTemplate templateXML;
@@ -618,6 +644,13 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
                     ResultSet parameterResultSet = fillTemplateXMLQuery.executeQuery();
                     while (parameterResultSet.next() & !parameterResultSet.isClosed()) {
                         templateXML.addJobParameter(new ProcessingParameterTemplate(parameterResultSet.getString("name"), parameterResultSet.getString("value")));
+                    }
+                    try ( //check if it's a chained process
+                            ChainDAO cdao = ChainDAO.getInstance()) {
+                        int chainIdForProcess = cdao.getChainIdForProcess(processID);
+                        if (chainIdForProcess != -1) {
+                            templateXML.setChainID(chainIdForProcess);
+                        }
                     }
                     toJobXML = templateXML.toJobXML(processID);
                 }
@@ -693,10 +726,14 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      */
     public void resetProcess(int processID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
-                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=0,stepcount=0,state='Cancelled' FROM process WHERE process_id=?")) {
-
+                PreparedStatement updateRun = c.prepareStatement("UPDATE process SET failcount=0,stepcount=0,state='Cancelled' FROM process WHERE process_id=?");
+                PreparedStatement updateChain = c.prepareStatement("UPDATE chain_activities SET busy=0 WHERE process_id=?");
+                ) {
+                
             updateRun.setInt(1, processID);
             updateRun.executeUpdate();
+            updateChain.setInt(1, processID);
+            updateChain.executeUpdate();
             c.commit();
         }
     }
@@ -729,7 +766,7 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
      * @throws ParserConfigurationException
      * @throws SAXException
      */
-    public PladipusProcessingTemplate getTemplate(int processID) throws SQLException, IOException, StepLoadingException, ParserConfigurationException, SAXException {
+    public PladipusProcessingTemplate getTemplate(int processID) throws SQLException, IOException, ProcessStepInitialisationException, ParserConfigurationException, SAXException {
         PladipusProcessingTemplate template = null;
         try (Connection c = new AutoCloseableDBConnection(); PreparedStatement retrieveStatement = c.prepareStatement(""
                 + "SELECT template FROM (process INNER JOIN run ON process.run_id = run.run_id) WHERE process_id=?;")) {

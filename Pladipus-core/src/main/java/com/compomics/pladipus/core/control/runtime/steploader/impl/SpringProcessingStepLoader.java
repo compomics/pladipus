@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.runtime.steploader.impl;
 
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoader;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import java.io.File;
@@ -54,7 +49,7 @@ public class SpringProcessingStepLoader implements StepLoader {
      * @throws IOException
      * @throws StepLoadingException
      */
-    public SpringProcessingStepLoader() throws IOException, StepLoadingException {
+    public SpringProcessingStepLoader() throws IOException, ProcessStepInitialisationException {
         LOGGER.debug("Refreshing spring context");
         //Logger.getRootLogger().setLevel(Level.OFF);
         props = NetworkProperties.getInstance();
@@ -67,18 +62,20 @@ public class SpringProcessingStepLoader implements StepLoader {
             appContext = new FileSystemXmlApplicationContext("file:" + processingBeanFile.getAbsolutePath());
         } catch (BeansException e) {
             Logger.getRootLogger().setLevel(Level.toLevel(NetworkProperties.getInstance().getLoggingLevel()));
-            throw new StepLoadingException("Bean not found : " + e);
+            throw new ProcessStepInitialisationException("Bean not found : " + e);
         }
     }
 
     /**
      *
-     * @param processingBeanConfigurationFile the configuration file for the beans
-     * @param jarFolder the folder containing the new application jars and resources
+     * @param processingBeanConfigurationFile the configuration file for the
+     * beans
+     * @param jarFolder the folder containing the new application jars and
+     * resources
      * @throws IOException
      * @throws StepLoadingException
      */
-    public SpringProcessingStepLoader(File processingBeanConfigurationFile, File jarFolder) throws IOException, StepLoadingException {
+    public SpringProcessingStepLoader(File processingBeanConfigurationFile, File jarFolder) throws IOException, ProcessStepInitialisationException {
         LOGGER.debug("Refreshing spring context");
         //Logger.getRootLogger().setLevel(Level.OFF);
         props = NetworkProperties.getInstance();
@@ -90,15 +87,15 @@ public class SpringProcessingStepLoader implements StepLoader {
             appContext = new FileSystemXmlApplicationContext("file:" + processingBeanConfigurationFile.getAbsolutePath());
         } catch (BeansException e) {
             Logger.getRootLogger().setLevel(Level.toLevel(NetworkProperties.getInstance().getLoggingLevel()));
-            throw new StepLoadingException("Bean not found : " + e);
+            throw new ProcessStepInitialisationException("Bean not found : " + e);
         }
     }
 
-    private void reloadRepositoryPath() throws StepLoadingException {
+    private void reloadRepositoryPath() throws ProcessStepInitialisationException {
         reloadRepositoryPath(new File(props.getAdditionalClasspath()));
     }
 
-    private void reloadRepositoryPath(File jarFolder) throws StepLoadingException {
+    private void reloadRepositoryPath(File jarFolder) throws ProcessStepInitialisationException {
         repositoryFolder = jarFolder;
         /*    try {
          FolderSynchronizer folderSynchronizer = FolderSynchronizerFactory.getFolderSynchronizer(URI.create(props.getRemoteLibraryRepository()));
@@ -109,7 +106,7 @@ public class SpringProcessingStepLoader implements StepLoader {
         addAllToClassPath(repositoryFolder);
     }
 
-    private void addAllToClassPath(File dir) throws StepLoadingException {
+    private void addAllToClassPath(File dir) throws ProcessStepInitialisationException {
         List<String> classPathFiles = Arrays.asList(System.getProperty("java.class.path").split(";"));
         File[] files = dir.listFiles();
         if (files != null && files.length > 0) {
@@ -118,7 +115,7 @@ public class SpringProcessingStepLoader implements StepLoader {
                     try {
                         addToClassPath(file.getAbsolutePath());
                     } catch (MalformedURLException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        throw new StepLoadingException(e);
+                        throw new ProcessStepInitialisationException(e.getMessage());
                     }
                     if (file.isDirectory()) {
                         addAllToClassPath(file);
@@ -139,7 +136,7 @@ public class SpringProcessingStepLoader implements StepLoader {
     }
 
     @Override
-    public ProcessingStep loadProcessingStep(String className) throws Exception {
+    public ProcessingStep loadProcessingStep(String className) throws ProcessStepInitialisationException {
         LOGGER.debug("Loading " + className);
         //load the bean
         // Logger.getRootLogger().setLevel(Level.OFF);
@@ -150,13 +147,13 @@ public class SpringProcessingStepLoader implements StepLoader {
             //check if it's already on the classpath?
             LOGGER.debug("Loading from classpath resource");
             assummedProcessingStep = (ProcessingStep) systemClassLoader.loadClass(className).newInstance();
-        } catch (InstantiationException | ClassNotFoundException ex) {
+        } catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
             LOGGER.debug("Importing via spring...");
             String myClass = className.substring(className.lastIndexOf(".") + 1);
             try {
                 assummedProcessingStep = (ProcessingStep) appContext.getBean(myClass);
                 if (assummedProcessingStep == null) {
-                    throw new Exception(className + " is not on the classpath, nor found in the external library folder");
+                    throw new ProcessStepInitialisationException(className + " is not on the classpath, nor found in the external library folder");
                 }
                 assummedProcessingStep.setProcessingStepClassName(className);
             } catch (Exception e) {

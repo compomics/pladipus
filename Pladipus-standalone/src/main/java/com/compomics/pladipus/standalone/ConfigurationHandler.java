@@ -1,7 +1,7 @@
 package com.compomics.pladipus.standalone;
 
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.runtime.steploader.impl.SpringProcessingStepLoader;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -42,9 +42,9 @@ public class ConfigurationHandler {
      *
      * @throws URISyntaxException
      * @throws IOException
-     * @throws StepLoadingException
+     * @throws ProcessStepInitialisationException
      */
-    public static void checkDefaultBeanDefinitions() throws URISyntaxException, IOException, StepLoadingException {
+    public static void checkDefaultBeanDefinitions() throws URISyntaxException, IOException, ProcessStepInitialisationException {
         File dest = new File(getCurrentDirectory(), "processing-beans.xml");
         if (!dest.exists()) {
             try ( //check appcontext location

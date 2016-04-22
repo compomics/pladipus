@@ -1,15 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.model.processing.standard.maintenance;
 
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,8 +16,12 @@ import java.util.ArrayList;
 public class RebootStep extends ProcessingStep {
 
     @Override
-    public boolean doAction() throws Exception {
-        restartApplication();
+    public boolean doAction() throws PladipusProcessingException {
+        try {
+            restartApplication();
+        } catch (URISyntaxException | IOException ex) {
+            throw new PladipusProcessingException(ex);
+        }
         return true;
     }
 

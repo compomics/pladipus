@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.model.processing;
 
 import java.util.LinkedHashMap;
@@ -21,10 +16,27 @@ public class ProcessingRun {
      * The name of this run
      */
     private final String runName;
+    /**
+     * The chain ID for this run (in case of sequential jobs)
+     */
+    private int chainID = -1;
+    /**
+     * Boolean indicating if the order of the run needs to be respected across
+     * workers
+     */
+    private boolean keepOrder = false;
 
     public ProcessingRun(LinkedHashMap<String, ProcessingJob> processesToRun, String runName) {
         this.processesToRun = processesToRun;
         this.runName = runName;
+    }
+
+    public ProcessingRun(LinkedHashMap<String, ProcessingJob> processesToRun, String runName, boolean keepOrder) {
+        this.processesToRun = processesToRun;
+        this.runName = runName;
+        this.keepOrder = keepOrder;
+        //set all the processingjobs to check their order
+        
     }
 
     public LinkedHashMap<String, ProcessingJob> getProcesses() {
@@ -33,6 +45,14 @@ public class ProcessingRun {
 
     public String getRunName() {
         return runName;
+    }
+
+    public int getChainID() {
+        return chainID;
+    }
+
+    public boolean isKeepOrder() {
+        return keepOrder;
     }
 
 }

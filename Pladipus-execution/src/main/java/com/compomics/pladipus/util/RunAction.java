@@ -4,18 +4,16 @@ import com.compomics.pladipus.core.control.distribution.service.database.dao.imp
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.DeleteOperation;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.ProcessingJob;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
-import com.compomics.pladipus.view.util.menu.RunPopupMenu;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.jms.JMSException;
-import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
@@ -65,7 +63,7 @@ public class RunAction {
                     processesToQueue.add((int) processID);
                 }
                 dao.setQueued(processesToQueue, true);
-            } catch (JMSException | NumberFormatException | SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+            } catch (JMSException | NumberFormatException | SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                 LOGGER.error("Could not launch the selection.", ex);
             }
         }

@@ -1,5 +1,7 @@
 package com.compomics.pladipus.core.model.processing;
 
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
+import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import java.util.HashMap;
 
 public abstract interface ProcessingExecutable {
@@ -8,10 +10,11 @@ public abstract interface ProcessingExecutable {
      * Executes the executable
      *
      * @return a boolean to indicate if the process finished correctly
-     * @throws Exception
+     * @throws com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException
+     * @throws com.compomics.pladipus.core.model.exception.PladipusProcessingException
      */
     public abstract boolean doAction()
-            throws Exception;
+            throws UnspecifiedPladipusException,PladipusProcessingException;
 
     /**
      *

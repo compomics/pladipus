@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.core.model.processing.standard;
 
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import org.apache.log4j.Logger;
 
@@ -20,7 +21,7 @@ public class TestingStep extends ProcessingStep {
     private static final Logger LOGGER = Logger.getLogger(TestingStep.class);
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws PladipusProcessingException {
         System.out.println("EXECUTING DUMMY STEP " + System.currentTimeMillis());
         return true;
     }

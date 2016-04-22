@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.service.database.dao.impl;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
 import com.compomics.pladipus.core.control.distribution.service.database.AutoCloseableDBConnection;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.PladipusDAO;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -105,8 +100,8 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
     public int createRun(PladipusProcessingTemplate template) throws SQLException {
         int insertedRunID;
         //step 1 = generate a run and get the ID
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement updateRun = c.prepareStatement("INSERT INTO run(title,user_name,template) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
-
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
+                PreparedStatement updateRun = c.prepareStatement("INSERT INTO run(title,user_name,template) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             updateRun.setString(1, template.getName());
             updateRun.setString(2, template.getUser());
             updateRun.setString(3, template.toXML());
@@ -150,6 +145,18 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
      * @throws SQLException
      */
     public LinkedList<Integer> addToRun(int runID, List<HashMap<String, String>> parameterList) throws SQLException {
+        return addToRun(runID, parameterList, false);
+    }
+
+    /**
+     *
+     * @param runID the ID where current jobs should be added to
+     * @param parameterList the parameters that should be used to create the new
+     * jobs
+     * @return the correctly inserted processes
+     * @throws SQLException
+     */
+    public LinkedList<Integer> addToRun(int runID, List<HashMap<String, String>> parameterList, boolean keepOrder) throws SQLException {
         //step 2 = insert the processingJOB xml, update to the correct ID when retrieving from db is faster
         LinkedList<Integer> processIDs = new LinkedList<>();
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false); PreparedStatement insertProcess = c.prepareStatement("INSERT INTO process(state,run_id,failcount) VALUES('Waiting to be dispatched ...',?,?)",
@@ -232,16 +239,19 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
      * @throws ParserConfigurationException
      * @throws StepLoadingException
      */
-    public PladipusProcessingTemplate getTemplateForRun(int runID) throws SQLException, IOException, StepLoadingException, ParserConfigurationException, SAXException {
+    public PladipusProcessingTemplate getTemplateForRun(int runID) throws SQLException, IOException, ProcessStepInitialisationException, ParserConfigurationException, SAXException {
 
         //XML STRING
         PladipusProcessingTemplate templateXML = null;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT template FROM run WHERE run_id =?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT run.template,chain_activities.chain_id FROM run INNER JOIN chain_activities WHERE run.run_id =?")) {
 
             updateRun.setInt(1, runID);
             try (ResultSet executeQuery = updateRun.executeQuery()) {
-                while (executeQuery.next()) {
-                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString("template"));
+                if (executeQuery.next()) {
+                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString(1));
+                    templateXML.setChainID(executeQuery.getInt(2));
+                    //check if there's a chain?
+                    //@ToDo make this more efficient?
                 }
             }
         }

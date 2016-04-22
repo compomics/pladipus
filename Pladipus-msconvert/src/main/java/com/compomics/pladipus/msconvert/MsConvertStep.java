@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.msconvert;
 
-import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.model.enums.AllowedMsConvertParams;
+import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +58,7 @@ public class MsConvertStep extends ProcessingStep {
     }
 
     @Override
-    public boolean doAction() throws Exception {
+    public boolean doAction() throws PladipusProcessingException {
         System.out.println("Running " + this.getClass().getName());
         boolean success = false;
         if (real_outputFolder == null) {
@@ -89,8 +84,7 @@ public class MsConvertStep extends ProcessingStep {
             LOGGER.info("DONE");
             success = true;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            throw new PladipusProcessingException(e);
         }
         return success;
     }

@@ -114,19 +114,9 @@ public class CLIExecutor {
                         System.out.println("Hello, pladipus will now start pulling jobs and updates from the controller.");
                         System.out.println("Thank you for participating in the research!");
                         while (true) {
-                            try {
-                                trafficManager.pullFromPladipus();
-                                if (!auto_pull) {
-                                    break;
-                                }
-                            } catch (UnknownHostException e) {
-                                LOGGER.error(e);
-                                try {
-                                    Thread.sleep(10000);
-                                    CompomicsQueueConnectionFactory.reset();
-                                } catch (InterruptedException e2) {
-
-                                }
+                            trafficManager.pullFromPladipus();
+                            if (!auto_pull) {
+                                break;
                             }
                         }
                     }

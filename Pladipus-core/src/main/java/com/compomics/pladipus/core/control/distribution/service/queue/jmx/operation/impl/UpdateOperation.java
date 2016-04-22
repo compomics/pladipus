@@ -7,9 +7,11 @@ package com.compomics.pladipus.core.control.distribution.service.queue.jmx.opera
 
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.QueueOperation;
+import com.compomics.pladipus.core.model.exception.PladipusTrafficException;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.sun.mail.iap.ConnectionException;
 import java.io.IOException;
+import javax.jms.JMSException;
 import javax.management.MalformedObjectNameException;
 
 /**
@@ -23,15 +25,17 @@ public class UpdateOperation extends QueueOperation {
     }
 
     /**
-     * Updates an existing, already launched job 
+     * Updates an existing, already launched job
      *
      * @param queue the target queue
      * @param newMessage the new message
      * @param processID the target job id
      * @throws MalformedObjectNameException
-     * @throws Exception
+     * @throws java.io.IOException
+     * @throws com.sun.mail.iap.ConnectionException
+     * @throws javax.jms.JMSException
      */
-    public void updateJobOnQueue(CompomicsQueue queue, String newMessage, int processID) throws MalformedObjectNameException, Exception {
+    public void updateJobOnQueue(CompomicsQueue queue, String newMessage, int processID) throws MalformedObjectNameException, IOException, ConnectionException, JMSException, PladipusTrafficException {
         //delete using the DeleteOperation
         DeleteOperation deleteOperation = new DeleteOperation();
         deleteOperation.deleteJobFromQueue(queue, processID);

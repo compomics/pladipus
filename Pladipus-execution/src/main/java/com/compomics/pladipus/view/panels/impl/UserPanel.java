@@ -3,7 +3,7 @@ package com.compomics.pladipus.view.panels.impl;
 import com.compomics.pladipus.core.control.distribution.service.ProcessService;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
 import com.compomics.pladipus.util.OpenExampleAction;
 import com.compomics.pladipus.view.dialogs.run.ProcessCreationDialog;
@@ -522,7 +522,7 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
                 ProcessCreationDialog processCreationDialog = new ProcessCreationDialog(null, true, templateForRun);
                 processCreationDialog.setLocationRelativeTo(this);
                 processCreationDialog.setVisible(true);
-            } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+            } catch (SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                 ex.printStackTrace();
             }
         }
@@ -728,8 +728,9 @@ public class UserPanel extends javax.swing.JPanel implements UpdatingPanel {
             currentPage = 1;
             tfCurrentPage.setText(String.valueOf(currentPage));
 
-        } catch (SQLException | IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+        } catch (SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
             //ignore for now?
+            ex.printStackTrace();
         }
     }
 

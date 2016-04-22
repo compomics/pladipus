@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.communication.interpreter;
 
 import com.compomics.pladipus.core.control.runtime.steploader.StepLoader;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.runtime.steploader.impl.SpringProcessingStepLoader;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +34,7 @@ public class XMLInterpreter {
         XMLInterpreter.loader = loader;
     }
 
-    protected void init() throws IOException, StepLoadingException {
+    protected void init() throws IOException, ProcessStepInitialisationException {
         if (loader == null) {
             loader = new SpringProcessingStepLoader();
         }
@@ -51,7 +46,7 @@ public class XMLInterpreter {
      * @throws StepLoadingException
      * @throws IOException
      */
-    public void refresh() throws StepLoadingException, IOException {
+    public void refresh() throws ProcessStepInitialisationException, IOException {
         loader = new SpringProcessingStepLoader();
     }
 
@@ -78,7 +73,7 @@ public class XMLInterpreter {
      * @return
      * @throws Exception
      */
-    public ProcessingStep loadProcessingStepFromClass(StepLoader loader, String className) throws Exception {
+    public ProcessingStep loadProcessingStepFromClass(StepLoader loader, String className) throws ProcessStepInitialisationException {
         ProcessingStep loadProcessingStep = loader.loadProcessingStep(className);
         return loadProcessingStep;
     }

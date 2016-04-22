@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.view.dialogs.run;
 
 import com.compomics.pladipus.core.control.distribution.communication.interpreter.impl.XMLTemplateInterpreter;
-import com.compomics.pladipus.core.control.runtime.steploader.StepLoadingException;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
+import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import com.compomics.pladipus.core.model.processing.templates.PladipusProcessingTemplate;
@@ -48,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author Kenneth Verheggen
  */
 public class RunCreationDialog extends javax.swing.JDialog {
-
+    
     private static final Logger LOGGER = Logger.getLogger(RunCreationDialog.class);
     /**
      * the run owner
@@ -99,19 +94,19 @@ public class RunCreationDialog extends javax.swing.JDialog {
         this.userPanel = userPanel;
         this.user = user;
         this.setTitle("Run Creation Wizard");
-
+        
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
-
+        
         tblParameters.getTableHeader().setReorderingAllowed(false);
-
+        
         tblParameters.getColumn(" ").setMaxWidth(40);
         tblParameters.getColumn(" ").setMinWidth(40);
-
+        
         tblParameters.getColumn("Run*").setMaxWidth(50);
         tblParameters.getColumn("Run*").setMinWidth(50);
-
+        
         tblParameters.getColumn("Run*").setCellRenderer(new NimbusCheckBoxRenderer());
-
+        
         cbPresets.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
         cbSteps.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
 
@@ -129,42 +124,42 @@ public class RunCreationDialog extends javax.swing.JDialog {
         //fill parameters
         tblParameters.getModel().addTableModelListener(
                 new TableModelListener() {
-                    public void tableChanged(TableModelEvent evt) {
-                        //read all the table values, turn them into proper parameters and fling them into the model, then refresh
-                        DefaultTableModel model = (DefaultTableModel) tblParameters.getModel();
-                        for (int i = 0; i < model.getRowCount(); i++) {
-                            try {
-                                String parameterName = String.valueOf(model.getValueAt(i, 1));
-                                if (!parameterName.isEmpty()) {
-                                    String parameterValue;
-                                    if (model.getValueAt(i, 2) != null) {
-                                        parameterValue = String.valueOf(model.getValueAt(i, 2));
-                                    } else {
-                                        parameterValue = "";
-                                    }
-                                    boolean runParameter;
-                                    if (model.getValueAt(i, 4) != null) {
-                                        runParameter = (Boolean) model.getValueAt(i, 4);
-                                    } else {
-                                        runParameter = false;
-                                    }
-                                    ProcessingParameterTemplate processingParameter = new ProcessingParameterTemplate(parameterName, parameterValue);
-                                    template.getRunParameters().remove(parameterName);
-                                    template.getJobParameters().remove(parameterName);
-                                    if (runParameter) {
-                                        template.addRunParameter(processingParameter);
-                                    } else {
-                                        template.addJobParameter(processingParameter);
-                                    }
-                                }
-                            } catch (NullPointerException e) {
-                                //todo refactor to avoid this
+            public void tableChanged(TableModelEvent evt) {
+                //read all the table values, turn them into proper parameters and fling them into the model, then refresh
+                DefaultTableModel model = (DefaultTableModel) tblParameters.getModel();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    try {
+                        String parameterName = String.valueOf(model.getValueAt(i, 1));
+                        if (!parameterName.isEmpty()) {
+                            String parameterValue;
+                            if (model.getValueAt(i, 2) != null) {
+                                parameterValue = String.valueOf(model.getValueAt(i, 2));
+                            } else {
+                                parameterValue = "";
+                            }
+                            boolean runParameter;
+                            if (model.getValueAt(i, 4) != null) {
+                                runParameter = (Boolean) model.getValueAt(i, 4);
+                            } else {
+                                runParameter = false;
+                            }
+                            ProcessingParameterTemplate processingParameter = new ProcessingParameterTemplate(parameterName, parameterValue);
+                            template.getRunParameters().remove(parameterName);
+                            template.getJobParameters().remove(parameterName);
+                            if (runParameter) {
+                                template.addRunParameter(processingParameter);
+                            } else {
+                                template.addJobParameter(processingParameter);
                             }
                         }
-                        refreshPreview();
+                    } catch (NullPointerException e) {
+                        //todo refactor to avoid this
                     }
-                });
-
+                }
+                refreshPreview();
+            }
+        });
+        
         tfRunName.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent arg0) {
@@ -184,9 +179,9 @@ public class RunCreationDialog extends javax.swing.JDialog {
             }
         }
         cbSteps.setModel(model);
-
+        
         liSteps.setModel(new DefaultListModel());
-
+        
         template = new PladipusProcessingTemplate("Default Run Name", user, 4, prerequisite);
 
         //add prerequisite buttons
@@ -194,16 +189,16 @@ public class RunCreationDialog extends javax.swing.JDialog {
         btnGroupOSArch.add(rdbLinux64);
         btnGroupOSArch.add(rdbWindows32);
         btnGroupOSArch.add(rdbWindows64);
-
+        
         refreshPreview();
         try {
             loadPresets();
-        } catch (StepLoadingException ex) {
+        } catch (ProcessStepInitialisationException ex) {
             JOptionPane.showMessageDialog(this, "Template Error", "An error occurred loading a preset template: " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    private void setTemplateFromResource(String templateIdentifier, String templateFileName) throws IOException, ParserConfigurationException, StepLoadingException, SAXException {
+    
+    private void setTemplateFromResource(String templateIdentifier, String templateFileName) throws IOException, ParserConfigurationException, ProcessStepInitialisationException, SAXException {
         File tempFile = File.createTempFile(templateIdentifier, ".temp");
         tempFile.deleteOnExit();
         try (OutputStream out = new FileOutputStream(tempFile);
@@ -212,8 +207,8 @@ public class RunCreationDialog extends javax.swing.JDialog {
             presets.put(templateIdentifier, tempFile);
         }
     }
-
-    private void loadPresets() throws IOException, ParserConfigurationException, StepLoadingException, SAXException {
+    
+    private void loadPresets() throws IOException, ParserConfigurationException, ProcessStepInitialisationException, SAXException {
         LOGGER.debug("Loading presets...");
         presets = new LinkedHashMap<>();
         interpeter = XMLTemplateInterpreter.getInstance();
@@ -224,7 +219,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         setTemplateFromResource("BLAST", "BLAST_Template.xml");
         setTemplateFromResource("MsConvert", "MsConvert_Template.xml");
         setTemplateFromResource("Custom", "Empty_Template.xml");
-
+        
         DefaultComboBoxModel model = (DefaultComboBoxModel) cbPresets.getModel();
         model.removeAllElements();
         model.addElement("-- Select --");
@@ -234,7 +229,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         cbPresets.setModel(model);
         LOGGER.debug("Done...");
     }
-
+    
     public boolean isConfirmed() {
         return confirmed;
     }
@@ -266,6 +261,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         lblPriority = new javax.swing.JLabel();
         slPriority = new javax.swing.JSlider();
         jLabel1 = new javax.swing.JLabel();
+        cbRetainJobOrder = new javax.swing.JCheckBox();
         pnlParameters = new javax.swing.JPanel();
         spnlParameters = new javax.swing.JScrollPane();
         tblParameters = new javax.swing.JTable();
@@ -385,7 +381,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbSteps, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cbPresets, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(cbPresets, 0, 382, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         pnlStepsLayout.setVerticalGroup(
@@ -400,7 +396,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                     .addComponent(cbSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbPreSet1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(liSteps, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addComponent(liSteps, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
                 .addGap(12, 12, 12))
         );
 
@@ -429,6 +425,14 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
         jLabel1.setText("Run Name");
 
+        cbRetainJobOrder.setBackground(new java.awt.Color(255, 255, 255));
+        cbRetainJobOrder.setText("Retain job order");
+        cbRetainJobOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbRetainJobOrderActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlRunNameLayout = new javax.swing.GroupLayout(pnlRunName);
         pnlRunName.setLayout(pnlRunNameLayout);
         pnlRunNameLayout.setHorizontalGroup(
@@ -436,12 +440,15 @@ public class RunCreationDialog extends javax.swing.JDialog {
             .addGroup(pnlRunNameLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlRunNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPriority, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlRunNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfRunName)
-                    .addComponent(slPriority, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
+                    .addComponent(cbRetainJobOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlRunNameLayout.createSequentialGroup()
+                        .addGroup(pnlRunNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPriority, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlRunNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(slPriority, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                            .addComponent(tfRunName))))
                 .addContainerGap())
         );
         pnlRunNameLayout.setVerticalGroup(
@@ -451,12 +458,15 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 .addGroup(pnlRunNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfRunName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(pnlRunNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(slPriority, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRunNameLayout.createSequentialGroup()
                         .addComponent(lblPriority)
-                        .addContainerGap())))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addComponent(cbRetainJobOrder)
+                .addContainerGap())
         );
 
         pnlParameters.setBackground(new java.awt.Color(255, 255, 255));
@@ -521,7 +531,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                     .addComponent(spnlParameters)
                     .addGroup(pnlParametersLayout.createSequentialGroup()
                         .addComponent(lblParameterRemark)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 637, Short.MAX_VALUE)
                         .addComponent(btnAddParameter)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRemoveParameter, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -557,7 +567,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             pnlPreviewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPreviewLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                .addComponent(spnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlPreviewLayout.setVerticalGroup(
@@ -583,14 +593,14 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pnlParameters, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pnlParameters, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(pnlMainLayout.createSequentialGroup()
                                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(pnlRunName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(pnlSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(pnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(pnlPreview, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCreateRun)
@@ -607,9 +617,9 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(pnlRunName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pnlRunName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlSteps, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(pnlSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlPreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlParameters, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -757,13 +767,13 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
         // check that there is at least one job parameter
         boolean jobParameterFound = false;
-
+        
         for (int i = 0; i < tblParameters.getRowCount() && !jobParameterFound; i++) {
             if (!((Boolean) tblParameters.getValueAt(i, 4))) {
                 jobParameterFound = true;
             }
         }
-
+        
         if (!jobParameterFound) {
             JOptionPane.showMessageDialog(this,
                     "You need to have at least one Job specific parameter.",
@@ -774,9 +784,9 @@ public class RunCreationDialog extends javax.swing.JDialog {
             //save the XML to a file = start a filechooser?
             fileChooser.setCurrentDirectory(lastSelectedFolder);
             fileChooser.setDialogTitle("Specify Output File");
-
+            
             int userSelection = fileChooser.showSaveDialog(this);
-
+            
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 File fileToSave = fileChooser.getSelectedFile();
                 if (!fileToSave.getName().endsWith(".xml")) {
@@ -817,7 +827,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_btnCreateRunActionPerformed
-
+    
 
     private void tfRunNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfRunNameActionPerformed
         refreshPreview();
@@ -826,7 +836,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_miExitActionPerformed
-
+    
     private void clearOSArchPrerequisites() {
         prerequisite.removePrerequisite(PrerequisiteParameter.OS_WINDOWS);
         rdbLinux32.setSelected(false);
@@ -837,7 +847,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         prerequisite.removePrerequisite(PrerequisiteParameter.ARCH_64);
         prerequisite.removePrerequisite(PrerequisiteParameter.ARCH_32);
     }
-
+    
 
     private void rdbWindows64ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbWindows64ActionPerformed
         clearOSArchPrerequisites();
@@ -932,7 +942,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         miSetCores.setText("Set Minimal Cores");
         refreshPreview();
     }//GEN-LAST:event_miClearPreferencesActionPerformed
-
+    
     private void reloadTemplate(PladipusProcessingTemplate presetTemplate) {
         //check for unknown steps
         LOGGER.debug("Refreshing template...");
@@ -942,7 +952,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 unknownSteps.add(aStep);
             }
         }
-
+        
         if (!unknownSteps.isEmpty()) {
             StringBuilder unknownStepMessage = new StringBuilder("The following classes are not correctly installed : ").append(System.lineSeparator());
             for (String anUnknownStep : unknownSteps) {
@@ -959,14 +969,14 @@ public class RunCreationDialog extends javax.swing.JDialog {
 
             DefaultListModel liModel = (DefaultListModel) liSteps.getModel();
             DefaultTableModel tbModel = (DefaultTableModel) tblParameters.getModel();
-
+            
             tfRunName.setText(presetTemplate.getName());
             liModel.removeAllElements();
             for (String aStep : presetTemplate.getProcessingSteps()) {
                 liModel.addElement(aStep.substring(aStep.lastIndexOf(".") + 1));
             }
             tbModel.setRowCount(0);
-
+            
             TreeMap<String, ProcessingParameterTemplate> temp = new TreeMap<>();
             temp.putAll(presetTemplate.getRunParameters());
             for (ProcessingParameterTemplate aRunParamter : temp.values()) {
@@ -992,7 +1002,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         }
         this.template = presetTemplate;
     }
-
+    
 
     private void miImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miImportActionPerformed
         fileChooser.setCurrentDirectory(lastSelectedFolder);
@@ -1003,7 +1013,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
             try {
                 PladipusProcessingTemplate convertXMLtoTemplate = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(fileToOpen);
                 reloadTemplate(convertXMLtoTemplate);
-            } catch (IOException | StepLoadingException | ParserConfigurationException | SAXException ex) {
+            } catch (IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
                         "An error occurred during importing : " + ex.getMessage(),
@@ -1013,7 +1023,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         }
         refreshPreview();
     }//GEN-LAST:event_miImportActionPerformed
-
+    
     private void refreshPrerequisites() {
         ArrayList<PrerequisiteParameter> prerequisiteList = prerequisite.getPrerequisiteList();
         boolean arch32 = false;
@@ -1021,20 +1031,30 @@ public class RunCreationDialog extends javax.swing.JDialog {
         boolean windows = false;
         boolean linux = false;
         for (PrerequisiteParameter aParameter : prerequisiteList) {
-            if (aParameter.equals(PrerequisiteParameter.ARCH_32)) {
-                arch32 = true;
-            } else if (aParameter.equals(PrerequisiteParameter.ARCH_64)) {
-                arch64 = true;
-            } else if (aParameter.equals(PrerequisiteParameter.OS_LINUX)) {
-                linux = true;
-            } else if (aParameter.equals(PrerequisiteParameter.OS_WINDOWS)) {
-                windows = true;
-            } else if (aParameter.equals(PrerequisiteParameter.CORES)) {
-                miSetCores.setText("Set minimal cores (" + aParameter.getOptionValue() + ")");
-            } else if (aParameter.equals(PrerequisiteParameter.MEMORY)) {
-                miSetMemory.setText("Set minimal RAM (" + aParameter.getOptionValue() + " GB)");
-            } else if (aParameter.equals(PrerequisiteParameter.DISKSPACE)) {
-                miSetDiskSpace.setText("Set minimal disk (" + aParameter.getOptionValue() + " GB)");
+            switch (aParameter) {
+                case ARCH_32:
+                    arch32 = true;
+                    break;
+                case ARCH_64:
+                    arch64 = true;
+                    break;
+                case OS_LINUX:
+                    linux = true;
+                    break;
+                case OS_WINDOWS:
+                    windows = true;
+                    break;
+                case CORES:
+                    miSetCores.setText("Set minimal cores (" + aParameter.getOptionValue() + ")");
+                    break;
+                case MEMORY:
+                    miSetMemory.setText("Set minimal RAM (" + aParameter.getOptionValue() + " GB)");
+                    break;
+                case DISKSPACE:
+                    miSetDiskSpace.setText("Set minimal disk (" + aParameter.getOptionValue() + " GB)");
+                    break;
+                default:
+                    break;
             }
         }
         if (arch64) {
@@ -1053,13 +1073,13 @@ public class RunCreationDialog extends javax.swing.JDialog {
             }
         }
     }
-
+    
 
     private void rdbNoOsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdbNoOsActionPerformed
         clearOSArchPrerequisites();
         refreshPreview();
     }//GEN-LAST:event_rdbNoOsActionPerformed
-
+    
     private void swapElements(int pos1, int pos2) {
         if (pos1 != pos2) {
             DefaultListModel listModel = (DefaultListModel) liSteps.getModel();
@@ -1103,31 +1123,31 @@ public class RunCreationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAddParameterActionPerformed
 
     private void cbPresetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPresetsActionPerformed
-
+        
         if (cbPresets.getSelectedIndex() != -1) {
-
+            
             cbSteps.setSelectedIndex(0);
-
+            
             if (((String) cbPresets.getSelectedItem()).equalsIgnoreCase("Custom")) {
                 cbSteps.setEnabled(true);
             } else {
                 cbSteps.setEnabled(false);
             }
-
+            
             if (cbPresets.getSelectedIndex() == 0) {
-
+                
                 DefaultListModel liModel = (DefaultListModel) liSteps.getModel();
                 liModel.clear();
-
+                
                 DefaultTableModel tbModel = (DefaultTableModel) tblParameters.getModel();
                 tbModel.setRowCount(0);
-
+                
                 try {
                     reloadTemplate(interpeter.convertXMLtoTemplate(presets.get("Custom")));
                 } catch (ParserConfigurationException | SAXException | IOException ex) {
                     LOGGER.error(ex);
                 }
-
+                
             } else {
                 try {
                     reloadTemplate(interpeter.convertXMLtoTemplate(presets.get(String.valueOf(cbPresets.getSelectedItem()))));
@@ -1135,15 +1155,15 @@ public class RunCreationDialog extends javax.swing.JDialog {
                     LOGGER.error(ex);
                 }
             }
-
+            
             refreshPreview();
         }
     }//GEN-LAST:event_cbPresetsActionPerformed
 
     private void cbStepsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStepsActionPerformed
-
+        
         if (cbSteps.getSelectedIndex() != 0) {
-
+            
             if (template != null) {
                 for (Object aSelectedStep : cbSteps.getSelectedObjects()) {
                     String step = String.valueOf(aSelectedStep);
@@ -1159,17 +1179,17 @@ public class RunCreationDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cbStepsActionPerformed
 
     private void liStepsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_liStepsMouseReleased
-
+        
         int row = liSteps.locationToIndex(evt.getPoint());
-
+        
         if (row != -1) {
             liSteps.setSelectedIndex(row);
         }
-
+        
         moveUpMenuItem.setEnabled(row > 0);
         moveDownMenuItem.setEnabled(row < liSteps.getModel().getSize() - 1);
         removeMenuItem.setEnabled(row != -1);
-
+        
         stepsPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
     }//GEN-LAST:event_liStepsMouseReleased
 
@@ -1208,6 +1228,10 @@ public class RunCreationDialog extends javax.swing.JDialog {
         refreshPreview();
     }//GEN-LAST:event_removeMenuItemActionPerformed
 
+    private void cbRetainJobOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRetainJobOrderActionPerformed
+        template.setKeepOrder(cbRetainJobOrder.isSelected());
+    }//GEN-LAST:event_cbRetainJobOrderActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddParameter;
     private javax.swing.JButton btnCancel;
@@ -1215,6 +1239,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
     private javax.swing.ButtonGroup btnGroupOSArch;
     private javax.swing.JButton btnRemoveParameter;
     private javax.swing.JComboBox cbPresets;
+    private javax.swing.JCheckBox cbRetainJobOrder;
     private javax.swing.JComboBox cbSteps;
     private javax.swing.JEditorPane epnlPreviewXML;
     private javax.swing.JLabel jLabel1;
@@ -1292,7 +1317,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-
+                
                 try {
                     RunCreationDialog dialog;
                     dialog = new RunCreationDialog(new javax.swing.JFrame(), "pladmin", new UserPanel(), true);
@@ -1310,9 +1335,9 @@ public class RunCreationDialog extends javax.swing.JDialog {
                 } catch (SAXException ex) {
                     java.util.logging.Logger.getLogger(RunCreationDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
             }
         });
     }
-
+    
 }
