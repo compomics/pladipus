@@ -273,7 +273,7 @@ public class ChainDAO extends PladipusDAO implements AutoCloseable {
     public boolean canExecute(int chain_id, int process_id) throws SQLException {
         boolean isReady = false;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement getChain = c.prepareStatement("SELECT process_id,busy FROM chain_activities WHERE (chain_id=?)")) {
+                PreparedStatement getChain = c.prepareStatement("SELECT process_id,busy FROM chain_activities WHERE (chain_id=?) ORDER BY process_id")) {
             getChain.setInt(1, chain_id);
             LinkedHashMap<Integer, Boolean> clearedToRunMap = new LinkedHashMap<>();
             try (ResultSet executeQuery = getChain.executeQuery()) {
