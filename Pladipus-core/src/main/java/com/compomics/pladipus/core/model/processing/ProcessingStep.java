@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Kenneth Verheggen
  */
-public abstract class ProcessingStep implements ProcessingExecutable,AutoCloseable {
+public abstract class ProcessingStep implements ProcessingExecutable, AutoCloseable {
 
     /**
      * The Logger Instance
@@ -34,6 +34,13 @@ public abstract class ProcessingStep implements ProcessingExecutable,AutoCloseab
      * a notifier for the process proceedings
      */
     private CallbackNotifier callbackNotifier;
+    /**
+     * a boolean indicating whether the step has finished
+     */
+    protected boolean isDone = false;
+    /**
+     * The processing engine for subprocesses
+     */
     private ProcessingEngine processingEngine;
 
     public String getProcessingStepClassName() {
@@ -74,11 +81,11 @@ public abstract class ProcessingStep implements ProcessingExecutable,AutoCloseab
         processingEngine.startProcess(executable, constructArguments, getCallbackNotifier());
     }
 
-     public void startProcess(File executable, String[] constructArguments) {
+    public void startProcess(File executable, String[] constructArguments) {
         processingEngine = new ProcessingEngine();
         processingEngine.startProcess(executable, constructArguments, getCallbackNotifier());
     }
-    
+
     public void stopProcess() {
         if (processingEngine != null) {
             processingEngine.stopProcess();
@@ -88,7 +95,12 @@ public abstract class ProcessingStep implements ProcessingExecutable,AutoCloseab
     @Override
     public void close() {
         stopProcess();
+        isDone = true;
         //do other stuff that needs to be done to close this step nicely (close streams etc)
+    }
+
+    public boolean isIsDone() {
+        return isDone;
     }
 
 }

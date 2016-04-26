@@ -141,12 +141,13 @@ public class PeptideShakerStep extends ProcessingStep {
         } catch (IOException | XMLStreamException | URISyntaxException ex) {
            throw new PladipusProcessingException(ex);
         } catch (Exception ex) {
+            
              throw new UnspecifiedPladipusException(ex);
         }
     }
 
     public File getJar() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
-        File temp = new File(parameters.get("ps_folder"));
+        File temp = new File(parameters.getOrDefault("ps_folder",System.getProperty("user.home") + "/pladipus/tools/PeptideShaker"));
         if (!temp.exists()) {
             LOGGER.info("Downloading latest PeptideShaker version...");
             URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());

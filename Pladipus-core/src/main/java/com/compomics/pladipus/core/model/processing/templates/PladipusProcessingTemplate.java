@@ -66,7 +66,7 @@ public class PladipusProcessingTemplate {
     /**
      * boolean indicating the order of jobs has to be respected
      */
-    private boolean keepOrder;
+    private boolean keepOrder = false;
 
     public PladipusProcessingTemplate(String name, String user, int priority) {
         this.name = name;

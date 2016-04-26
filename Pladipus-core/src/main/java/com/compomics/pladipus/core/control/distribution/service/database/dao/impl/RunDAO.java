@@ -240,18 +240,26 @@ public class RunDAO extends PladipusDAO implements AutoCloseable {
      * @throws StepLoadingException
      */
     public PladipusProcessingTemplate getTemplateForRun(int runID) throws SQLException, IOException, ProcessStepInitialisationException, ParserConfigurationException, SAXException {
-
         //XML STRING
         PladipusProcessingTemplate templateXML = null;
-        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(); PreparedStatement updateRun = c.prepareStatement("SELECT run.template,chain_activities.chain_id FROM run INNER JOIN chain_activities WHERE run.run_id =?")) {
+        try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
+                PreparedStatement queryRun = c.prepareStatement("SELECT template FROM run WHERE run.run_id =?");) {
 
-            updateRun.setInt(1, runID);
-            try (ResultSet executeQuery = updateRun.executeQuery()) {
+            queryRun.setInt(1, runID);
+            try (ResultSet executeQuery = queryRun.executeQuery()) {
                 if (executeQuery.next()) {
-                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(executeQuery.getString(1));
-                    templateXML.setChainID(executeQuery.getInt(2));
-                    //check if there's a chain?
-                    //@ToDo make this more efficient?
+                    String xml = executeQuery.getString(1);
+                    templateXML = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(xml);
+                    if (templateXML.isKeepOrder()) {
+                        try (PreparedStatement queryChain = c.prepareStatement("SELECT chain_id FROM chain_activities WHERE run.run_id =?")) {
+                            queryChain.setInt(1, runID);
+                            try (ResultSet executeChainQuery = queryChain.executeQuery()) {
+                                if (executeChainQuery.next()) {
+                                    templateXML.setChainID(executeChainQuery.getInt(1));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

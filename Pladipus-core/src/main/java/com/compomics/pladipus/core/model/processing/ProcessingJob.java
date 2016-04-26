@@ -1,14 +1,17 @@
 package com.compomics.pladipus.core.model.processing;
 
+import com.compomics.pladipus.core.control.distribution.service.ChainService;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.prerequisite.Prerequisite;
 import com.compomics.pladipus.core.model.prerequisite.PrerequisiteParameter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -273,6 +276,14 @@ public class ProcessingJob extends LinkedList<ProcessingStep> {
     }
 
     public boolean isMandatoryOrderCheck() {
+        if (chainID == -1) {
+            try {
+                //try to find it in db
+                chainID = ChainService.getInstance().getChainIDForProcess((int) getId());
+            } catch (SQLException ex) {
+                LOGGER.warn("Could not verify chain ID in db");
+            }
+        }
         return chainID != -1;
     }
 

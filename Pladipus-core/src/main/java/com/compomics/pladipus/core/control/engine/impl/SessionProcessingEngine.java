@@ -32,11 +32,11 @@ public class SessionProcessingEngine extends ProcessingEngine {
      * The Logging instance
      */
     private static final Logger LOGGER = Logger.getLogger(SessionProcessingEngine.class);
-    
+
     public SessionProcessingEngine(Message message) throws JMSException, IOException {
         super(message);
     }
-    
+
     @Override
     public Object call() throws UnspecifiedPladipusException {
         try {
@@ -45,7 +45,7 @@ public class SessionProcessingEngine extends ProcessingEngine {
             throw new UnspecifiedPladipusException(ex);
         }
     }
-    
+
     private boolean execute() throws PladipusTrafficException, BrokenProcessChainException, PladipusProcessingException, XMLInterpreterException, ProcessStepInitialisationException, UnspecifiedPladipusException {
         boolean jobSucessfull = false;
         String text;
@@ -65,25 +65,25 @@ public class SessionProcessingEngine extends ProcessingEngine {
                         throw new RejectedExecutionException("Worker could not register for this chain of processes");
                     }
                 }
-                LOGGER.info("Executing job...");
-                for (ProcessingStep aStep : aJob) {
-                    try {
-                        aStep.setProcessingID((int) aJob.getId());
-                        aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
-                        jobSucessfull = aStep.doAction();
-                        aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
-                    } finally {
-                        aStep.close();
-                    }
-                }
-                aJob.get(0).getCallbackNotifier().onNotification("Finished", true);
-                //sleep 10 seconds to avoid accidental DDOS of servers and resources
-                Thread.sleep(10000);
             }
+            LOGGER.info("Executing job...");
+            for (ProcessingStep aStep : aJob) {
+                try {
+                    aStep.setProcessingID((int) aJob.getId());
+                    aStep.getCallbackNotifier().onNotification(aStep.getDescription(), false);
+                    jobSucessfull = aStep.doAction();
+                    aStep.getCallbackNotifier().onNotification(aStep.getDescription(), true);
+                } finally {
+                    aStep.close();
+                }
+            }
+            aJob.get(0).getCallbackNotifier().onNotification("Finished", true);
+            //sleep 10 seconds to avoid accidental DDOS of servers and resources
+            Thread.sleep(10000);
         } catch (ParserConfigurationException | SAXException | JMSException | InterruptedException | SQLException | IOException ex) {
             throw new PladipusTrafficException(ex);
         }
         return jobSucessfull;
     }
-    
+
 }
