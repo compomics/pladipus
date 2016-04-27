@@ -8,6 +8,9 @@
     </parent>
     <artifactId>Pladipus-installer</artifactId>
     <packaging>jar</packaging>
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
     <build>
         
         <!-- Copy the resources required during building -->
