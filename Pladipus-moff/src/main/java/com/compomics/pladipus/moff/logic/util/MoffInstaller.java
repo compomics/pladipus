@@ -72,6 +72,10 @@ public class MoffInstaller {
             while (ze != null) {
                 String fileName = ze.getName();
                 File newFile = new File(outputFolder + File.separator + fileName);
+                //set the correct privileges
+                newFile.setReadable(true,false);
+                newFile.setWritable(true,false);
+                newFile.setExecutable(true,false);
                 //create all non exists folders
                 //else you will hit FileNotFoundException for compressed folder
                 new File(newFile.getParent()).mkdirs();
