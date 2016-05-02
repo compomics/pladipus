@@ -1,19 +1,17 @@
 package com.compomics.pladipus.moff.logic.step;
 
-import com.compomics.moff.gui.control.util.MoffInstaller;
+import com.compomics.pladipus.moff.logic.util.MoffInstaller;
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.log4j.Logger;
 
