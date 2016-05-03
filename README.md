@@ -8,7 +8,7 @@ The [CompOmics](http://www.compomics.com) Pladipus system is an affordable clust
 
 ----
 
-## Sumary
+## Summary
 
 Proteomics bioinformatics contributes to the ever improved characterization of proteomes, but this novel and detailed knowledge comes at the cost of increased computational complexity. Data intensive problems can be solved by parallelization across machines, a strategy termed distributed computing. However, setting up and maintaining a distributed computing infrastructure requires resources not necessarily available to all research groups.
 
