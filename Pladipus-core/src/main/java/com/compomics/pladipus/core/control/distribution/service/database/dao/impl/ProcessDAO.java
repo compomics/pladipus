@@ -441,15 +441,11 @@ public class ProcessDAO extends PladipusDAO implements AutoCloseable {
     public void setDone(Integer aProcessID) throws SQLException {
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection(false);
                 PreparedStatement updateRun = c.prepareStatement("UPDATE process SET complete = ? WHERE process_id=?");
-                PreparedStatement updateChain = c.prepareStatement("UPDATE chain_activities SET wait = ? WHERE process_id=?")) {
+          ) {
             //update the run
             updateRun.setBoolean(1, true);
             updateRun.setInt(2, aProcessID);
             updateRun.executeUpdate();
-            //update the chain
-            updateChain.setBoolean(1, false);
-            updateChain.setInt(2, aProcessID);
-            updateChain.executeUpdate();
             //commit the changes
             c.commit();
         }
