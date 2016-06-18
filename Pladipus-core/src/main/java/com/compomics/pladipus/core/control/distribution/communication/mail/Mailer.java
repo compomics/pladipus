@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.compomics.pladipus.core.control.distribution.communication.mail;
 
+import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -43,6 +39,11 @@ public class Mailer {
     private MimeMessage generateMailMessage;
 
     public void generateAndSendEmail(String subject, String message, String recipient) throws AddressException, MessagingException {
+        // Step0 
+        String mailingAddress = NetworkProperties.getInstance().getMailingAddress();
+        if (mailingAddress.equalsIgnoreCase("NO MAILS")) {
+            return;
+        }
         // Step1
         LOGGER.info("Sending report mail to " + recipient);
         mailServerProperties = System.getProperties();
@@ -58,7 +59,7 @@ public class Mailer {
         String emailBody = message + "<br><br> Best regards, <br>Pladipus Admin";
         generateMailMessage.setContent(emailBody, "text/html");
         Transport transport = getMailSession.getTransport("smtp");
-        transport.connect("smtp.gmail.com", "pladipus.compomics@gmail.com", "'**********'");
+        transport.connect("smtp.gmail.com",mailingAddress, NetworkProperties.getInstance().getMailingPassWord());
         transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients());
         transport.close();
         LOGGER.info("Done !");

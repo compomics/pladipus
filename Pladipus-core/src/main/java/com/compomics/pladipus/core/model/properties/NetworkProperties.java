@@ -199,4 +199,12 @@ public class NetworkProperties extends PladipusProperties {
         return defaultPropFile.getAbsolutePath();
     }
 
+    public String getMailingAddress() {
+        return instance.getProperty("report.mail.address", "NO MAILS");
+    }
+
+    public String getMailingPassWord() {
+        return instance.getProperty("report.mail.password", "NO MAILS");
+    }
+
 }
