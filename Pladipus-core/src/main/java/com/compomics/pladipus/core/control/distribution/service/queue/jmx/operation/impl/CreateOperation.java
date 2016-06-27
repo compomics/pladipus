@@ -34,7 +34,9 @@ public class CreateOperation extends QueueOperation {
      * @throws SQLException
      */
     public void addJobToQueue(CompomicsQueue queue, String jobAsXML, int processID) throws IOException, JMSException, SQLException {
-        try (CompomicsProducer producer = new CompomicsProducer(queue, jobAsXML, processID)) {
+        //TODO REFACTOR THIS TO USE A PRODUCERPOOL?
+        try (CompomicsProducer producer = new CompomicsProducer(queue)) {
+            producer.addMessage(jobAsXML, processID);
             Thread producerThread = new Thread(producer, "ProducerThread");
             producerThread.start();
         }

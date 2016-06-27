@@ -74,9 +74,6 @@ public class PladipusTrafficManager {
         return false;
     }
 
-    
-    
-    
     /**
      * Pushes tasks to the pladipus queue. In case the run already exists or was
      * posted before, the jobs will be appended after the existing jobs
@@ -187,12 +184,13 @@ public class PladipusTrafficManager {
     public void pushFromDatabase(LinkedList<Integer> processesForRun) throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, ProcessStepInitialisationException {
         LOGGER.info("Pushing " + processesForRun.size() + " jobs to Pladipus...");
         ProcessService pService = ProcessService.getInstance();
-        for (int aProcessID : processesForRun) {
-            String xmlForProcess = pService.getXMLForProcess(aProcessID);
-            try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, xmlForProcess, aProcessID, priority)) {
-                Thread producerThread = new Thread(producer, "ProducerThread");
-                producerThread.start();
+        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, priority)) {
+            for (int aProcessID : processesForRun) {
+                String xmlForProcess = pService.getXMLForProcess(aProcessID);
+                producer.addMessage(xmlForProcess, aProcessID);
             }
+            Thread producerThread = new Thread(producer, "ProducerThread");
+            producerThread.start();
         }
     }
 
@@ -212,12 +210,13 @@ public class PladipusTrafficManager {
         ProcessService pService = ProcessService.getInstance();
         LinkedList<Integer> unqueuedProcesses = pService.getUnqueuedProcesses(username);
         LOGGER.info("Pushing " + unqueuedProcesses.size() + " jobs to Pladipus...");
-        for (int aProcessID : unqueuedProcesses) {
-            try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB,
-                    pService.getXMLForProcess(aProcessID), aProcessID, priority)) {
-                Thread producerThread = new Thread(producer, "ProducerThread");
-                producerThread.start();
+        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, priority)) {
+            for (int aProcessID : unqueuedProcesses) {
+                String xmlForProcess = pService.getXMLForProcess(aProcessID);
+                producer.addMessage(xmlForProcess, aProcessID);
             }
+            Thread producerThread = new Thread(producer, "ProducerThread");
+            producerThread.start();
         }
     }
 
@@ -236,11 +235,13 @@ public class PladipusTrafficManager {
         ProcessService pService = ProcessService.getInstance();
         LinkedList<Integer> unqueuedProcesses = pService.getUnqueuedProcesses();
         LOGGER.info("Pushing " + unqueuedProcesses.size() + " jobs to Pladipus...");
-        for (int aProcessID : unqueuedProcesses) {
-            try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, pService.getXMLForProcess(aProcessID), aProcessID, priority)) {
-                Thread producerThread = new Thread(producer, "ProducerThread");
-                producerThread.start();
+        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, priority)) {
+            for (int aProcessID : unqueuedProcesses) {
+                String xmlForProcess = pService.getXMLForProcess(aProcessID);
+                producer.addMessage(xmlForProcess, aProcessID);
             }
+            Thread producerThread = new Thread(producer, "ProducerThread");
+            producerThread.start();
         }
     }
 

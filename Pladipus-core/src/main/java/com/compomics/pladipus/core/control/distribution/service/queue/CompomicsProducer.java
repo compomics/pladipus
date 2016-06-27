@@ -10,6 +10,11 @@ import com.compomics.pladipus.core.model.properties.NetworkProperties;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -48,10 +53,6 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      */
     private Session session;
     /**
-     * The message to push
-     */
-    private String message;
-    /**
      * The text representation of the message
      */
     private TextMessage txtMessage;
@@ -63,37 +64,44 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      * The default priority level
      */
     private int priority = 4;
+    /**
+     * The collection of messages to send
+     */
+    private HashMap<String, Integer> messages = new HashMap<>();
 
     /**
      *
      * @param queue the queue this producer will push to
      * @param message the textual message that should be send
-     * @param processID the process ID that will be pushed
      * @param priority the priority level of this producer (0-9, default = 4)
      * @throws IOException
      * @throws JMSException
      */
-    public CompomicsProducer(CompomicsQueue queue, String message, int processID, int priority) throws IOException, JMSException {
-        init(queue, message, processID);
+    public CompomicsProducer(CompomicsQueue queue, int priority) throws IOException, JMSException {
+        init(queue);
         this.priority = priority;
     }
 
     /**
      *
      * @param queue the queue this producer will push to
-     * @param message the textual message that should be send
-     * @param processID the process ID that will be pushed
      * @throws IOException
      * @throws JMSException
      */
-    public CompomicsProducer(CompomicsQueue queue, String message, int processID) throws IOException, JMSException {
-        init(queue, message, processID);
+    public CompomicsProducer(CompomicsQueue queue) throws IOException, JMSException {
+        init(queue);
     }
 
-    private void init(CompomicsQueue queue, String message, int processID) throws JMSException, IOException {
+    public void addMessage(String message, Integer processId) {
+        this.messages.put(message, processId);
+    }
+
+    public void addMessage(HashMap<String, Integer> messages) {
+        this.messages.putAll(messages);
+    }
+
+    private void init(CompomicsQueue queue) throws JMSException, IOException {
         this.queue = queue;
-        this.message = message;
-        this.processID = processID;
         if (priority > 9) {
             priority = 9;
         } else if (priority < 0) {
@@ -144,19 +152,21 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      */
     private void processMessage() throws JMSException, SQLException {
         // Create a messages
-        if (txtMessage == null) {
-            txtMessage = session.createTextMessage(message);
+        for (Map.Entry<String, Integer> message : messages.entrySet()) {
+            txtMessage = session.createTextMessage(message.getKey());
             txtMessage.setJMSPriority(priority);
-            txtMessage.setJMSMessageID(String.valueOf(processID));
-            txtMessage.setJMSCorrelationID(String.valueOf(processID));
+            txtMessage.setJMSMessageID(String.valueOf(message.getValue()));
+            txtMessage.setJMSCorrelationID(String.valueOf(message.getValue()));
+            sendMessage(txtMessage);
         }
-        sendMessage(txtMessage);
+        //commit the session
+        session.commit();
     }
 
     private void sendMessage(TextMessage txtMessage) throws JMSException {
         // Tell the producer to send the message
         producer.send(txtMessage);
-        session.commit();
+
     }
 
     /**
@@ -164,6 +174,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      */
     @Override
     public void close() {
+        LOGGER.debug("Closing producer...");
         try {
             if (producer != null) {
                 producer.close();

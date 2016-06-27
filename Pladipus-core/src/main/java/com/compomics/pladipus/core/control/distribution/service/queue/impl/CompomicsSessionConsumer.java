@@ -93,9 +93,8 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
             TextMessage textMessage = (TextMessage) message;
             try (
                     CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB,
-                            textMessage.getText(),
-                            (int) processID,
                             pService.getProcessingJob(processID).getPriority())) {
+                producer.addMessage(textMessage.getText(), (int) processID);
                 producer.run();
             } catch (Exception ex) {
                 LOGGER.warn("Could not relaunch job : " + processID + ". Please try again manually or by force-starting the entire run");

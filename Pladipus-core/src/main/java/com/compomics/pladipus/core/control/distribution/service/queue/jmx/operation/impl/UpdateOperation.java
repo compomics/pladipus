@@ -40,7 +40,8 @@ public class UpdateOperation extends QueueOperation {
         DeleteOperation deleteOperation = new DeleteOperation();
         deleteOperation.deleteJobFromQueue(queue, processID);
         //push the new job using the processID
-        CompomicsProducer producer = new CompomicsProducer(queue, newMessage, processID);
+        CompomicsProducer producer = new CompomicsProducer(queue);
+        producer.addMessage(newMessage, processID);
         Thread producerThread = new Thread(producer, "ProducerThread");
         producerThread.start();
     }
