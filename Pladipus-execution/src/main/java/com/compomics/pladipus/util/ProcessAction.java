@@ -44,17 +44,18 @@ public class ProcessAction {
         try {
             ProcessDAO pDAO = ProcessDAO.getInstance();
             PladipusProcessingTemplate runTemplate = null;
-            for (int processID : process_ids) {
-                if (runTemplate == null) {
-                    runTemplate = pDAO.getTemplate(processID);
-                }
-                //is the process complete?
-                if (!pDAO.isCompletedProcess(processID) && !pDAO.isQueued(processID)) {
-                    try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, pDAO.getXMLForProcess(processID), processID)) {
-                        producer.run();
+            try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB)) {
+                for (int processID : process_ids) {
+                    if (runTemplate == null) {
+                        runTemplate = pDAO.getTemplate(processID);
+                    }
+                    //is the process complete?
+                    if (!pDAO.isCompletedProcess(processID) && !pDAO.isQueued(processID)) {
+                        producer.addMessage(pDAO.getXMLForProcess(processID), processID,runTemplate.getPriority());
                     }
                     pDAO.setQueued(processID, true);
                 }
+                producer.run();
             }
         } catch (JMSException | SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
             LOGGER.error("Could not start the selection", ex);

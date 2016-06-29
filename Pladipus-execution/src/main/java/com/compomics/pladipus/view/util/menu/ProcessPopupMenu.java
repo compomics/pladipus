@@ -56,7 +56,7 @@ public class ProcessPopupMenu extends JPopupMenu {
             public void actionPerformed(ActionEvent e) {
                 int[] selectedRows = processTable.getSelectedRows();
                 if (selectedRows.length > 0) {
-                    int dialogResult = JOptionPane.showConfirmDialog(ProcessPopupMenu.this, "Are you sure you want to stop the selected process(es)?" 
+                    int dialogResult = JOptionPane.showConfirmDialog(ProcessPopupMenu.this, "Are you sure you want to stop the selected process(es)?"
                             + System.lineSeparator() + "Stopping a Job will lose all current progress...");
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         try {
@@ -125,18 +125,19 @@ public class ProcessPopupMenu extends JPopupMenu {
                     try {
                         ProcessDAO pDAO = ProcessDAO.getInstance();
                         PladipusProcessingTemplate runTemplate = null;
-                        for (int selectedRow : selectedRows) {
-                            int processID = Integer.parseInt(String.valueOf(processTable.getValueAt(selectedRow, 1)));
-                            if (runTemplate == null) {
-                                runTemplate = pDAO.getTemplate(processID);
-                            }
-                            //is the process complete?
-                            if (!pDAO.isCompletedProcess(processID) && !pDAO.isQueued(processID)) {
-                                try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, pDAO.getXMLForProcess(processID), processID)) {
-                                    producer.run();
+                        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB)) {
+                            for (int selectedRow : selectedRows) {
+                                int processID = Integer.parseInt(String.valueOf(processTable.getValueAt(selectedRow, 1)));
+                                if (runTemplate == null) {
+                                    runTemplate = pDAO.getTemplate(processID);
+                                }
+                                //is the process complete?
+                                if (!pDAO.isCompletedProcess(processID) && !pDAO.isQueued(processID)) {
+                                    producer.addMessage(pDAO.getXMLForProcess(processID), processID, runTemplate.getPriority());
                                 }
                                 pDAO.setQueued(processID, true);
                             }
+                            producer.run();
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

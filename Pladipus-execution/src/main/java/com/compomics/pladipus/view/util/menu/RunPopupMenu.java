@@ -3,6 +3,7 @@ package com.compomics.pladipus.view.util.menu;
 import com.compomics.pladipus.core.control.distribution.service.RunService;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.ProcessDAO;
 import com.compomics.pladipus.core.control.distribution.service.database.dao.impl.RunDAO;
+import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsGUIProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.CompomicsProducer;
 import com.compomics.pladipus.core.control.distribution.service.queue.jmx.operation.impl.DeleteOperation;
 import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
@@ -196,16 +197,16 @@ public class RunPopupMenu extends JPopupMenu {
                         Collection<Integer> processesToQueue = new ArrayList<>();
                         progressDialog.setMaxPrimaryProgressCounter(unqueuedProcesses.size());
                         progressDialog.setPrimaryProgressCounter(0);
-                        for (ProcessingJob aJob : unqueuedProcesses) {
-                            long processID = aJob.getId();
-                            try (
-                                CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, aJob.toXML(), (int) processID, templateForRun.getPriority())) {
-                                producer.run();
-                                producer.close();
+                        try (
+                        CompomicsGUIProducer producer = new CompomicsGUIProducer(CompomicsQueue.JOB, progressDialog)) {
+                            for (ProcessingJob aJob : unqueuedProcesses) {
+                                long processID = aJob.getId();
+                                String message = aJob.toXML();
+                                producer.addMessage(message, (int) processID, templateForRun.getPriority());
+                                processesToQueue.add((int) processID);
                             }
-                            processesToQueue.add((int) processID);
-                            progressDialog.increasePrimaryProgressCounter();
-                        }
+                            producer.run();
+                       }
                         dao.setQueued(processesToQueue, true);
                     } catch (JMSException | NumberFormatException | SQLException | IOException | ProcessStepInitialisationException | ParserConfigurationException | SAXException ex) {
                         ex.printStackTrace();

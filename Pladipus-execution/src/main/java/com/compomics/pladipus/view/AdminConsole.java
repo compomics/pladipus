@@ -57,7 +57,7 @@ public class AdminConsole extends javax.swing.JFrame {
         initMaintenanceSteps();
         pladipusInformationPanel1.activate();
     }
-
+    
     private void initMaintenanceSteps() {
         cbMaintenanceTasks.removeAllItems();
         for (MaintenanceTask task : MaintenanceTask.values()) {
@@ -372,7 +372,7 @@ public class AdminConsole extends javax.swing.JFrame {
     private void btnBroadcastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBroadcastActionPerformed
         try {
             MaintenanceTask task = (MaintenanceTask) cbMaintenanceTasks.getSelectedItem();
-
+            
             String operationName = "Maintenance_" + task + System.currentTimeMillis();
             PladipusProcessingTemplate template = new PladipusProcessingTemplate(operationName, user, 1);
 
@@ -386,9 +386,9 @@ public class AdminConsole extends javax.swing.JFrame {
                     return;
                 }
             }
-
+            
             template.addProcessingStep(task.getClassName());
-
+            
             QueryOperation qOperation = new QueryOperation();
             long cumulativeQueueSize = 1;
             try {
@@ -397,12 +397,13 @@ public class AdminConsole extends javax.swing.JFrame {
 //queue might not be made yet
 
             }
-            template.toJobXML((int) cumulativeQueueSize);
-
-            CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.UPDATE, user, -1);
+            String toJobXML = template.toJobXML((int) cumulativeQueueSize);
+            
+            CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.UPDATE, -1);
             Thread producerThread = new Thread(producer, "ProducerThread");
+            producer.addMessage(toJobXML, (int) System.currentTimeMillis()/10000);
             producerThread.start();
-
+            
         } catch (IOException | JMSException ex) {
             Logger.getLogger(AdminConsole.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ConnectionException ex) {

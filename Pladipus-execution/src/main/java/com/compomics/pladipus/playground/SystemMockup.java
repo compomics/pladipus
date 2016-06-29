@@ -35,10 +35,11 @@ public class SystemMockup {
         PladipusProcessingTemplate convertXMLtoTemplate = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(exampleMessage);
         int processID = (int) System.currentTimeMillis();
         String toJobXML = convertXMLtoTemplate.toJobXML(processID);
-        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.UPDATE, toJobXML, processID)) {
-             Thread producerThread = new Thread(producer, "ProducerThread");
+        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.UPDATE, processID)) {
+            Thread producerThread = new Thread(producer, "ProducerThread");
+            producer.addMessage(toJobXML, processID);
             producerThread.start();
-           System.out.println("Posted System Job !");
+            System.out.println("Posted System Job !");
         } catch (Exception e) {
             e.printStackTrace();
         }

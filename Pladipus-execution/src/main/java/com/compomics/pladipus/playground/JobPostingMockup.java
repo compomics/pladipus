@@ -37,17 +37,19 @@ public class JobPostingMockup {
 
         long cumulativeQueueSize = 1;
         try {
-          //  dOperation.purgeFromQueue(CompomicsQueue.UPDATE);
+            //  dOperation.purgeFromQueue(CompomicsQueue.UPDATE);
             cumulativeQueueSize += operation.getCumulativeQueueSize(CompomicsQueue.JOB);
         } catch (IllegalArgumentException e) {
             //then the queue still needs to be made...
         }
         PladipusProcessingTemplate convertXMLtoTemplate = XMLTemplateInterpreter.getInstance().convertXMLtoTemplate(exampleMessage);
         String toJobXML = convertXMLtoTemplate.toJobXML((int) cumulativeQueueSize);
-        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, toJobXML, (int) cumulativeQueueSize)) {
-              Thread producerThread = new Thread(producer, "ProducerThread");
+        int processID = (int) System.currentTimeMillis();
+        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, (int) cumulativeQueueSize)) {
+            Thread producerThread = new Thread(producer, "ProducerThread");
+            producer.addMessage(toJobXML, processID);
             producerThread.start();
-          System.out.println(operation.getCurrentQueueSize(CompomicsQueue.JOB));
+            System.out.println(operation.getCurrentQueueSize(CompomicsQueue.JOB));
         } catch (Exception e) {
             e.printStackTrace();
         }

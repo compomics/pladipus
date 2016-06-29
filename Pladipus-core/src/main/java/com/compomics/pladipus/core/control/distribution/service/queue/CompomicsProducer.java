@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
@@ -47,7 +48,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     /**
      * This producer's connection (only one per machine)
      */
-    private Connection connection;
+    Connection connection;
     /**
      * This producer's session (only one per machine)
      */
@@ -63,11 +64,15 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     /**
      * The default priority level
      */
-    private int priority = 4;
+    private int defaultPriority = 4;
     /**
      * The collection of messages to send
      */
-    private HashMap<String, Integer> messages = new HashMap<>();
+    protected HashMap<String, Integer> messageProcessIds = new HashMap<>();
+    /**
+     * The collection of priorities to send
+     */
+    protected HashMap<String, Integer> messagePriorities = new HashMap<>();
 
     /**
      *
@@ -79,7 +84,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      */
     public CompomicsProducer(CompomicsQueue queue, int priority) throws IOException, JMSException {
         init(queue);
-        this.priority = priority;
+        this.defaultPriority = priority;
     }
 
     /**
@@ -92,25 +97,37 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
         init(queue);
     }
 
+    public void addMessage(String message, Integer processId, Integer priority) {
+        this.messageProcessIds.put(message, processId);
+        this.messagePriorities.put(message, priority);
+    }
+
+    public void addMessage(HashMap<String, Integer> messages, Integer priority) {
+        this.messageProcessIds.putAll(messages);
+        for (String aMessage : messages.keySet()) {
+            messagePriorities.put(aMessage, priority);
+        }
+    }
+
     public void addMessage(String message, Integer processId) {
-        this.messages.put(message, processId);
+        this.messageProcessIds.put(message, processId);
     }
 
     public void addMessage(HashMap<String, Integer> messages) {
-        this.messages.putAll(messages);
+        this.messageProcessIds.putAll(messages);
     }
 
     private void init(CompomicsQueue queue) throws JMSException, IOException {
         this.queue = queue;
-        if (priority > 9) {
-            priority = 9;
-        } else if (priority < 0) {
-            priority = 0;
+        if (defaultPriority > 9) {
+            defaultPriority = 9;
+        } else if (defaultPriority < 0) {
+            defaultPriority = 0;
         }
         initConnection();
     }
 
-    private void initConnection() throws JMSException, JMSException, JMSException, JMSException, JMSException {
+    protected void initConnection() throws JMSException, JMSException, JMSException, JMSException, JMSException {
         // Create a Connection
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(NetworkProperties.getInstance().getActiveMQLocation());
         connectionFactory.setCloseTimeout(30000);
@@ -138,7 +155,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
         }
         producer = session.createProducer(destination);
         //
-        producer.setPriority(priority);
+        producer.setPriority(defaultPriority);
         //
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
@@ -147,17 +164,28 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
     /**
      * Processes the message to be pushed
      *
+     * @param message the message to be sent (as a map entry)
      * @throws JMSException
      * @throws SQLException
      */
-    private void processMessage() throws JMSException, SQLException {
+    protected void processMessage(Entry<String, Integer> message) throws JMSException, SQLException {
+        txtMessage = session.createTextMessage(message.getKey());
+        txtMessage.setJMSPriority(messagePriorities.getOrDefault(message.getKey(), defaultPriority));
+        txtMessage.setJMSMessageID(String.valueOf(message.getValue()));
+        txtMessage.setJMSCorrelationID(String.valueOf(message.getValue()));
+        sendMessage(txtMessage);
+    }
+
+    /**
+     * Processes the messages to be pushed
+     *
+     * @throws JMSException
+     * @throws SQLException
+     */
+    protected void processMessages() throws JMSException, SQLException {
         // Create a messages
-        for (Map.Entry<String, Integer> message : messages.entrySet()) {
-            txtMessage = session.createTextMessage(message.getKey());
-            txtMessage.setJMSPriority(priority);
-            txtMessage.setJMSMessageID(String.valueOf(message.getValue()));
-            txtMessage.setJMSCorrelationID(String.valueOf(message.getValue()));
-            sendMessage(txtMessage);
+        for (Map.Entry<String, Integer> message : messageProcessIds.entrySet()) {
+            processMessage(message);
         }
         //commit the session
         session.commit();
@@ -208,11 +236,12 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
             if (connection == null) {
                 initConnection();
             }
-            processMessage();
+            processMessages();
         } catch (Exception ex) {
             LOGGER.error(ex);
         } finally {
             close();
         }
     }
+
 }

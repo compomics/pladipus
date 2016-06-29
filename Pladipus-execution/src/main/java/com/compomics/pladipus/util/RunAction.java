@@ -45,7 +45,7 @@ public class RunAction {
     }
 
     public static void startRuns(int... run_ids) {
-         LOGGER.info("Starting runs...");
+        LOGGER.info("Starting runs...");
         ProcessDAO dao = ProcessDAO.getInstance();
         RunDAO rDao = RunDAO.getInstance();
         for (int run_ID : run_ids) {
@@ -53,11 +53,12 @@ public class RunAction {
                 PladipusProcessingTemplate templateForRun = rDao.getTemplateForRun(run_ID);
                 Collection<ProcessingJob> unqueuedProcesses = dao.getJobsForRun(templateForRun, run_ID, false, false);
                 Collection<Integer> processesToQueue = new ArrayList<>();
-                 LOGGER.info("Dispatching " + unqueuedProcesses.size() + " processes for " + run_ID);
+                LOGGER.info("Dispatching " + unqueuedProcesses.size() + " processes for " + run_ID);
                 for (ProcessingJob aJob : unqueuedProcesses) {
                     long processID = aJob.getId();
                     try (
-                            CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, aJob.toXML(), (int) processID, templateForRun.getPriority())) {
+                            CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, templateForRun.getPriority())) {
+                        producer.addMessage(aJob.toXML(), (int) processID);
                         producer.run();
                     }
                     processesToQueue.add((int) processID);
