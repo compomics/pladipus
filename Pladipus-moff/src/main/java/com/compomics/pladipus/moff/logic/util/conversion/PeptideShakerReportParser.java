@@ -1,4 +1,4 @@
-package com.compomics.moff.gui.control.util;
+package com.compomics.pladipus.moff.logic.util.conversion;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,7 +14,7 @@ import java.io.IOException;
  *
  * @author Kenneth Verheggen
  */
-public class PSOutputParser {
+public class PeptideShakerReportParser {
 
     private static final int LINE = 0;
     private static final int PROTEINS = 1;
@@ -38,7 +38,8 @@ public class PSOutputParser {
     private static final int CONFIDENCE = 19;
     private static final int VALIDATION = 20;
 
-    private static final String P_HEADER = "prot\t"
+    private static final String P_HEADER = 
+            "prot\t"
             + "peptide\t"
             + "var_mod\t"
             + "fix_mod\t"

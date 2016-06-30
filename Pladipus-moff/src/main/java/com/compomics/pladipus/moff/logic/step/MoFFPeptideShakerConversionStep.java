@@ -1,11 +1,11 @@
 package com.compomics.pladipus.moff.logic.step;
 
-import com.compomics.moff.gui.control.util.PSOutputParser;
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
+import com.compomics.pladipus.moff.logic.util.conversion.PeptideShakerReportParser;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import com.compomics.pladipus.search.processsteps.PeptideShakerStep;
 import java.io.File;
@@ -135,7 +135,7 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
             inputFile = new File(parameters.get("ps_output"));
             File reportFile = prepareReportFile(inputFile);
             moffFile = new File(reportFile.getAbsolutePath() + ".moff.tsv");
-            PSOutputParser.convertReport(reportFile, moffFile);
+            PeptideShakerReportParser.convertReport(reportFile, moffFile);
             clearDataFolder();
             LOGGER.info("Conversion completed");
             return true;
