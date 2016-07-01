@@ -125,4 +125,8 @@ public class MoFFStep extends ProcessingStep {
         return "Running MoFF (" + mode + ")";
     }
 
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
+
 }

@@ -62,4 +62,8 @@ public class BlastSetupStep extends ProcessingStep {
         return "Initialisation of the blasting process";
     }
 
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
+
 }

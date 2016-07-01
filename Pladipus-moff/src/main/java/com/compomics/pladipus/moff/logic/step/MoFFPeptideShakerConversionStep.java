@@ -5,6 +5,7 @@ import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
+import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.moff.logic.util.conversion.PeptideShakerReportParser;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
 import com.compomics.pladipus.search.processsteps.PeptideShakerStep;
@@ -165,5 +166,9 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
                 tempMgf.delete();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
     }
 }

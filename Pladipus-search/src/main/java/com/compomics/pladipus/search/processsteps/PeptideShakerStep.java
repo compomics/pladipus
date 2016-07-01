@@ -169,4 +169,10 @@ public class PeptideShakerStep extends ProcessingStep {
     public String getDescription() {
         return "Running PeptideShaker";
     }
+    
+        public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
+        
+        
 }

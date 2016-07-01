@@ -129,4 +129,7 @@ public class MsConvertStep extends ProcessingStep {
         return path.delete();
     }
 
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
 }

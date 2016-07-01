@@ -5,6 +5,7 @@ import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.feedback.Checkpoint;
+import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.moff.logic.util.conversion.MzIdentMLParser;
 import com.compomics.pladipus.moff.logic.util.conversion.PeptideShakerReportParser;
 import com.compomics.pladipus.search.checkpoints.PeptideShakerReportCheckPoints;
@@ -65,15 +66,11 @@ public class MoFFPreProcessingStep extends PeptideShakerStep {
 
     }
 
-    public static void main(String[] args) {
-        //for each argument, put it in a parameter map and make a new step to execute
-        
-    }
 
     @Override
     public boolean doAction() throws UnspecifiedPladipusException, PladipusProcessingException {
         try {
-       
+
             if (parameters.containsKey("ps_output")) {
                 inputFile = new File(parameters.get("ps_output"));
                 File reportFile = preparePeptideShakerReport(inputFile);
@@ -197,5 +194,9 @@ public class MoFFPreProcessingStep extends PeptideShakerStep {
                 tempMgf.delete();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
     }
 }

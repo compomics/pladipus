@@ -68,4 +68,8 @@ public class MsConvertSetupStep extends ProcessingStep {
         return "Initialisation of the MsConvert process";
     }
 
+        public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
+    
 }

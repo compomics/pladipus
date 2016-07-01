@@ -133,4 +133,8 @@ public class SearchGUIStep extends ProcessingStep {
     public String getDescription() {
         return "Running SearchGUI";
     }
+    
+        public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
 }

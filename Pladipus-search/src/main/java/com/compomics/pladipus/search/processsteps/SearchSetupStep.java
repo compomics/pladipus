@@ -151,4 +151,8 @@ public class SearchSetupStep extends ProcessingStep {
         return temp;
     }
 
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
+
 }

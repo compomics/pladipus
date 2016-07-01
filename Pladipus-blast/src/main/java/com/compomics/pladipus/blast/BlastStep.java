@@ -61,4 +61,8 @@ public class BlastStep extends ProcessingStep {
         return "Protein blast";
     }
 
+    public static void main(String[] args) {
+        ProcessingStep.main(args);
+    }
+
 }
