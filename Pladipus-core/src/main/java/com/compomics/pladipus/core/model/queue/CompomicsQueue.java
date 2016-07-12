@@ -11,6 +11,8 @@ package com.compomics.pladipus.core.model.queue;
  */
 public enum CompomicsQueue {
 
+    SCREENSAVER_JOB("pladipus_screensaver.job", false),
+    SCREENSAVER_RESULT("pladipus_screensaver.result", false), 
     JOB("pladipus.job", false), UPDATE("pladipus.update", true);
     /**
      * The name of the queue

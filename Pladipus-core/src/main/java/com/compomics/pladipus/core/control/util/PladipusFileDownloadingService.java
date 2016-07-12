@@ -20,8 +20,10 @@ public class PladipusFileDownloadingService {
      * The Logging instance
      */
     private static final Logger LOGGER = Logger.getLogger(PladipusFileDownloadingService.class);
+
     /**
      * Downloads an entire folder locally
+     *
      * @param pathToFolder the path (http, ftp or file based) to the folder
      * @param destFolder the local folder
      * @return the filled destination folder
@@ -39,8 +41,10 @@ public class PladipusFileDownloadingService {
         }
         return localFolder;
     }
- /**
+
+    /**
      * Downloads a file locally
+     *
      * @param pathToFolder the path (http, ftp or file based) to the file
      * @param destFolder the local folder
      * @return the downloaded file
@@ -55,8 +59,10 @@ public class PladipusFileDownloadingService {
         copy(fileURL, destFile);
         return destFile;
     }
-/**
+
+    /**
      * Downloads a file locally
+     *
      * @param pathToFolder the path (http, ftp or file based) to the file
      * @param destFolder the local folder
      * @param newFileName a new name for the downloaded file
@@ -115,7 +121,7 @@ public class PladipusFileDownloadingService {
                     // ftp.deleteFile(file.getName());
                 }
             }
-           // ftp.logout();
+            // ftp.logout();
             ftp.disconnect();
         } catch (Exception ex) {
             ex.printStackTrace();

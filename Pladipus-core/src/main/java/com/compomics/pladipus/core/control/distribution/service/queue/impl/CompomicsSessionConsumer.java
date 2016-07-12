@@ -58,6 +58,10 @@ public class CompomicsSessionConsumer extends CompomicsConsumer {
         super(CompomicsQueue.JOB);
     }
 
+    public CompomicsSessionConsumer(CompomicsQueue queue) throws IOException, JMSException {
+        super(queue);
+    }
+
     /**
      * commits the message if it was successfull. Resets it on the queue in case
      * of failure/prerequisite mismatch

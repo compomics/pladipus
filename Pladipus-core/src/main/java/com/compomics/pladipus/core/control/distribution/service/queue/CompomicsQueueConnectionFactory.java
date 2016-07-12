@@ -61,6 +61,8 @@ public class CompomicsQueueConnectionFactory {
      * A regular consumer for job messages
      */
     private MessageConsumer jobConsumer;
+    private final MessageConsumer srcJobConsumer;
+    private final MessageConsumer scrResultConsumer;
 
     private CompomicsQueueConnectionFactory() throws JMSException {
         connectionFactory = new ActiveMQConnectionFactory(NetworkProperties.getInstance().getActiveMQLocation());
@@ -85,9 +87,17 @@ public class CompomicsQueueConnectionFactory {
         // create a MessageConsumer for receiving messages
         systemConsumer = systemSession.createDurableSubscriber(topic, ClientNameResolver.getClientIdentifier());
         // Create the destination  queue
-        Destination destination = session.createQueue(CompomicsQueue.JOB.getQueueName());
+        Destination JobDestination = session.createQueue(CompomicsQueue.JOB.getQueueName());
         // Create a MessageConsumer from the Session to the Topic or Queue
-        jobConsumer = session.createConsumer(destination);
+        jobConsumer = session.createConsumer(JobDestination);
+        // Create the destination  queue
+        Destination scrDestination = session.createQueue(CompomicsQueue.SCREENSAVER_JOB.getQueueName());
+        // Create a MessageConsumer from the Session to the Topic or Queue
+        srcJobConsumer = session.createConsumer(scrDestination);
+        // Create the destination  queue
+        Destination scrResultDestination = session.createQueue(CompomicsQueue.SCREENSAVER_RESULT.getQueueName());
+        // Create a MessageConsumer from the Session to the Topic or Queue
+        scrResultConsumer = session.createConsumer(scrResultDestination);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -114,7 +124,7 @@ public class CompomicsQueueConnectionFactory {
             queueConnectionFactory.close();
             queueConnectionFactory = null;
         }
-        queueConnectionFactory=new CompomicsQueueConnectionFactory();
+        queueConnectionFactory = new CompomicsQueueConnectionFactory();
     }
 
     /**
@@ -136,6 +146,14 @@ public class CompomicsQueueConnectionFactory {
         return jobConsumer;
     }
 
+    private MessageConsumer getScrJobConsumer() {
+        return srcJobConsumer;
+    }
+
+    private MessageConsumer getScrJobResultConsumer() {
+        return scrResultConsumer;
+    }
+
     /**
      *
      * @return the current JMX session object
@@ -152,10 +170,21 @@ public class CompomicsQueueConnectionFactory {
      */
     public MessageConsumer getConsumer(CompomicsQueue queue) {
         MessageConsumer consumer = null;
-        if (queue.equals(CompomicsQueue.JOB)) {
-            consumer = getJobConsumer();
-        } else if (queue.equals(CompomicsQueue.UPDATE)) {
-            consumer = getUpdateConsumer();
+        switch (queue) {
+            case JOB:
+                consumer = getJobConsumer();
+                break;
+            case UPDATE:
+                consumer = getUpdateConsumer();
+                break;
+            case SCREENSAVER_JOB:
+                consumer = getScrJobConsumer();
+                break;
+            case SCREENSAVER_RESULT:
+                consumer = getScrJobResultConsumer();
+                break;
+            default:
+                break;
         }
         return consumer;
     }

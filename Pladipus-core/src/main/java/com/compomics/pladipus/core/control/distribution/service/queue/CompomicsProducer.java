@@ -182,7 +182,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
      * @throws JMSException
      * @throws SQLException
      */
-    protected void processMessages() throws JMSException, SQLException {
+    public void processMessages() throws JMSException, SQLException {
         // Create a messages
         for (Map.Entry<String, Integer> message : messageProcessIds.entrySet()) {
             processMessage(message);
@@ -191,10 +191,9 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
         session.commit();
     }
 
-    private void sendMessage(TextMessage txtMessage) throws JMSException {
+    public void sendMessage(TextMessage txtMessage) throws JMSException {
         // Tell the producer to send the message
         producer.send(txtMessage);
-
     }
 
     /**
@@ -238,6 +237,7 @@ public class CompomicsProducer implements Runnable, AutoCloseable {
             }
             processMessages();
         } catch (Exception ex) {
+            ex.printStackTrace();
             LOGGER.error(ex);
         } finally {
             close();
