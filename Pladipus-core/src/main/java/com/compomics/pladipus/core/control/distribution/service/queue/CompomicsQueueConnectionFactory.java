@@ -7,6 +7,7 @@ package com.compomics.pladipus.core.control.distribution.service.queue;
 
 import com.compomics.pladipus.core.control.util.ClientNameResolver;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
+import com.compomics.pladipus.core.model.properties.PladipusProperties;
 import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import javax.jms.Connection;
 import javax.jms.Destination;
@@ -28,7 +29,7 @@ public class CompomicsQueueConnectionFactory {
     /**
      * The connection factory for activeMQ connections
      */
-    private final ActiveMQConnectionFactory connectionFactory;
+    private ActiveMQConnectionFactory connectionFactory;
     /**
      * The Logging instance
      */
@@ -61,11 +62,25 @@ public class CompomicsQueueConnectionFactory {
      * A regular consumer for job messages
      */
     private MessageConsumer jobConsumer;
-    private final MessageConsumer srcJobConsumer;
-    private final MessageConsumer scrResultConsumer;
+    /**
+     * A regular consumer for screensaver job messages
+     */
+    private MessageConsumer srcJobConsumer;
+    /**
+     * A regular consumer for screensaver result job messages
+     */
+    private MessageConsumer scrResultConsumer;
+
+    private CompomicsQueueConnectionFactory(NetworkProperties properties) throws JMSException {
+        init(properties);
+    }
 
     private CompomicsQueueConnectionFactory() throws JMSException {
-        connectionFactory = new ActiveMQConnectionFactory(NetworkProperties.getInstance().getActiveMQLocation());
+        init(NetworkProperties.getInstance());
+    }
+
+    private void init(NetworkProperties properties) throws JMSException {
+        connectionFactory = new ActiveMQConnectionFactory(properties.getActiveMQLocation());
         connectionFactory.setCloseTimeout(30000);
         connectionFactory.setUseAsyncSend(true);
         // Create a redeliverypolicy
@@ -119,12 +134,31 @@ public class CompomicsQueueConnectionFactory {
         return queueConnectionFactory;
     }
 
-    public static void reset() throws JMSException {
+    /**
+     *
+     * @param properties properties that are not the default (caution, this only
+     * loads to the first call);
+     * @return the CompomicsQueueConnectionFactory instance
+     * @throws JMSException
+     */
+    public static CompomicsQueueConnectionFactory getInstance(NetworkProperties properties) throws JMSException {
+        if (queueConnectionFactory == null) {
+            queueConnectionFactory = new CompomicsQueueConnectionFactory(properties);
+        }
+        queueConnectionFactory.getConnection().start();
+        return queueConnectionFactory;
+    }
+
+    public static void reset(NetworkProperties properties) throws JMSException {
         if (queueConnectionFactory != null) {
             queueConnectionFactory.close();
             queueConnectionFactory = null;
         }
-        queueConnectionFactory = new CompomicsQueueConnectionFactory();
+        queueConnectionFactory = new CompomicsQueueConnectionFactory(properties);
+    }
+
+    public static void reset() throws JMSException {
+        reset(NetworkProperties.getInstance());
     }
 
     /**

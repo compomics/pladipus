@@ -22,7 +22,7 @@ public class NetworkProperties extends PladipusProperties {
     /**
      * The properties Instance
      */
-    private static NetworkProperties instance;
+    protected static NetworkProperties instance;
     /**
      * The Logger Instance
      */
@@ -30,9 +30,9 @@ public class NetworkProperties extends PladipusProperties {
     /**
      * The location of the configuration folder
      */
-    private static File configFolder;
+    protected static File configFolder;
 
-    private NetworkProperties() {
+    protected NetworkProperties() {
 
     }
 
