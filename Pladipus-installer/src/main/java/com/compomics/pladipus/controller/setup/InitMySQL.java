@@ -5,38 +5,50 @@
  */
 package com.compomics.pladipus.controller.setup;
 
-import com.compomics.pladipus.core.model.properties.NetworkProperties;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.apache.commons.io.IOUtils;
+
 import org.apache.ibatis.jdbc.ScriptRunner;
 
 /**
+ * class to setup the mysql part of pladipus
  *
  * @author Kenneth Verheggen
  */
 public class InitMySQL {
 
-    public InitMySQL() {
+    //todo remove hardcoding of scheme name
 
-    }
-
+    /**
+     * drops the pladipus schema
+     *
+     * @param connection connection to the database to drop the scheme from
+     * @return true if success
+     * @throws SQLException
+     */
     public boolean dropPladipus(Connection connection) throws SQLException {
-        int executeQuery = connection.createStatement().executeUpdate("drop schema pladipus;");
-        return executeQuery == 1;
+        try (PreparedStatement stat = connection.prepareStatement("drop schema pladipus;")) {
+            return stat.execute();
+        }
     }
 
+    /**
+     * checks if the pladipus schema exists
+     *
+     * @param connection the connection to the database to check on
+     * @return true if success
+     * @throws SQLException
+     */
     public boolean pladipusExists(Connection connection) throws SQLException {
-        ResultSet executeQuery = connection.createStatement().executeQuery("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'pladipus'");
-        return executeQuery.next();
+
+        try (PreparedStatement stat = connection.prepareStatement("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'pladipus'")) {
+            try (ResultSet set = stat.executeQuery()) {
+                return (!set.isAfterLast() && !set.isBeforeFirst());
+            }
+        }
     }
 
     /**
@@ -46,55 +58,21 @@ public class InitMySQL {
      * @param connection the connection to mysql
      * @throws IOException
      */
-    public void setupMySql(Connection connection) throws IOException {
+    public boolean setupMySql(Connection connection) throws IOException {
+
+        //don't quite like this runner thing
         //2. import from SQL script?
         ScriptRunner runner = new ScriptRunner(connection);
         runner.setAutoCommit(true);
-        //runner.setLogWriter(null);
-        //runner.setErrorLogWriter(null);
-        runner.setStopOnError(false);
-        //
-        File tempFile = File.createTempFile("init_script", ".sql");
-        tempFile.deleteOnExit();
-        try (OutputStream out = new FileOutputStream(tempFile); InputStream in = getClass().getClassLoader().getResource("doc/PLADIPUS_INIT_SCRIPT.sql").openStream()) {
-            IOUtils.copy(in, out);
-            runner.runScript(new FileReader(tempFile));
+        runner.setStopOnError(true);
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("doc/PLADIPUS_INIT_SCRIPT.sql")) {
+            if (in != null) {
+                runner.runScript(new InputStreamReader(in));
+                runner.closeConnection();
+                return true;
+            } else {
+                throw new FileNotFoundException("could not find sql script to import");
+            }
         }
-
-    }
-
-    /**
-     * Updates the local properties file
-     *
-     * @param host the mysql host
-     * @param port the mysql port
-     * @param login the mysql login
-     * @param password the mysql password
-     * @return success
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    public boolean updateProperties(String host, String port, String login, String password) throws FileNotFoundException, IOException {
-        NetworkProperties properties = NetworkProperties.getInstance();
-        properties.setProperty("db.host", host);
-        properties.setProperty("db.port", port);
-        properties.setProperty("db.login", login);
-        properties.setProperty("db.pass", password);
-        properties.save();
-        return true;
-    }
-
-    /**
-     * Updates the local properties file
-     *
-     * @param host the mysql host
-     * @param port the mysql port
-     * @param login the mysql login
-     * @return success
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    public boolean updateProperties(String host, String port, String login) throws FileNotFoundException, IOException {
-        return updateProperties(host, port, login, "");
     }
 }
