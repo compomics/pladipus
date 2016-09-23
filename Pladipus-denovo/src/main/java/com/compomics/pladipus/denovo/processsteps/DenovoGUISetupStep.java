@@ -31,6 +31,7 @@ public class DenovoGUISetupStep extends ProcessingStep {
     @Override
     public boolean doAction() throws UnspecifiedPladipusException {
         System.out.println("Running " + this.getClass().getName());
+        try {
         if (tempResources.exists()) {
             for (File aFile : tempResources.listFiles()) {
                 if (aFile.exists()) {
@@ -45,6 +46,9 @@ public class DenovoGUISetupStep extends ProcessingStep {
             tempResources.mkdirs();
         }
         initialiseInputFiles();
+    } catch (IOException e){
+           throw new UnspecifiedPladipusException(e);
+        }
         return true;
     }
 
@@ -56,7 +60,7 @@ public class DenovoGUISetupStep extends ProcessingStep {
         if (inputPath.toLowerCase().endsWith(".mgf")) {
             parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
         } else {
-            parameters.put("spectrum_files", PladipusFileDownloadingService.download(inputPath, tempResources).getAbsolutePath());
+            parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFile(inputPath, tempResources).getAbsolutePath());
         }
 
         parameters.put("id_params", PladipusFileDownloadingService.downloadFile(paramPath, tempResources).getAbsolutePath());

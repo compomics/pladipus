@@ -34,7 +34,7 @@ public class DenovoGUIStep extends ProcessingStep {
 
     }
 
-    private List<String> constructArguments() throws IOException {
+    private List<String> constructArguments() throws IOException, UnspecifiedPladipusException {
         File deNovoGUIJar = getJar();
         ArrayList<String> cmdArgs = new ArrayList<>();
         cmdArgs.add("java");
@@ -60,7 +60,6 @@ public class DenovoGUIStep extends ProcessingStep {
         try {
             SearchParameters identificationParameters = SearchParameters.getIdentificationParameters(parameterFile);
             //fix the location
-            identificationParameters.setParametersFile(parameterFile);
             SearchParameters.saveIdentificationParameters(identificationParameters, parameterFile);
             if (temp_deNovoGUI_output.exists()) {
                 temp_deNovoGUI_output.delete();
@@ -71,21 +70,21 @@ public class DenovoGUIStep extends ProcessingStep {
             //use this variable if you'd run following this classs
             File real_outputFolder = new File(parameters.get("output_folder"));
             parameters.put("output_folder", temp_deNovoGUI_output.getAbsolutePath());
-            ProcessingEngine.startProcess(getJar(), constructArguments());
+            new ProcessingEngine().startProcess(getJar(), constructArguments());
             //storing intermediate results
             LOGGER.info("Storing results in " + real_outputFolder);
             FileUtils.copyDirectory(temp_deNovoGUI_output, real_outputFolder);
             //in case of future peptideShaker searches :
             parameters.put("identification_files", temp_deNovoGUI_output.getAbsolutePath());
-        } catch (IOException ioe){
+        } catch (IOException|ClassNotFoundException ioe){
             UnspecifiedPladipusException ex = new UnspecifiedPladipusException("sumting went rong");
             ex.addSuppressed(ioe);
             throw ex;
         }
-            return true;
+        return true;
     }
 
-    public File getJar() throws IOException {
+    public File getJar() throws IOException,UnspecifiedPladipusException {
         //check if this is possible in another way...
         File toolFolder = new File(System.getProperties().getProperty("user.home") + "/.compomics/pladipus/tools");
         toolFolder.mkdirs();

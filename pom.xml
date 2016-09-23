@@ -125,6 +125,12 @@
 
     <repositories>
         <repository>
+            <id>genesis-maven2-repository</id>
+            <name>Genesis maven2 repository</name>
+            <url>http://genesis.UGent.be/maven2</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>ebi-repo</id>
             <name>The EBI Maven 2 repository</name>
             <url>http://www.ebi.ac.uk/~maven/m2repo</url>
@@ -139,12 +145,6 @@
             <id>genesis-maven-repo</id>
             <name>Genesis maven repository</name>
             <url>http://genesis.UGent.be/maven</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>genesis-maven2-repository</id>
-            <name>Genesis maven2 repository</name>
-            <url>http://genesis.UGent.be/maven2</url>
             <layout>default</layout>
         </repository>
     </repositories>
