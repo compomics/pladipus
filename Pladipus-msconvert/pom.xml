@@ -13,8 +13,8 @@
             <groupId>com.compomics</groupId>
             <artifactId>Pladipus-core</artifactId>
             <version>1.2.1</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
+
     <name>Pladipus-msconvert</name>
 </project>

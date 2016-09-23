@@ -288,6 +288,7 @@ public class RunCreationDialog extends javax.swing.JDialog {
         miSetCores = new javax.swing.JMenuItem();
         miSetMemory = new javax.swing.JMenuItem();
         miSetDiskSpace = new javax.swing.JMenuItem();
+        wrapper = new javax.swing.JScrollPane();
 
         moveUpMenuItem.setText("Move Up");
         moveUpMenuItem.setToolTipText("");
@@ -1276,66 +1277,13 @@ public class RunCreationDialog extends javax.swing.JDialog {
     private javax.swing.JPopupMenu stepsPopupMenu;
     private javax.swing.JTable tblParameters;
     private javax.swing.JTextField tfRunName;
+    private javax.swing.JScrollPane wrapper;
     // End of variables declaration//GEN-END:variables
 
     public PladipusProcessingTemplate getProcessingTemplate() {
         return template;
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ProcessImportDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ProcessImportDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ProcessImportDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ProcessImportDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                
-                try {
-                    RunCreationDialog dialog;
-                    dialog = new RunCreationDialog(new javax.swing.JFrame(), "pladmin", new UserPanel(), true);
-                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                        @Override
-                        public void windowClosing(java.awt.event.WindowEvent e) {
-                            System.exit(0);
-                        }
-                    });
-                    dialog.setVisible(true);
-                } catch (ParserConfigurationException ex) {
-                    java.util.logging.Logger.getLogger(RunCreationDialog.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    java.util.logging.Logger.getLogger(RunCreationDialog.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SAXException ex) {
-                    java.util.logging.Logger.getLogger(RunCreationDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-            }
-        });
-    }
     
 }

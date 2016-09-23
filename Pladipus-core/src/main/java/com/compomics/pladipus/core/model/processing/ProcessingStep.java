@@ -5,18 +5,13 @@
  */
 package com.compomics.pladipus.core.model.processing;
 
-import com.compomics.pladipus.core.control.distribution.communication.interpreter.XMLInterpreter;
 import com.compomics.pladipus.core.control.engine.ProcessingEngine;
 import com.compomics.pladipus.core.control.engine.callback.CallbackNotifier;
-import com.compomics.pladipus.core.control.runtime.steploader.impl.SpringProcessingStepLoader;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.ProcessStepInitialisationException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;

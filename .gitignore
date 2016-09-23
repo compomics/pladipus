@@ -10,3 +10,5 @@
 /Pladipus-installer/test/main/resources/
 /Pladipus-moff/target/
 /Pladipus-standalone/target/
+temp.txt
+.idea/

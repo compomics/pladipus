@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.FileUtils;
@@ -54,7 +55,7 @@ public class PeptideShakerStep extends ProcessingStep {
         File outputFolder = new File(parameters.get("output_folder"));
         outputFolder.mkdirs();
 //check if reports are requested
-        if (parameters.containsKey("reports") && !parameters.containsKey("out_reports")) {
+        if (parameters.containsKey("reports")) {
             File outputReportFolder = new File(outputFolder, "reports");
             if (outputReportFolder.mkdirs()) {
                 parameters.put("out_reports", outputReportFolder.getAbsolutePath());
@@ -76,11 +77,11 @@ public class PeptideShakerStep extends ProcessingStep {
                 cmdArgs.add(parameters.get(aParameter.getId()));
             }
         }
-        for (AllowedPeptideShakerReportParams aParameter : AllowedPeptideShakerReportParams.values()) {
-            if (parameters.containsKey(aParameter.getId())) {
-                cmdArgs.add("-" + aParameter.getId());
-                cmdArgs.add(parameters.get(aParameter.getId()));
-            }
+
+        for (Map.Entry<String,String> aParameter:parameters.entrySet()){
+            cmdArgs.add("-" + aParameter.getKey());
+            cmdArgs.add(parameters.get(aParameter.getValue()));
+
         }
 
         return cmdArgs;
@@ -122,13 +123,13 @@ public class PeptideShakerStep extends ProcessingStep {
             if (parameters.containsKey("replicate")) {
                 replicate = parameters.get("replicate");
             }
-            
+
+            //non sensical
             if (parameters.containsKey("output_folder")) {
                 temp_peptideshaker_cps = new File(temp_peptideshaker_output.getAbsolutePath() + "/" + experiment + "_" + sample + "_" + replicate + ".cpsx");
                 parameters.put("out", temp_peptideshaker_cps.getAbsolutePath());
             }
-            File real_output_folder = new File(parameters.get("output_folder"));
-            
+
             List<String> constructArguments = constructArguments();
             //add callback notifier for more detailed printouts of the processing
             CallbackNotifier callbackNotifier = getCallbackNotifier();
@@ -136,7 +137,6 @@ public class PeptideShakerStep extends ProcessingStep {
                 callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
             }
             startProcess(peptideShakerJar, constructArguments);
-            cleanupAndSave(real_output_folder);
             return true;
         } catch (IOException | XMLStreamException | URISyntaxException ex) {
            throw new PladipusProcessingException(ex);
@@ -161,10 +161,6 @@ public class PeptideShakerStep extends ProcessingStep {
         return true;
     }
 
-    private void cleanupAndSave(File resultFolder) throws Exception {
-        ZipUtils.zipFolder(temp_peptideshaker_output, new File(resultFolder, resultFolder.getName() + ".zip"));
-    }
-
     @Override
     public String getDescription() {
         return "Running PeptideShaker";
@@ -173,6 +169,4 @@ public class PeptideShakerStep extends ProcessingStep {
         public static void main(String[] args) {
         ProcessingStep.main(args);
     }
-        
-        
 }

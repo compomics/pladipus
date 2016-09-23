@@ -35,8 +35,10 @@ public class PeptideShakerReportStep extends PeptideShakerStep {
         cmdArgs.add("eu.isas.peptideshaker.cmd.ReportCLI");
         //if there are no specific reports required
         if (!parameters.containsKey(AllowedPeptideShakerReportParams.REPORT_TYPE.getId())) {
-            parameters.put(AllowedPeptideShakerReportParams.REPORT_TYPE.getId(),
+        /*    parameters.put(AllowedPeptideShakerReportParams.REPORT_TYPE.getId(),
                     "0,1,2,3,4");
+        */
+            throw new IllegalArgumentException("did not pass an allowed report type");
         }
         for (AllowedPeptideShakerReportParams aParameter : AllowedPeptideShakerReportParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {

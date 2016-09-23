@@ -4,7 +4,7 @@ import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import java.util.HashMap;
 
-public abstract interface ProcessingExecutable {
+public interface ProcessingExecutable {
 
     /**
      * Executes the executable
@@ -13,18 +13,17 @@ public abstract interface ProcessingExecutable {
      * @throws com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException
      * @throws com.compomics.pladipus.core.model.exception.PladipusProcessingException
      */
-    public abstract boolean doAction()
-            throws UnspecifiedPladipusException,PladipusProcessingException;
+    boolean doAction() throws UnspecifiedPladipusException,PladipusProcessingException;
 
     /**
      *
      * @return the description of the executable
      */
-    public abstract String getDescription();
+    String getDescription();
 
     /**
      *
      * @return the parameters of the executable
      */
-    public abstract HashMap<String, String> getParameters();
+    HashMap<String, String> getParameters();
 }
