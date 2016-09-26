@@ -16,7 +16,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
     /**
      * the active mq setup instance
      */
-    private final InstallActiveMQ setup;
+    private final InstallActiveMQ setup = new InstallActiveMQ();
 
     /**
      * Creates a new ActiveMQPanel.
@@ -28,13 +28,12 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                         "/images/logo_activeMQ.jpe"));
         lbLogo.setText("");
         lbLogo.setIcon(image);
-        setup = new InstallActiveMQ();
     }
 
     public void setWorkerMode(boolean isWorkerMode){
         btnInstallAmq.setEnabled(!isWorkerMode);
     }
-    
+
     
     
     /**
@@ -204,22 +203,19 @@ public class ActiveMQPanel extends javax.swing.JPanel {
 
         ProgressDialogX dialog = new ProgressDialogX(true);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
-                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.","Installation complete",JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(ActiveMQPanel.this,
-                            "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
-                            "Installation Failed",
-                            JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    dialog.setRunFinished();
-                    dialog.setVisible(false);
-                    dialog.dispose();
-                }
+        new Thread(() -> {
+            try {
+                setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
+                JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.","Installation complete",JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(ActiveMQPanel.this,
+                        "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
+                        "Installation Failed",
+                        JOptionPane.ERROR_MESSAGE);
+            } finally {
+                dialog.setRunFinished();
+                dialog.setVisible(false);
+                dialog.dispose();
             }
         }).start();
         dialog.setLocationRelativeTo(null);

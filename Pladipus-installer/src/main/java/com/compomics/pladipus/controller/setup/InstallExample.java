@@ -62,17 +62,14 @@ public class InstallExample {
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
                 true);
 
-        new Thread(new Runnable() {
+        new Thread(() -> {
+            try {
 
-            public void run() {
-                try {
-
-                    searchGUIDialog.setPrimaryProgressCounterIndeterminate(true);
-                    searchGUIDialog.setTitle("Downloading SearchGUI. Please Wait...");
-                    searchGUIDialog.setVisible(true);
-                } catch (IndexOutOfBoundsException e) {
-                    // ignore
-                }
+                searchGUIDialog.setPrimaryProgressCounterIndeterminate(true);
+                searchGUIDialog.setTitle("Downloading SearchGUI. Please Wait...");
+                searchGUIDialog.setVisible(true);
+            } catch (IndexOutOfBoundsException e) {
+                // ignore
             }
         }, "ProgressDialog").start();
 

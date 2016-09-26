@@ -21,6 +21,8 @@ import org.apache.commons.io.FileUtils;
  */
 public class InstallActiveMQ {
 
+    //todo remove hardcoding of folders
+
     /**
      * the local location of the activeMQ folder
      */
@@ -50,6 +52,7 @@ public class InstallActiveMQ {
     }
 
     private static void downloadActiveMQ() throws IOException {
+        //todo get activemq from their repos not ours
         String link = "http://genesis.ugent.be/pladipus/download/activeMQ/apache-activemq-5.11-bin.zip";
         File downloadFile = PladipusFileDownloadingService.downloadFile(link, activeMQFolder);
         ZipUtils.unzipArchive(downloadFile, activeMQFolder);

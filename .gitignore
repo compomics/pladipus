@@ -14,3 +14,4 @@ temp.txt
 .idea/
 target/sonar/.sonar_lock
 target/sonar/report-task.txt
+target/
