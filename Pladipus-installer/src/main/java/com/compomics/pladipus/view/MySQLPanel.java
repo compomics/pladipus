@@ -1,6 +1,7 @@
 package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
+import com.compomics.pladipus.model.PladipusCard;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
 import java.io.FileNotFoundException;
@@ -15,7 +16,7 @@ import javax.swing.JOptionPane;
  *
  * @author Kenneth Verheggen
  */
-public class MySQLPanel extends javax.swing.JPanel {
+public class MySQLPanel extends javax.swing.JPanel implements PladipusCard {
 
     //todo add logging
 
@@ -31,8 +32,13 @@ public class MySQLPanel extends javax.swing.JPanel {
         lbLogo.setIcon(image);
     }
 
-    public void setWorkerMode(boolean isWorkerMode) {
-        btnInstallDatabase.setEnabled(!isWorkerMode);
+    @Override
+    public String getCardDescription(){
+        return "<h2>Step 1 of 3 - MySQL</h2>"
+                + "<br>"
+                + "Pladipus requires a MySQL database in order to keep track of tasks and their states."
+                + "<br><br>"
+                + "If there is no MySQL service reachable, click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20MySQL'>here</a> for more help.";
     }
 
     /**

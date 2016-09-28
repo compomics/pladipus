@@ -1,5 +1,6 @@
 package com.compomics.pladipus.view;
 
+import com.compomics.pladipus.model.InstallOptions;
 import org.apache.log4j.Logger;
 
 import java.awt.Desktop;
@@ -10,40 +11,31 @@ import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 
 /**
- *
  * @author Kenneth Verheggen
  */
 public class InstallerGUI extends javax.swing.JFrame {
 
-    private static final Logger logger = Logger.getLogger(InstallerGUI.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(InstallerGUI.class.getName());
 
-    /**
-     * Creates a new InstallerGUI.
-     */
-    public InstallerGUI() {
+    private final InstallOptions selectedOption;
+    
+    public InstallerGUI(InstallOptions cardsToShow) {
+        selectedOption = cardsToShow;
         initComponents();
-        epDescription.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
-        epDescription.setEditable(false);
-        epDescription.setContentType("text/html");//set content as html
         epDescription.addHyperlinkListener(e -> {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 if (Desktop.isDesktopSupported()) {
                     try {
                         Desktop.getDesktop().browse(e.getURL().toURI());
                     } catch (IOException | URISyntaxException ex) {
-                        logger.error("could not open standard browser");
+                        LOGGER.error("could not open standard browser");
                     }
                 }
             }
         });
-
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/pladipus_icon.gif")));
-
-        //add listener to the index
-        //ListSelectionListener listSelectionListener = listSelectionEvent -> showCard(cards.next());
-        //liSteps.addListSelectionListener(listSelectionListener);
-        epDescription.setText(pnlCards.getCardDescription());
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,6 +46,7 @@ public class InstallerGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
         pnlMain = new javax.swing.JPanel();
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
@@ -62,10 +55,9 @@ public class InstallerGUI extends javax.swing.JFrame {
         spnlDescription = new javax.swing.JScrollPane();
         epDescription = new javax.swing.JEditorPane();
         liSteps = new javax.swing.JList();
-        pnlCards = new com.compomics.pladipus.view.StepsCardPanel();
+        pnlCards =         new com.compomics.pladipus.view.StepsCardPanel(selectedOption.getCardsForOption());
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pnlMain.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -77,7 +69,6 @@ public class InstallerGUI extends javax.swing.JFrame {
         });
 
         btnPrev.setText("Previous");
-        btnPrev.setEnabled(false);
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPrevActionPerformed(evt);
@@ -92,7 +83,9 @@ public class InstallerGUI extends javax.swing.JFrame {
         spnlDescription.setBorder(null);
 
         epDescription.setEditable(false);
-        epDescription.setBorder(null);
+        epDescription.setContentType("text/html"); // NOI18N
+        epDescription.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
+        epDescription.setText(pnlCards.getCardDescription());
         spnlDescription.setViewportView(epDescription);
 
         liSteps.setModel(new javax.swing.AbstractListModel() {
@@ -136,17 +129,17 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, 342, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
         );
         pnlStepsLayout.setVerticalGroup(
             pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createSequentialGroup()
-                .addGap(0, 16, Short.MAX_VALUE)
+                .addGap(0, 48, Short.MAX_VALUE)
                 .addComponent(pnlDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnlStepsLayout.createSequentialGroup()
-                .addComponent(pnlCards, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
@@ -177,18 +170,24 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNext)
                     .addComponent(btnPrev))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
+
+        jScrollPane1.setViewportView(pnlMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -197,71 +196,35 @@ public class InstallerGUI extends javax.swing.JFrame {
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
         pnlCards.showPreviousCard();
         epDescription.setText(pnlCards.getCardDescription());
-            btnNext.setText("Next");
+        btnNext.setText("Next");
         if (!pnlCards.hasPrevious()) {
-            btnPrev.setEnabled(false);
+           new StartFrame().setVisible(true);
+            dispose();
         }
     }//GEN-LAST:event_btnPrevActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        if (!pnlCards.hasNext()) {
-            //then it's done
-            this.dispose();
-        } else {
-            //            pnlActiveMQ.setWorkerMode(pnlSplash.isInstallWorkerMode());
-            //            pnlMySQL.setWorkerMode(pnlSplash.isInstallWorkerMode());
-            //            pnlPladipus.setWorkerMode(pnlSplash.isInstallWorkerMode());
 
-            pnlCards.showNextCard();
-            epDescription.setText(pnlCards.getCardDescription());
             if (!pnlCards.hasNext()) {
-                btnNext.setText("Finish");
+                //then it's done
+                this.dispose();
             } else {
-                btnNext.setText("Next");
-            }
-            btnPrev.setEnabled(true);
-        }
-
-    }//GEN-LAST:event_btnNextActionPerformed
-
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+                pnlCards.showNextCard();
+                epDescription.setText(pnlCards.getCardDescription());
+                if (!pnlCards.hasNext()) {
+                    btnNext.setText("Finish");
+                } else {
+                    btnNext.setText("Next");
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException|IllegalAccessException ex) {
-            logger.error("could not create GUI",ex);
-            //TODO let the user know something went horribly wrong
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            InstallerGUI installerGUI = new InstallerGUI();
-            installerGUI.setLocationRelativeTo(null);
-            installerGUI.setTitle("Pladipus Installation");
-            installerGUI.setVisible(true);
-        });
-    }
-
-
+//GEN-LAST:event_btnNextActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
     private javax.swing.JEditorPane epDescription;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList liSteps;
     private com.compomics.pladipus.view.StepsCardPanel pnlCards;
     private javax.swing.JPanel pnlDescription;

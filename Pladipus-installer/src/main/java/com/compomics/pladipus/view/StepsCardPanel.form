@@ -15,46 +15,4 @@
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>
-  <SubComponents>
-    <Component class="com.compomics.pladipus.view.SplashPanel" name="splashPanel">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="cards.add(&quot;splashPanel&quot;);"/>
-      </AuxValues>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-          <CardConstraints cardName="splashPanel"/>
-        </Constraint>
-      </Constraints>
-    </Component>
-    <Component class="com.compomics.pladipus.view.MySQLPanel" name="mySQLPanel">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="cards.add(&quot;mySQLPanel&quot;);"/>
-      </AuxValues>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-          <CardConstraints cardName="mySQLPanel"/>
-        </Constraint>
-      </Constraints>
-    </Component>
-    <Component class="com.compomics.pladipus.view.ActiveMQPanel" name="activeMQPanel">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="cards.add(&quot;activeMQPanel&quot;);"/>
-      </AuxValues>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-          <CardConstraints cardName="activeMQPanel"/>
-        </Constraint>
-      </Constraints>
-    </Component>
-    <Component class="com.compomics.pladipus.view.PladipusPanel" name="pladipusPanel">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="cards.add(&quot;pladipusPanel&quot;);"/>
-      </AuxValues>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignCardLayout" value="org.netbeans.modules.form.compat2.layouts.DesignCardLayout$CardConstraintsDescription">
-          <CardConstraints cardName="pladipusPanel"/>
-        </Constraint>
-      </Constraints>
-    </Component>
-  </SubComponents>
 </Form>

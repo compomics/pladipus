@@ -2,6 +2,7 @@ package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.controller.setup.InstallExample;
 import com.compomics.pladipus.controller.setup.InstallPladipus;
+import com.compomics.pladipus.model.PladipusCard;
 import com.compomics.pladipus.view.dialogs.user.UserCreationDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.io.IOException;
@@ -12,9 +13,11 @@ import javax.swing.JOptionPane;
  *
  * @author Kenneth Verheggen
  */
-public class PladipusPanel extends javax.swing.JPanel {
+public class PladipusPanel extends javax.swing.JPanel implements PladipusCard {
 
-    private boolean isWorkerMode;
+    //TODO split up worker and manager mode
+
+    boolean isWorkerMode;
 
     /**
      * Creates a new PladipusPanel.
@@ -28,15 +31,29 @@ public class PladipusPanel extends javax.swing.JPanel {
         lbLogo.setIcon(image);
     }
 
-    public void setWorkerMode(boolean isWorkerMode) {
-        this.isWorkerMode = isWorkerMode;
-        btnInstallExample.setEnabled(isWorkerMode);
-        if (!isWorkerMode) {
-            btnInstallPladipus.setText("Install Pladipus Manager");
-        } else {
-            btnInstallPladipus.setText("Install Pladipus Worker");
-        }
+    @Override
+    public String getCardDescription(){
+        return "<h2>Step 3 of 3 - Pladipus</h2>"
+                + "<br>"
+                + "In order to submit, manage or execute tasks, you need a registered Pladipus account."
+                + "<br><br>"
+                + "It is also possible to automatically install <a href='http://www.ncbi.nlm.nih.gov/pubmed/21337703'>SearchGUI</a>, "
+                + "<a href='http://www.ncbi.nlm.nih.gov/pubmed/24295440'>DeNovoGUI</a> "
+                + "and <a href='http://www.ncbi.nlm.nih.gov/pubmed/25574629'>PeptideShaker</a> to quickly set up a demo worker."
+                + "<br><br>"
+                + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation'>here</a> for more help."
+                ;
     }
+
+//    public void setWorkerMode(boolean isWorkerMode) {
+//        this.isWorkerMode = isWorkerMode;
+//        btnInstallExample.setEnabled(isWorkerMode);
+//        if (!isWorkerMode) {
+//            btnInstallPladipus.setText("Install Pladipus Manager");
+//        } else {
+//            btnInstallPladipus.setText("Install Pladipus Worker");
+//        }
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -146,22 +163,19 @@ public class PladipusPanel extends javax.swing.JPanel {
     private void installPladipusManagement() {
         ProgressDialogX dialog = new ProgressDialogX(true);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new InstallPladipus().installConsole();
-                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Manager.", "Pladipus Manager", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(PladipusPanel.this,
-                            "Could not install Pladipus Manager: " + System.lineSeparator() + ex.getMessage(),
-                            "Manager Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    dialog.setRunFinished();
-                    dialog.setVisible(false);
-                    dialog.dispose();
-                }
+        new Thread(() -> {
+            try {
+                new InstallPladipus().installConsole();
+                JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Manager.", "Pladipus Manager", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(PladipusPanel.this,
+                        "Could not install Pladipus Manager: " + System.lineSeparator() + ex.getMessage(),
+                        "Manager Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } finally {
+                dialog.setRunFinished();
+                dialog.setVisible(false);
+                dialog.dispose();
             }
         }).start();
         dialog.setLocationRelativeTo(null);
@@ -173,23 +187,20 @@ public class PladipusPanel extends javax.swing.JPanel {
     private void installPladipusWorker() {
         ProgressDialogX dialog = new ProgressDialogX(true);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (new InstallPladipus().installWorker()) {
-                        JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.", "Pladipus Worker", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                } catch (SecurityException | IOException ex) {
-                    JOptionPane.showMessageDialog(PladipusPanel.this,
-                            "Could not install Pladipus Worker: " + System.lineSeparator() + ex.getMessage(),
-                            "Worker Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } finally {
-                    dialog.setRunFinished();
-                    dialog.setVisible(false);
-                    dialog.dispose();
+        new Thread(() -> {
+            try {
+                if (new InstallPladipus().installWorker()) {
+                    JOptionPane.showMessageDialog(PladipusPanel.this, "Succesfully installed Pladipus Worker.", "Pladipus Worker", JOptionPane.INFORMATION_MESSAGE);
                 }
+            } catch (SecurityException | IOException ex) {
+                JOptionPane.showMessageDialog(PladipusPanel.this,
+                        "Could not install Pladipus Worker: " + System.lineSeparator() + ex.getMessage(),
+                        "Worker Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } finally {
+                dialog.setRunFinished();
+                dialog.setVisible(false);
+                dialog.dispose();
             }
         }).start();
         dialog.setLocationRelativeTo(null);

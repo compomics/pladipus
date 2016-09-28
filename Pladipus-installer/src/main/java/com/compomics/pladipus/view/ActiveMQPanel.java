@@ -2,6 +2,7 @@ package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.controller.setup.InstallActiveMQ;
 import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
+import com.compomics.pladipus.model.PladipusCard;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.io.IOException;
 import javax.swing.ImageIcon;
@@ -11,7 +12,7 @@ import javax.swing.JOptionPane;
  *
  * @author Kenneth Verheggen
  */
-public class ActiveMQPanel extends javax.swing.JPanel {
+public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
 
     /**
      * the active mq setup instance
@@ -23,15 +24,17 @@ public class ActiveMQPanel extends javax.swing.JPanel {
      */
     public ActiveMQPanel() {
         initComponents();
-        ImageIcon image = new ImageIcon(
-                getClass().getResource(
-                        "/images/logo_activeMQ.jpe"));
-        lbLogo.setText("");
-        lbLogo.setIcon(image);
     }
 
-    public void setWorkerMode(boolean isWorkerMode){
-        btnInstallAmq.setEnabled(!isWorkerMode);
+    @Override
+    public String getCardDescription() {
+        return "<h2>Step 2 of 3 - ActiveMQ</h2>"
+                + "<br>"
+                + "Pladipus requires a running <a href='http://activemq.apache.org/'>ActiveMQ</a> server in order to distribute tasks and system updates."
+                + "<br><br>"
+                + "If no ActiveMQ service is reachable, please click the install button to automatically set up a prepackaged version."
+                + "<br><br>"
+                + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20ActiveMQ'>here</a> for more help.";
     }
 
     
@@ -102,7 +105,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
         pnlLogo.setBackground(new java.awt.Color(255, 255, 255));
 
         lbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbLogo.setText("jLabel1");
+        lbLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logo_activeMQ.jpe"))); // NOI18N
 
         javax.swing.GroupLayout pnlLogoLayout = new javax.swing.GroupLayout(pnlLogo);
         pnlLogo.setLayout(pnlLogoLayout);
@@ -110,7 +113,7 @@ public class ActiveMQPanel extends javax.swing.JPanel {
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
             .addGroup(pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(lbLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE))
+                .addComponent(lbLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 295, Short.MAX_VALUE))
         );
         pnlLogoLayout.setVerticalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,9 +146,9 @@ public class ActiveMQPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnTestConnection, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(btnInstallAmq, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                                .addComponent(btnInstallAmq, javax.swing.GroupLayout.PREFERRED_SIZE, 122, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnApply, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))
+                                .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 118, Short.MAX_VALUE))
                             .addComponent(tfJmxPort)
                             .addComponent(tfAmqPort, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tfHost, javax.swing.GroupLayout.Alignment.TRAILING))))

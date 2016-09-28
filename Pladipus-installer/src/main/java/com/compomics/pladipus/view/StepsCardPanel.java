@@ -5,6 +5,8 @@
  */
 package com.compomics.pladipus.view;
 
+import com.compomics.pladipus.model.PladipusCard;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
  */
 public class StepsCardPanel extends javax.swing.JPanel {
 
-    List<String> cards = new ArrayList<>();
+    private final List<String> cards = new ArrayList<>();
 
     CardLayout layout;
 
@@ -29,6 +31,15 @@ public class StepsCardPanel extends javax.swing.JPanel {
         layout = (CardLayout) getLayout();
     }
 
+    public StepsCardPanel(Component[] components){
+        this();
+        setLayout(layout);
+        for(Component aComponent : components){
+            add(aComponent, aComponent.getClass().getName());
+            cards.add(aComponent.getClass().getName());
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -38,20 +49,7 @@ public class StepsCardPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        com.compomics.pladipus.view.SplashPanel splashPanel = new com.compomics.pladipus.view.SplashPanel();
-        com.compomics.pladipus.view.MySQLPanel mySQLPanel = new com.compomics.pladipus.view.MySQLPanel();
-        com.compomics.pladipus.view.ActiveMQPanel activeMQPanel = new com.compomics.pladipus.view.ActiveMQPanel();
-        com.compomics.pladipus.view.PladipusPanel pladipusPanel = new com.compomics.pladipus.view.PladipusPanel();
-
         setLayout(new java.awt.CardLayout());
-        add(splashPanel, "splashPanel");
-        cards.add("splashPanel");
-        add(mySQLPanel, "mySQLPanel");
-        cards.add("mySQLPanel");
-        add(activeMQPanel, "activeMQPanel");
-        cards.add("activeMQPanel");
-        add(pladipusPanel, "pladipusPanel");
-        cards.add("pladipusPanel");
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -80,52 +78,10 @@ public class StepsCardPanel extends javax.swing.JPanel {
     }
 
     public String getCardDescription() {
-
-        switch (currentCard) {
-            case 0:
-                return "<h2>Welcome To Pladipus</h2>"
-                        + "<br>"
-                        + "This wizard will guide you through the installation process. "
-                        + "Pladipus can be installed as: <br>"
-                        + "<ul>"
-                        + "<li>Manager - for managing tasks</li> "
-                        + "<li>Worker - for executing tasks</li>"
-                        + "</ul>"
-                        + "<br>"
-                        + "If any problem occurs, please visit the <a href='http://compomics.github.io/projects/pladipus.html'>website</a> for more help."
-                        + "Additionally, you can contact the developers at <b>kenneth.verheggen@ugent.be</b> for more help"
-                        ;
-            case 1:
-                return "<h2>Step 1 of 3 - MySQL</h2>"
-                        + "<br>"
-                        + "Pladipus requires a MySQL database in order to keep track of tasks and their states."
-                        + "<br><br>"
-                        + "If there is no MySQL service reachable, click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20MySQL'>here</a> for more help."
-                        ;
-            case 2:
-                return "<h2>Step 2 of 3 - ActiveMQ</h2>"
-                        + "<br>"
-                        + "Pladipus requires a running <a href='http://activemq.apache.org/'>ActiveMQ</a> server in order to distribute tasks and system updates."
-                        + "<br><br>"
-                        + "If no ActiveMQ service is reachable, please click the install button to automatically set up a prepackaged version."
-                        + "<br><br>"
-                        + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20ActiveMQ'>here</a> for more help."
-                        ;
-            case 3:
-                return "<h2>Step 3 of 3 - Pladipus</h2>"
-                        + "<br>"
-                        + "In order to submit, manage or execute tasks, you need a registered Pladipus account."
-                        + "<br><br>"
-                        + "It is also possible to automatically install <a href='http://www.ncbi.nlm.nih.gov/pubmed/21337703'>SearchGUI</a>, "
-                        + "<a href='http://www.ncbi.nlm.nih.gov/pubmed/24295440'>DeNovoGUI</a> "
-                        + "and <a href='http://www.ncbi.nlm.nih.gov/pubmed/25574629'>PeptideShaker</a> to quickly set up a demo worker."
-                        + "<br><br>"
-                        + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation'>here</a> for more help."
-                        ;
-            default:
-                return "";
-        }
+        //todo clean this up
+        return ((PladipusCard)getComponent(currentCard)).getCardDescription();
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
