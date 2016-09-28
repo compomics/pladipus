@@ -41,6 +41,11 @@ public class MySQLPanel extends javax.swing.JPanel implements PladipusCard {
                 + "If there is no MySQL service reachable, click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20MySQL'>here</a> for more help.";
     }
 
+    @Override
+    public String getFriendlyName(){
+        return "Installing MySQL";
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

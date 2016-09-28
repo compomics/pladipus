@@ -37,7 +37,10 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
                 + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20ActiveMQ'>here</a> for more help.";
     }
 
-    
+    @Override
+    public String getFriendlyName(){
+        return "Installing ActiveMQ";
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.

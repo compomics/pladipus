@@ -7,4 +7,6 @@ public interface PladipusCard {
 
     String getCardDescription();
 
+    String getFriendlyName();
+
 }

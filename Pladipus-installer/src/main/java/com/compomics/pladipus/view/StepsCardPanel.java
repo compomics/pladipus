@@ -82,6 +82,11 @@ public class StepsCardPanel extends javax.swing.JPanel {
         return ((PladipusCard)getComponent(currentCard)).getCardDescription();
     }
 
+    public List<String> getFriendlyNamesOfCards(){
+        //todo make this
+        return new ArrayList<String>();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

@@ -45,6 +45,11 @@ public class PladipusPanel extends javax.swing.JPanel implements PladipusCard {
                 ;
     }
 
+    @Override
+    public String getFriendlyName(){
+        return "Installing Pladipus";
+    }
+
 //    public void setWorkerMode(boolean isWorkerMode) {
 //        this.isWorkerMode = isWorkerMode;
 //        btnInstallExample.setEnabled(isWorkerMode);
