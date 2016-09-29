@@ -16,7 +16,6 @@ import com.compomics.pladipus.core.model.queue.CompomicsQueue;
 import com.sun.mail.iap.ConnectionException;
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -79,7 +78,6 @@ public class PladipusTrafficManager {
      * posted before, the jobs will be appended after the existing jobs
      *
      * @param convertXMLtoTemplate
-     * @param dao the instance of the jobDAO
      * @param jobConfigurationFile the job configuration file
      * @throws IOException
      * @throws AuthenticationException
@@ -172,7 +170,6 @@ public class PladipusTrafficManager {
      * yet. This method is soon to be in case the mysql and khahadb can be
      * merged
      *
-     * @param dao the instance of the dao to be used
      * @param processesForRun sets the jobs to be added
      * @throws IOException
      * @throws SAXException
@@ -195,60 +192,9 @@ public class PladipusTrafficManager {
     }
 
     /**
-     * Pushes all unqueued jobs for a particular user
-     *
-     * @param dao the instance of the dao
-     * @param username the user the jobs should be pushed for
-     * @throws IOException
-     * @throws SAXException
-     * @throws JMSException
-     * @throws SQLException
-     * @throws ParserConfigurationException
-     * @throws ProcessStepInitialisationException
-     */
-    public void pushUnqueuedFromDatabase(String username) throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, ProcessStepInitialisationException {
-        ProcessService pService = ProcessService.getInstance();
-        LinkedList<Integer> unqueuedProcesses = pService.getUnqueuedProcesses(username);
-        LOGGER.info("Pushing " + unqueuedProcesses.size() + " jobs to Pladipus...");
-        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, priority)) {
-            for (int aProcessID : unqueuedProcesses) {
-                String xmlForProcess = pService.getXMLForProcess(aProcessID);
-                producer.addMessage(xmlForProcess, aProcessID);
-            }
-            Thread producerThread = new Thread(producer, "ProducerThread");
-            producerThread.start();
-        }
-    }
-
-    /**
-     * Pushes all unqueued jobs for all users
-     *
-     * @param dao the instance of the dao
-     * @throws IOException
-     * @throws SAXException
-     * @throws JMSException
-     * @throws SQLException
-     * @throws ParserConfigurationException
-     * @throws ProcessStepInitialisationException
-     */
-    public void pushAllUnqueuedFromDatabase() throws IOException, SAXException, JMSException, SQLException, ParserConfigurationException, ProcessStepInitialisationException {
-        ProcessService pService = ProcessService.getInstance();
-        LinkedList<Integer> unqueuedProcesses = pService.getUnqueuedProcesses();
-        LOGGER.info("Pushing " + unqueuedProcesses.size() + " jobs to Pladipus...");
-        try (CompomicsProducer producer = new CompomicsProducer(CompomicsQueue.JOB, priority)) {
-            for (int aProcessID : unqueuedProcesses) {
-                String xmlForProcess = pService.getXMLForProcess(aProcessID);
-                producer.addMessage(xmlForProcess, aProcessID);
-            }
-            Thread producerThread = new Thread(producer, "ProducerThread");
-            producerThread.start();
-        }
-    }
-
-    /**
      * Draws a job from the queue and executes it
      *
-     * @throws Exception
+     * @throws PladipusTrafficException
      */
     public void pullFromPladipus() throws PladipusTrafficException {
         try {
@@ -262,35 +208,30 @@ public class PladipusTrafficManager {
 
     /**
      * Checks for system broadcasts and executes them
-     *
-     * @throws Exception
+     * @throws JMSException
+     * @throws IOException
      */
     public void pullUpdates() throws JMSException, IOException {
         CompomicsDurableConsumer compomicsSessionConsumer = new CompomicsDurableConsumer(CompomicsQueue.UPDATE);
         compomicsSessionConsumer.run();
     }
 
+    //todo make this robust
+
     /**
-     * Check if the system is online
-     *
-     * @return a boolean to check if the system is online
+     * checks if the database and the activemq servers are reachable
+     * @return true if successful
+     * @throws SQLException
      * @throws ConnectionException
-     * @throws Exception
+     * @throws IOException
      */
-    public boolean isSystemOnline() throws ConnectionException, Exception {
-        try {
+    public boolean isSystemOnline() throws SQLException,ConnectionException,IOException {
             //do a quick check on queue
             new QueryOperation();
             //do a quick check on the sql database
             UserDAO dao = UserDAO.getInstance();
-            dao.userExists("check");
+        //todo this is just no good
+        dao.userExists("check");
             return true;
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
-            throw new Exception("The MYSQL Server could not be reached.");
-        } catch (IOException ex) {
-            LOGGER.error(ex);
-            throw new Exception("The ActiveMQ Server could not be reached.");
-        }
     }
 }

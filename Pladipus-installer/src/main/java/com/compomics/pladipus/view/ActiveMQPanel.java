@@ -1,11 +1,11 @@
 package com.compomics.pladipus.view;
 
 import com.compomics.pladipus.controller.setup.InstallActiveMQ;
-import com.compomics.pladipus.core.control.distribution.PladipusTrafficManager;
 import com.compomics.pladipus.model.PladipusCard;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
+import net.lingala.zip4j.exception.ZipException;
+
 import java.io.IOException;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -79,13 +79,8 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
         tfHost.setToolTipText("The IP address of the machine hosting the ActiveMQ server.");
 
         tfAmqPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        tfAmqPort.setText("3389");
+        tfAmqPort.setText("7000");
         tfAmqPort.setToolTipText("The port on the host that's listening for Pladipus connections");
-        tfAmqPort.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfAmqPortActionPerformed(evt);
-            }
-        });
 
         tfJmxPort.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfJmxPort.setText("1099");
@@ -142,24 +137,25 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
                     .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblJMXPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblAMQPort, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblHost, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblHost, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblAMQPort, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblJMXPort))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTestConnection, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnTestConnection, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(btnInstallAmq, javax.swing.GroupLayout.PREFERRED_SIZE, 122, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 118, Short.MAX_VALUE))
-                            .addComponent(tfJmxPort)
-                            .addComponent(tfAmqPort, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tfHost, javax.swing.GroupLayout.Alignment.TRAILING))))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tfHost, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                                    .addComponent(tfAmqPort, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(tfJmxPort, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnInstallAmq, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnApply)))
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblAMQPort, lblHost, lblJMXPort});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -191,10 +187,6 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
         testConnection();
     }//GEN-LAST:event_btnTestConnectionActionPerformed
 
-    private void tfAmqPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfAmqPortActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfAmqPortActionPerformed
-
     private void btnInstallAmqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallAmqActionPerformed
         int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to apply the following settings on this machine?"
                 + System.lineSeparator()
@@ -213,7 +205,7 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
             try {
                 setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
                 JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.","Installation complete",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException ex) {
+            } catch (IOException|ZipException ex) {
                 JOptionPane.showMessageDialog(ActiveMQPanel.this,
                         "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
                         "Installation Failed",
@@ -254,7 +246,8 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
 
     private void testConnection() {
         try {
-            PladipusTrafficManager.getInstance().isSystemOnline();
+            // FIXME: 9/29/2016
+            //PladipusTrafficManager.getInstance().isSystemOnline();
             JOptionPane.showMessageDialog(this, "Succesfully connected to the ActiveMQ Server.","Connected to ActiveMQ",JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,

@@ -9,10 +9,20 @@ import com.compomics.pladipus.controller.util.ActiveMQPropertyUpdater;
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.util.Zip4jUtil;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -26,11 +36,10 @@ public class InstallActiveMQ {
     /**
      * the local location of the activeMQ folder
      */
-    private static final File activeMQFolder = new File(System.getProperty("user.home") + "/pladipus/activeMQ/");
+    private File activeMQFolder = new File(System.getProperty("user.home") + "/pladipus/activeMQ/");
 
-    public InstallActiveMQ() {
+    String link = "http://www.apache.org/dyn/closer.cgi?filename=/activemq/5.14.0/apache-activemq-5.14.0-bin.zip&action=download";
 
-    }
 
     /**
      *
@@ -40,7 +49,7 @@ public class InstallActiveMQ {
      * @return success
      * @throws IOException
      */
-    public boolean setupActiveMQ(String host, String amqPort, String jmxPort) throws IOException {
+    public boolean setupActiveMQ(String host, String amqPort, String jmxPort) throws IOException, ZipException {
         boolean success = false;
         //1.
         downloadActiveMQ();
@@ -51,13 +60,29 @@ public class InstallActiveMQ {
         return success;
     }
 
-    private static void downloadActiveMQ() throws IOException {
-        //todo get activemq from their repos not ours
-        String link = "http://genesis.ugent.be/pladipus/download/activeMQ/apache-activemq-5.11-bin.zip";
-        File downloadFile = PladipusFileDownloadingService.downloadFile(link, activeMQFolder);
-        ZipUtils.unzipArchive(downloadFile, activeMQFolder);
-    }
+    private void downloadActiveMQ() throws IOException, ZipException {
 
+
+        //File downloadFile = PladipusFileDownloadingService.downloadFile(link, activeMQFolder);
+
+        if (!activeMQFolder.exists() & !activeMQFolder.mkdirs()) {
+            throw new IOException("could not make install folder");
+        }
+
+        URL website = new URL(link);
+        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+        Path downloadFile = Files.createTempFile("activemqdownload",null);
+        FileOutputStream fos = new FileOutputStream(downloadFile.toFile());
+
+        if (fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE) != 0) {
+            if (Objects.equals(DigestUtils.md5Hex(new FileInputStream(downloadFile.toFile())), "4b844f588672e6616bd6f006253d6148")) {
+                ZipFile zipFile = new ZipFile(downloadFile.toFile());
+                zipFile.extractAll(activeMQFolder.getPath());
+            } else {
+                throw new IOException("md5 digest did not match, aborting");
+            }
+        }
+    }
     /**
      * Updates the activeMQ properties in the local propertyfile
      *
@@ -81,6 +106,10 @@ public class InstallActiveMQ {
         ActiveMQPropertyUpdater.updateActiveMQProperties(activeMQSettingsFile, host, amqPort, jmxPort);
 
 
+    }
+
+    public void setActiveMQFolder(File activeMQFolder) {
+        this.activeMQFolder = activeMQFolder;
     }
 
     private static File findFile(File root, String fileName) {

@@ -27,22 +27,28 @@
                   <Component id="pnlLogo" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblJMXPort" linkSize="1" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
-                          <Component id="lblAMQPort" linkSize="1" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
-                          <Component id="lblHost" linkSize="1" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
+                          <Component id="lblHost" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
+                          <Component id="lblAMQPort" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="lblJMXPort" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnTestConnection" alignment="1" max="32767" attributes="0"/>
+                          <Component id="btnTestConnection" alignment="1" pref="189" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="btnInstallAmq" pref="122" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="btnApply" pref="118" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="tfHost" alignment="1" pref="177" max="32767" attributes="0"/>
+                                  <Component id="tfAmqPort" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="tfJmxPort" alignment="1" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
-                          <Component id="tfJmxPort" alignment="0" max="32767" attributes="0"/>
-                          <Component id="tfAmqPort" alignment="1" max="32767" attributes="0"/>
-                          <Component id="tfHost" alignment="1" max="32767" attributes="0"/>
                       </Group>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="btnInstallAmq" min="-2" pref="134" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btnApply" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -116,12 +122,9 @@
     <Component class="javax.swing.JTextField" name="tfAmqPort">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" value="3389"/>
+        <Property name="text" type="java.lang.String" value="7000"/>
         <Property name="toolTipText" type="java.lang.String" value="The port on the host that&apos;s listening for Pladipus connections"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tfAmqPortActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="tfJmxPort">
       <Properties>

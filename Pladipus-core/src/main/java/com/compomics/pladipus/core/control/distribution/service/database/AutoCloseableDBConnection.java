@@ -69,10 +69,6 @@ public class AutoCloseableDBConnection implements Connection, AutoCloseable {
         init(autocommit);
     }
 
-    public AutoCloseableDBConnection(Connection connection) {
-        this.c = connection;
-    }
-
     private void init(boolean autocommit) throws SQLException {
         try {
             String sqladdress = properties.getStateDatabaseLocation();
@@ -104,23 +100,6 @@ public class AutoCloseableDBConnection implements Connection, AutoCloseable {
             LOGGER.warn("Faulty shutdown : " + ex);
             c = null;
         }
-    }
-
-    /**
-     *
-     * @return the connection state of the connection
-     */
-    public boolean isShutDown() {
-        boolean shutdown = false;
-        try {
-            shutdown = c == null || c.isClosed();
-            LOGGER.debug("MySQL connection was gracefully closed");
-        } catch (SQLException ex) {
-            LOGGER.error(ex);
-            LOGGER.warn("MySQL connection may have been closed with errors");
-
-        }
-        return shutdown;
     }
 
     @Override
