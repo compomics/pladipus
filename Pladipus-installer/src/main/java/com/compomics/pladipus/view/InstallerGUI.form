@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
   </Properties>
@@ -80,7 +80,7 @@
                           <Component id="btnNext" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnPrev" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="33" max="32767" attributes="0"/>
+                      <EmptySpace pref="131" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -162,7 +162,7 @@
                               <Component id="liSteps" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                               <Component id="spnlDescription" min="-2" pref="261" max="-2" attributes="0"/>
-                              <EmptySpace pref="26" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -199,13 +199,8 @@
                     </Container>
                     <Component class="javax.swing.JList" name="liSteps">
                       <Properties>
-                        <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                          <StringArray count="4">
-                            <StringItem index="0" value="0 - Overview"/>
-                            <StringItem index="1" value="1 - Installing MySQL"/>
-                            <StringItem index="2" value="2 - Installing ActiveMQ"/>
-                            <StringItem index="3" value="3 - Installing Pladipus"/>
-                          </StringArray>
+                        <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="new javax.swing.AbstractListModel() {&#xa;            String[] strings = pnlCards.getFriendlyNamesOfCards().toArray(new String[pnlCards.getFriendlyNamesOfCards().size()]);&#xa;            public int getSize() { return strings.length; }&#xa;public Object getElementAt(int i) { return strings[i]; }}" type="code"/>
                         </Property>
                         <Property name="selectionMode" type="int" value="0"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -223,7 +218,7 @@
                 </Container>
                 <Container class="com.compomics.pladipus.view.StepsCardPanel" name="pnlCards">
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="        new com.compomics.pladipus.view.StepsCardPanel(selectedOption.getCardsForOption());"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="        new com.compomics.pladipus.view.StepsCardPanel(selectedOption);"/>
                   </AuxValues>
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignCardLayout"/>

@@ -5,6 +5,7 @@
  */
 package com.compomics.pladipus.view;
 
+import com.compomics.pladipus.model.InstallOptions;
 import com.compomics.pladipus.model.PladipusCard;
 
 import java.awt.*;
@@ -31,10 +32,10 @@ public class StepsCardPanel extends javax.swing.JPanel {
         layout = (CardLayout) getLayout();
     }
 
-    public StepsCardPanel(Component[] components){
+    public StepsCardPanel(InstallOptions options){
         this();
         setLayout(layout);
-        for(Component aComponent : components){
+        for(Component aComponent : options.getCardsForOption()){
             add(aComponent, aComponent.getClass().getName());
             cards.add(aComponent.getClass().getName());
         }
@@ -84,7 +85,13 @@ public class StepsCardPanel extends javax.swing.JPanel {
 
     public List<String> getFriendlyNamesOfCards(){
         //todo make this
-        return new ArrayList<String>();
+        List<String> friendlyNames = new ArrayList<>();
+
+        for(int i = 0; i < cards.size(); i++){
+            friendlyNames.add(String.format("step %1$d - %2$s",i,((PladipusCard)getComponent(currentCard)).getFriendlyName()));
+        }
+        return friendlyNames;
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

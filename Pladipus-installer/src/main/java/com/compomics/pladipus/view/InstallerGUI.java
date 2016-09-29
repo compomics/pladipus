@@ -55,7 +55,7 @@ public class InstallerGUI extends javax.swing.JFrame {
         spnlDescription = new javax.swing.JScrollPane();
         epDescription = new javax.swing.JEditorPane();
         liSteps = new javax.swing.JList();
-        pnlCards =         new com.compomics.pladipus.view.StepsCardPanel(selectedOption.getCardsForOption());
+        pnlCards =         new com.compomics.pladipus.view.StepsCardPanel(selectedOption);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -89,108 +89,107 @@ public class InstallerGUI extends javax.swing.JFrame {
         spnlDescription.setViewportView(epDescription);
 
         liSteps.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "0 - Overview", "1 - Installing MySQL", "2 - Installing ActiveMQ", "3 - Installing Pladipus" };
+            String[] strings = pnlCards.getFriendlyNamesOfCards().toArray(new String[pnlCards.getFriendlyNamesOfCards().size()]);
             public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        liSteps.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        liSteps.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        liSteps.setFocusable(false);
-        liSteps.setRequestFocusEnabled(false);
-        liSteps.setSelectionBackground(new java.awt.Color(204, 204, 255));
-        liSteps.setVerifyInputWhenFocusTarget(false);
+            public Object getElementAt(int i) { return strings[i]; }});
+    liSteps.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+    liSteps.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    liSteps.setFocusable(false);
+    liSteps.setRequestFocusEnabled(false);
+    liSteps.setSelectionBackground(new java.awt.Color(204, 204, 255));
+    liSteps.setVerifyInputWhenFocusTarget(false);
 
-        javax.swing.GroupLayout pnlDescriptionLayout = new javax.swing.GroupLayout(pnlDescription);
-        pnlDescription.setLayout(pnlDescriptionLayout);
-        pnlDescriptionLayout.setHorizontalGroup(
-            pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDescriptionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(liSteps))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlDescriptionLayout.setVerticalGroup(
-            pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDescriptionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(liSteps)
-                .addGap(22, 22, 22)
-                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
-        );
+    javax.swing.GroupLayout pnlDescriptionLayout = new javax.swing.GroupLayout(pnlDescription);
+    pnlDescription.setLayout(pnlDescriptionLayout);
+    pnlDescriptionLayout.setHorizontalGroup(
+        pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(pnlDescriptionLayout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(liSteps))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    pnlDescriptionLayout.setVerticalGroup(
+        pnlDescriptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(pnlDescriptionLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(liSteps)
+            .addGap(22, 22, 22)
+            .addComponent(spnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
 
-        javax.swing.GroupLayout pnlStepsLayout = new javax.swing.GroupLayout(pnlSteps);
-        pnlSteps.setLayout(pnlStepsLayout);
-        pnlStepsLayout.setHorizontalGroup(
-            pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlStepsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
-        );
-        pnlStepsLayout.setVerticalGroup(
-            pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createSequentialGroup()
-                .addGap(0, 48, Short.MAX_VALUE)
-                .addComponent(pnlDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlStepsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+    javax.swing.GroupLayout pnlStepsLayout = new javax.swing.GroupLayout(pnlSteps);
+    pnlSteps.setLayout(pnlStepsLayout);
+    pnlStepsLayout.setHorizontalGroup(
+        pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(pnlStepsLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(pnlDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)
+            .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
+    );
+    pnlStepsLayout.setVerticalGroup(
+        pnlStepsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStepsLayout.createSequentialGroup()
+            .addGap(0, 48, Short.MAX_VALUE)
+            .addComponent(pnlDescription, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addGroup(pnlStepsLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(pnlCards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addContainerGap())
+    );
 
-        javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
-        pnlMain.setLayout(pnlMainLayout);
-        pnlMainLayout.setHorizontalGroup(
-            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(437, 437, 437)
-                        .addComponent(btnPrev)
-                        .addGap(43, 43, 43)
-                        .addComponent(btnNext))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(pnlSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+    javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
+    pnlMain.setLayout(pnlMainLayout);
+    pnlMainLayout.setHorizontalGroup(
+        pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(pnlMainLayout.createSequentialGroup()
+            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addGap(437, 437, 437)
+                    .addComponent(btnPrev)
+                    .addGap(43, 43, 43)
+                    .addComponent(btnNext))
+                .addGroup(pnlMainLayout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(pnlSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
 
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnNext, btnPrev});
+    pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnNext, btnPrev});
 
-        pnlMainLayout.setVerticalGroup(
-            pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlMainLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNext)
-                    .addComponent(btnPrev))
-                .addContainerGap(33, Short.MAX_VALUE))
-        );
+    pnlMainLayout.setVerticalGroup(
+        pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(pnlMainLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(pnlSteps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(btnNext)
+                .addComponent(btnPrev))
+            .addContainerGap(131, Short.MAX_VALUE))
+    );
 
-        jScrollPane1.setViewportView(pnlMain);
+    jScrollPane1.setViewportView(pnlMain);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, Short.MAX_VALUE))
+    );
 
-        pack();
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
