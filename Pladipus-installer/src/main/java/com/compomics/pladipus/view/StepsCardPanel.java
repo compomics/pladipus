@@ -29,11 +29,12 @@ public class StepsCardPanel extends javax.swing.JPanel {
      */
     public StepsCardPanel() {
         initComponents();
-        layout = (CardLayout) getLayout();
+        
     }
 
     public StepsCardPanel(InstallOptions options){
         this();
+        layout = (CardLayout) getLayout();
         setLayout(layout);
         for(Component aComponent : options.getCardsForOption()){
             add(aComponent, aComponent.getClass().getName());
@@ -55,7 +56,6 @@ public class StepsCardPanel extends javax.swing.JPanel {
 
 
     public void showPreviousCard() {
-
         if(currentCard != 0){
             currentCard -= 1;
         }
@@ -63,7 +63,6 @@ public class StepsCardPanel extends javax.swing.JPanel {
     }
 
     public void showNextCard() {
-
         if(currentCard != cards.size()){
             currentCard += 1;
         }
@@ -79,21 +78,18 @@ public class StepsCardPanel extends javax.swing.JPanel {
     }
 
     public String getCardDescription() {
-        //todo clean this up
+        //todo clean this up, so no casting is needed
         return ((PladipusCard)getComponent(currentCard)).getCardDescription();
     }
 
     public List<String> getFriendlyNamesOfCards(){
-        //todo make this
         List<String> friendlyNames = new ArrayList<>();
 
         for(int i = 0; i < cards.size(); i++){
             friendlyNames.add(String.format("step %1$d - %2$s",i,((PladipusCard)getComponent(currentCard)).getFriendlyName()));
         }
         return friendlyNames;
-
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

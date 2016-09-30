@@ -70,19 +70,22 @@ public class InstallActiveMQ {
         }
 
         URL website = new URL(link);
-        ReadableByteChannel rbc = Channels.newChannel(website.openStream());
         Path downloadFile = Files.createTempFile("activemqdownload",null);
-        FileOutputStream fos = new FileOutputStream(downloadFile.toFile());
-
-        if (fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE) != 0) {
-            if (Objects.equals(DigestUtils.md5Hex(new FileInputStream(downloadFile.toFile())), "4b844f588672e6616bd6f006253d6148")) {
+        try(ReadableByteChannel rbc = Channels.newChannel(website.openStream());FileOutputStream fos = new FileOutputStream(downloadFile.toFile())){
+        //todo replace with loop and replace Long.MAX_VALUE with buffer size?
+            if (fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE) != 0) {
+            try(FileInputStream fis = new FileInputStream(downloadFile.toFile())){
+            if (DigestUtils.md5Hex(fis).equals("4b844f588672e6616bd6f006253d6148")) {
                 ZipFile zipFile = new ZipFile(downloadFile.toFile());
                 zipFile.extractAll(activeMQFolder.getPath());
+            
             } else {
                 throw new IOException("md5 digest did not match, aborting");
             }
-        }
+        }}
     }
+    }
+    
     /**
      * Updates the activeMQ properties in the local propertyfile
      *

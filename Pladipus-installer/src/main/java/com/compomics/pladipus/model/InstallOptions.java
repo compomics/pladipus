@@ -7,9 +7,9 @@ import java.awt.*;
  */
 public enum InstallOptions {
 
-    MANAGER(new Component[]{new com.compomics.pladipus.view.MySQLPanel(),new com.compomics.pladipus.view.ActiveMQPanel(),new com.compomics.pladipus.view.PladipusPanel()}),
-    WORKER(new Component[]{new com.compomics.pladipus.view.PladipusPanel()}),
-    STANDALONE(new Component[]{new com.compomics.pladipus.view.MySQLPanel(),new com.compomics.pladipus.view.ActiveMQPanel(),new com.compomics.pladipus.view.PladipusPanel()});
+    MANAGER(new Component[]{new com.compomics.pladipus.view.MySQLPanel(),new com.compomics.pladipus.view.ActiveMQPanel(),new com.compomics.pladipus.view.PladipusManagerPanel()}),
+    WORKER(new Component[]{new com.compomics.pladipus.view.PladipusWorkerPanel()}),
+    STANDALONE(new Component[]{new com.compomics.pladipus.view.MySQLPanel(),new com.compomics.pladipus.view.ActiveMQPanel(),new com.compomics.pladipus.view.PladipusManagerPanel(),new com.compomics.pladipus.view.PladipusWorkerPanel()});
 
 
     Component[] cardsToShow;

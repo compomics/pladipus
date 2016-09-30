@@ -195,35 +195,36 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
                 + "ActiveMQ port \t=" + tfAmqPort.getText()
                 + System.lineSeparator()
                 + "ActiveMQ JMX port \t=" + tfJmxPort.getText());
-        if (dialogResult == JOptionPane.NO_OPTION) {
-            return;
+        if (dialogResult == JOptionPane.YES_OPTION) {
+
+            ProgressDialogX dialog = new ProgressDialogX(true);
+
+            new Thread(() -> {
+                try {
+                    setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
+                    setup.updateProperties(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
+                    JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.", "Installation complete", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException | ZipException ex) {
+                    JOptionPane.showMessageDialog(ActiveMQPanel.this,
+                            "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
+                            "Installation Failed",
+                            JOptionPane.ERROR_MESSAGE);
+                } finally {
+                    dialog.setRunFinished();
+                    dialog.setVisible(false);
+                    dialog.dispose();
+                }
+            }).start();
+            dialog.setLocationRelativeTo(null);
+            dialog.setPrimaryProgressCounterIndeterminate(true);
+            dialog.setTitle("Installing ActiveMQ Server");
+            dialog.setVisible(true);
         }
-
-        ProgressDialogX dialog = new ProgressDialogX(true);
-
-        new Thread(() -> {
-            try {
-                setup.setupActiveMQ(tfHost.getText(), tfAmqPort.getText(), tfJmxPort.getText());
-                JOptionPane.showMessageDialog(ActiveMQPanel.this, "Please launch the server using the generated shortcut on the desktop.","Installation complete",JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException|ZipException ex) {
-                JOptionPane.showMessageDialog(ActiveMQPanel.this,
-                        "Could not install ActiveMQ: " + System.lineSeparator() + ex.getMessage(),
-                        "Installation Failed",
-                        JOptionPane.ERROR_MESSAGE);
-            } finally {
-                dialog.setRunFinished();
-                dialog.setVisible(false);
-                dialog.dispose();
-            }
-        }).start();
-        dialog.setLocationRelativeTo(null);
-        dialog.setPrimaryProgressCounterIndeterminate(true);
-        dialog.setTitle("Installing ActiveMQ Server");
-        dialog.setVisible(true);
-
     }//GEN-LAST:event_btnInstallAmqActionPerformed
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
+        //todo remove this
+
         int dialogResult = JOptionPane.showConfirmDialog(null, "Would you like to apply the following settings on this machine?"
                 + System.lineSeparator()
                 + "ActiveMQ host \t=" + tfHost.getText()
@@ -247,6 +248,7 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
     private void testConnection() {
         try {
             // FIXME: 9/29/2016
+            //todo make this part of the installation
             //PladipusTrafficManager.getInstance().isSystemOnline();
             JOptionPane.showMessageDialog(this, "Succesfully connected to the ActiveMQ Server.","Connected to ActiveMQ",JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
