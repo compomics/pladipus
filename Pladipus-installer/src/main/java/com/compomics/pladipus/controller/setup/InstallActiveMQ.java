@@ -65,7 +65,7 @@ public class InstallActiveMQ {
 
         //File downloadFile = PladipusFileDownloadingService.downloadFile(link, activeMQFolder);
 
-        if (!activeMQFolder.exists() & !activeMQFolder.mkdirs()) {
+        if (!activeMQFolder.exists() || !activeMQFolder.mkdirs()) {
             throw new IOException("could not make install folder");
         }
 

@@ -56,7 +56,7 @@ public class InstallExample {
 
     private void installSearchGUI() {
         File installFolder = new File(System.getProperty("user.home") + "/pladipus/tools/SearchGUI");
-        installFolder.mkdir();
+        if(!installFolder.exists() || installFolder.mkdir()){
         searchGUIDialog = new ProgressDialogX(new JFrame(),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
@@ -89,6 +89,7 @@ public class InstallExample {
             }
         };
         thread.start();
+        }
     }
 
     private void installPeptideShaker() {

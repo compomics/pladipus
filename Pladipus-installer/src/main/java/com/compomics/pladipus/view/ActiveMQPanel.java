@@ -32,7 +32,7 @@ public class ActiveMQPanel extends javax.swing.JPanel implements PladipusCard {
                 + "<br>"
                 + "Pladipus requires a running <a href='http://activemq.apache.org/'>ActiveMQ</a> server in order to distribute tasks and system updates."
                 + "<br><br>"
-                + "If no ActiveMQ service is reachable, please click the install button to automatically set up a prepackaged version."
+                + "If there is none already installed, the wizard will set up a server for you."
                 + "<br><br>"
                 + "Click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20ActiveMQ'>here</a> for more help.";
     }
