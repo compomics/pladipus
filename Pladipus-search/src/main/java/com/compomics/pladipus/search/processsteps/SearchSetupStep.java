@@ -73,7 +73,7 @@ public class SearchSetupStep extends ProcessingStep {
 
         //fix for older files that lack identification parameters
         if (!inputPath.equalsIgnoreCase(tempResources.getAbsolutePath())) {
-            if (inputPath.toLowerCase().endsWith(".mgf") || inputPath.toLowerCase().endsWith(".mgf.zip")) {
+            if (inputPath.toLowerCase().endsWith("raw.zip")||inputPath.toLowerCase().endsWith(".raw")||inputPath.toLowerCase().endsWith(".mgf") || inputPath.toLowerCase().endsWith(".mgf.zip")) {
                 File downloadFile = PladipusFileDownloadingService.downloadFile(inputPath, tempResources);
                 downloadFile.deleteOnExit();
                 String inputFile = downloadFile.getAbsolutePath();
