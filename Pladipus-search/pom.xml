@@ -66,5 +66,17 @@
             <artifactId>Pladipus-core</artifactId>
             <version>1.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.compomics</groupId>
+            <artifactId>utilities</artifactId>
+            <version>4.5.19</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>
