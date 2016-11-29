@@ -9,6 +9,7 @@ import com.compomics.pladipus.core.control.distribution.service.UserService;
 import com.compomics.pladipus.core.control.updates.ProcessingBeanUpdater;
 import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.properties.NetworkProperties;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.File;
@@ -26,16 +27,19 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import net.jimmc.jshortcut.JShellLink;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 /**
- *
  * @author Kenneth Verheggen
  */
 public class InstallPladipus {
+
+
+    //TODO remove all this hardcoding
 
     /**
      * The current version of pladipus (//TODO get this from the POM or a
@@ -81,7 +85,7 @@ public class InstallPladipus {
             installProcessingBeanProperties();
             setClassPath();
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -102,19 +106,22 @@ public class InstallPladipus {
     private void createDesktopIcon(String linkName) {
         //copy the ico file to the installation folder
         File icoFile = new File(pladipusFolder, "pladipus.ico");
-        try (OutputStream out = new FileOutputStream(icoFile); InputStream in = getClass().getClassLoader().getResource("images/pladipus.ico").openStream()) {
-            IOUtils.copy(in, out);
-            //set this icon as the ico
-            String iconFileLocation = icoFile.getAbsolutePath();
-            JShellLink link = new JShellLink();
-            link.setFolder(JShellLink.getDirectory("desktop"));
-            link.setName(linkName);
-            link.setIconLocation(iconFileLocation);
-            link.setPath(jarFilePath);
-            link.save();
-        } catch (Exception e) {
+        try (OutputStream out = new FileOutputStream(icoFile); InputStream in = getClass().getClassLoader().getResourceAsStream("images/pladipus.ico")) {
+            if (in != null) {
+                IOUtils.copy(in, out);
+                //set this icon as the ico
+                String iconFileLocation = icoFile.getAbsolutePath();
+                JShellLink link = new JShellLink();
+                link.setFolder(JShellLink.getDirectory("desktop"));
+                link.setName(linkName);
+                link.setIconLocation(iconFileLocation);
+                link.setPath(jarFilePath);
+                link.save();
+            }
+        } catch (IOException e) {
+
+            LOGGER.error(e);
             System.out.println("An error occurred when trying to create a desktop shortcut...");
-            e.printStackTrace();
         }
     }
 

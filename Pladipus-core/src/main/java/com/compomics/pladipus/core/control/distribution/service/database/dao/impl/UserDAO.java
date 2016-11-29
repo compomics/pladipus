@@ -224,7 +224,7 @@ public class UserDAO extends PladipusDAO implements AutoCloseable {
     public boolean userExists(String user) throws SQLException {
         boolean exists = true;
         try (AutoCloseableDBConnection c = new AutoCloseableDBConnection();
-                PreparedStatement selectUser = c.prepareStatement("SELECT user_id FROM users WHERE users.user_name=?");) {
+                PreparedStatement selectUser = c.prepareStatement("SELECT user_id FROM users WHERE users.user_name=?")) {
             
             selectUser.setString(1, user);
             ResultSet rs = selectUser.executeQuery();

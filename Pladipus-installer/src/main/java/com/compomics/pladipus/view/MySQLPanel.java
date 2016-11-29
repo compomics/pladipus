@@ -1,10 +1,14 @@
 package com.compomics.pladipus.view;
 
-import com.compomics.pladipus.controller.setup.InitMySQL;
+import com.compomics.pladipus.core.model.properties.NetworkProperties;
+import com.compomics.pladipus.model.PladipusCard;
+import org.apache.ibatis.jdbc.ScriptRunner;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.*;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -12,48 +16,9 @@ import javax.swing.JOptionPane;
  *
  * @author Kenneth Verheggen
  */
-public class MySQLPanel extends javax.swing.JPanel {
+public class MySQLPanel extends javax.swing.JPanel implements PladipusCard {
 
-    /**
-     * The mysql service address
-     */
-    private String host;
-    /**
-     * The mysql service port
-     */
-    private String port;
-    /**
-     * the login for the mysql service
-     */
-    private String user;
-    /**
-     * the password for the mysql service
-     */
-    private String password;
-    /**
-     * check if the database is existing
-     */
-    private boolean dbExists = false;
-    /**
-     * the mysql setup instance
-     */
-    private final InitMySQL mySQLSetup = new InitMySQL();
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
+    //todo add logging
 
     /**
      * Creates new form MySQLPanel
@@ -67,8 +32,18 @@ public class MySQLPanel extends javax.swing.JPanel {
         lbLogo.setIcon(image);
     }
 
-    public void setWorkerMode(boolean isWorkerMode) {
-        btnInstallDatabase.setEnabled(!isWorkerMode);
+    @Override
+    public String getCardDescription(){
+        return "<h2>Step 1 of 3 - MySQL</h2>"
+                + "<br>"
+                + "Pladipus requires a MySQL database in order to keep track of tasks and their states."
+                + "<br><br>"
+                + "If there is no MySQL service reachable, click <a href='https://github.com/compomics/pladipus/wiki/1.-Installation#Installing%20MySQL'>here</a> for more help.";
+    }
+
+    @Override
+    public String getFriendlyName(){
+        return "Installing MySQL";
     }
 
     /**
@@ -120,31 +95,19 @@ public class MySQLPanel extends javax.swing.JPanel {
 
         tfUser.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tfUser.setText("root");
-        tfUser.setToolTipText("The user to the database with correct privileges");
+        tfUser.setToolTipText("The login to the database with correct privileges");
 
         btnApply.setText("Save Settings");
-        btnApply.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnApplyActionPerformed(evt);
-            }
-        });
+        btnApply.addActionListener(this::btnApplyActionPerformed);
 
         pfPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        pfPass.setToolTipText("The password for the user");
+        pfPass.setToolTipText("The password for the login");
 
         btnInstallDatabase.setText("Import DB");
-        btnInstallDatabase.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInstallDatabaseActionPerformed(evt);
-            }
-        });
+        btnInstallDatabase.addActionListener(this::btnInstallDatabaseActionPerformed);
 
         btnTestConnection.setText("Test Connection");
-        btnTestConnection.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTestConnectionActionPerformed(evt);
-            }
-        });
+        btnTestConnection.addActionListener(this::btnTestConnectionActionPerformed);
 
         lbLogo.setBackground(new java.awt.Color(255, 255, 255));
         lbLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -182,7 +145,7 @@ public class MySQLPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lblHost, lblPass, lblPort, lblUser});
+        pnlMainLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, lblHost, lblPass, lblPort, lblUser);
 
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -232,24 +195,16 @@ public class MySQLPanel extends javax.swing.JPanel {
 
     private void btnApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApplyActionPerformed
         testConnection(true);
-        try {
-            mySQLSetup.updateProperties(host, port, user, password);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Could not update properties.",
-                    "Update Error", JOptionPane.ERROR_MESSAGE);
-        }
     }//GEN-LAST:event_btnApplyActionPerformed
 
     private void btnInstallDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallDatabaseActionPerformed
-        loadInput();
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password)) {
-            if (mySQLSetup.pladipusExists(connection)) {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://" + tfHost.getText() + ":" + tfPort.getText(), tfUser.getText(), new String(pfPass.getPassword()))) {
+            if (pladipusExists(connection)) {
                 int answer = JOptionPane.showConfirmDialog(this, "The database already exists. Would you like to perform a clean install?");
                 if (answer == JOptionPane.YES_OPTION) {
                     answer = JOptionPane.showConfirmDialog(this, "Are you sure? This action can not be undone?");
                     if (answer == JOptionPane.YES_OPTION) {
-                        mySQLSetup.dropPladipus(connection);
+                        dropPladipus(connection);
                     } else {
                         return;
                     }
@@ -257,10 +212,9 @@ public class MySQLPanel extends javax.swing.JPanel {
                     return;
                 }
             }
-            mySQLSetup.setupMySql(connection);
-            if (mySQLSetup.pladipusExists(connection)) {
+            setupMySql(connection);
+            if (pladipusExists(connection)) {
                 JOptionPane.showMessageDialog(null, "Succesfully initiated database.", "Database import complete", JOptionPane.INFORMATION_MESSAGE);
-                dbExists = true;
             } else {
                 throw new IOException("Could not create database schema. Are the privileges set correctly for the specified account?");
             }
@@ -270,7 +224,6 @@ public class MySQLPanel extends javax.swing.JPanel {
                     "Connection Failed",
                     JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
-            dbExists = true;
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this,
                     "Could not import the database: " + System.lineSeparator() + ex.getMessage(),
@@ -283,50 +236,44 @@ public class MySQLPanel extends javax.swing.JPanel {
         testConnection(false);
     }//GEN-LAST:event_btnTestConnectionActionPerformed
 
-    private void loadInput() {
-        host = tfHost.getText();
-        port = tfPort.getText();
-        user = tfUser.getText();
-        password = new String(pfPass.getPassword());
-    }
-
     private void testConnection(boolean save) {
-        loadInput();
         //1. check if db exists
-        boolean connected = false;
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port, user, password)) {
-            connected = true;
+        //todo add field for db name and save to properties
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://" + tfHost.getText() + ":" + tfPort.getText(), tfUser.getText(), new String(pfPass.getPassword()))) {
             try {
-                dbExists = mySQLSetup.pladipusExists(connection);
-                if (dbExists) {
+                if (pladipusExists(connection)) {
                     if (save) {
-                        mySQLSetup.updateProperties(host, port, user, password);
+                        NetworkProperties properties = NetworkProperties.getInstance();
+
+                        properties.setProperty("db.host", tfHost.getText());
+                        properties.setProperty("db.port", tfPort.getText());
+                        properties.setProperty("db.login",tfUser.getText());
+                        //todo either encrypt password or ask it each time
+                        //properties.setProperty("db.pass", new String(pfPass.getPassword()));
+                        properties.save();
                         JOptionPane.showMessageDialog(this, "Succesfully saved database settings.", "Database settings saved", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(this, "Succesfully contacted the Pladipus database.", "Database connected", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
-            } catch (SQLException theDatabaseIsNotThere) {
-                if (connected) {
-                    //2. prompt user if he/she wants to attempt to initialize the database?
+            } catch (SQLException exception) {
+                if (!connection.isClosed()) {
+                    //2. prompt login to initialize the database
                     int dialogResult = JOptionPane.showConfirmDialog(this, "Would you like to automatically import the Pladipus database?");
                     if (dialogResult == JOptionPane.YES_OPTION) {
-                        mySQLSetup.setupMySql(connection);
                         JOptionPane.showMessageDialog(null, "Succesfully initiated database.", "Database import complete", JOptionPane.INFORMATION_MESSAGE);
-                        dbExists = true;
                     }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Could not connect to the database: " + System.lineSeparator() + exception.getMessage(),
+                            "Connection Failed",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         } catch (SQLException e) {
-            if (e.getMessage().contains("Access denied for user")) {
+            if (e.getMessage().contains("Access denied for login")) {
                 JOptionPane.showMessageDialog(this,
-                        "The password was incorrect or the user has no privileges...",
-                        "Connection Failed",
-                        JOptionPane.ERROR_MESSAGE);
-            } else if (!connected) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this,
-                        "Could not connect to the database: " + System.lineSeparator() + e.getMessage(),
+                        "The password was incorrect or the login has no privileges...",
                         "Connection Failed",
                         JOptionPane.ERROR_MESSAGE);
             }
@@ -336,6 +283,62 @@ public class MySQLPanel extends javax.swing.JPanel {
                     "Could not import SQL init script." + System.lineSeparator() + ex.getMessage(),
                     "Database Creation Error",
                     JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    //todo: moved backend functionality into panel, to move all non visual functionality away from this panel
+
+    /**
+     * drops the pladipus schema
+     *
+     * @param connection connection to the database to drop the scheme from
+     * @return true if success
+     * @throws SQLException
+     */
+    public boolean dropPladipus(Connection connection) throws SQLException {
+        try (PreparedStatement stat = connection.prepareStatement("drop schema pladipus;")) {
+            return stat.execute();
+        }
+    }
+
+    /**
+     * checks if the pladipus schema exists
+     *
+     * @param connection the connection to the database to check on
+     * @return true if success
+     * @throws SQLException
+     */
+    public boolean pladipusExists(Connection connection) throws SQLException {
+
+        try (PreparedStatement stat = connection.prepareStatement("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'pladipus'")) {
+            try (ResultSet set = stat.executeQuery()) {
+                return (!set.isAfterLast() && !set.isBeforeFirst());
+            }
+        }
+    }
+
+    /**
+     * Installs the pladipus database on the given connection. Note,you need
+     * create rights for this on the server !
+     *
+     * @param connection the connection to mysql
+     * @throws IOException
+     */
+    public boolean setupMySql(Connection connection) throws IOException {
+
+        //don't quite like this runner thing
+        //2. import from SQL script?
+        ScriptRunner runner = new ScriptRunner(connection);
+        runner.setAutoCommit(true);
+        runner.setStopOnError(true);
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("doc/PLADIPUS_INIT_SCRIPT.sql")) {
+            if (in != null) {
+                runner.runScript(new InputStreamReader(in));
+                runner.closeConnection();
+                return true;
+            } else {
+                throw new FileNotFoundException("could not find sql script to import");
+            }
         }
     }
 

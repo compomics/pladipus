@@ -119,14 +119,7 @@ public class ProcessingEngine implements Callable {
      * @return the system exit value of the process
      */
     public int startProcess(File executable, String[] arguments, CallbackNotifier callbackNotifier) {
-        try {
-            monitor = getPreparedMonitor(executable, arguments, callbackNotifier);
-            monitor.getHook();
-        } catch (Exception ex) {
-            LOGGER.error(ex);
-            ex.printStackTrace();
-        }
-        return 0;
+        return this.startProcess(executable,Arrays.asList(arguments),callbackNotifier);
     }
 
     /**

@@ -10,3 +10,8 @@
 /Pladipus-installer/test/main/resources/
 /Pladipus-moff/target/
 /Pladipus-standalone/target/
+temp.txt
+.idea/
+target/sonar/.sonar_lock
+target/sonar/report-task.txt
+target/

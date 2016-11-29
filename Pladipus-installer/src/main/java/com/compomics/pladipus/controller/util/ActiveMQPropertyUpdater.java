@@ -46,13 +46,14 @@ public class ActiveMQPropertyUpdater {
      * @param activeMQPort the port to be updated
      * @param jmxPort the port to be updated for jmx
      */
-    public static void updateActiveMQProperties(File activeMQXML, String transporterHostName, String activeMQPort, String jmxPort) {
-        try {
+    public static void updateActiveMQProperties(File activeMQXML, String transporterHostName, String activeMQPort, String jmxPort) throws IOException {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(activeMQXML.getAbsolutePath());
+        DocumentBuilder docBuilder;
+        try {
+            docBuilder = docFactory.newDocumentBuilder();
+        Document doc = docBuilder.parse(activeMQXML.getAbsolutePath());
 
-            // Get the transporter element --> carefull not to override existing user-specified settings
+            // Get the transporter element --> careful not to override existing user-specified settings
             Node connectors = doc.getElementsByTagName("transportConnector").item(0);
             NamedNodeMap attr = connectors.getAttributes();
             if (attr.getNamedItem("name").getTextContent().equals("openwire")) {
@@ -78,9 +79,10 @@ public class ActiveMQPropertyUpdater {
             transformer.transform(source, result);
 
             System.out.println("Done");
-
-        } catch (ParserConfigurationException | TransformerException | IOException | SAXException pce) {
-            pce.printStackTrace();
+        } catch (ParserConfigurationException | TransformerException | SAXException e) {
+            IOException ioe = new IOException("could not read the config file");
+            ioe.addSuppressed(e);
+            throw ioe;
         }
     }
 }

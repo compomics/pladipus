@@ -34,10 +34,7 @@ public class ZipUtils {
      * boolean indicating if the file is unzipped
      */
     private static boolean unzipped = false;
-    /**
-     * The zipping buffer size
-     */
-    private static int BUFFER_SIZE = 1024;
+
 
     /**
      * Unzips a file to the specified folder

@@ -144,9 +144,9 @@ public class PladipusFileDownloadingService {
         return filePath;
     }
 
-    private static void copy(URL fileURL, File destFile) throws FileNotFoundException, IOException {
+    private static void copy(URL fileURL, File destFile) throws IOException {
         try (OutputStream os = new FileOutputStream(destFile);
-                InputStream is = fileURL.openStream();) {
+                InputStream is = fileURL.openStream()) {
             byte[] b = new byte[2048];
             int length;
             while ((length = is.read(b)) != -1) {

@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
