@@ -69,6 +69,11 @@ public class PeptideShakerStep extends ProcessingStep {
                 throw new IllegalArgumentException("Missing mandatory parameter : " + aParameter.id);
             }
         }
+        //check if spectra need to be exported
+        if(parameters.containsKey("spectrum_folder")){
+            File exportFolder = new File(parameters.get("spectrum_folder"));
+            exportFolder.mkdirs();
+        }
         //also add these for other possible CLI's?
         for (AllowedPeptideShakerFollowUpParams aParameter : AllowedPeptideShakerFollowUpParams.values()) {
             if (parameters.containsKey(aParameter.getId())) {
