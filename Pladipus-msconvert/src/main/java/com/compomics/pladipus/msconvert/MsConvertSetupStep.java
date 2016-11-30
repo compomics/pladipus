@@ -4,14 +4,9 @@ import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.io.FileUtils;
-
 /**
  *
  * @author Kenneth Verheggen
