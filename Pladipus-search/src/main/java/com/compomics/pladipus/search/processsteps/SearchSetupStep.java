@@ -5,6 +5,7 @@ import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
+import com.compomics.pladipus.search.util.PrideAsapOutputExtractor;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.preferences.IdentificationParameters;
@@ -57,17 +58,31 @@ public class SearchSetupStep extends ProcessingStep {
             tempResources.mkdirs();
         }
         try {
-            initialiseInputFiles();
+            if (parameters.containsKey("prideasap_file")) {
+                initialiseInputFilesFromPrideAsap();
+            } else {
+                initialiseInputFiles();
+            }
         } catch (Exception ex) {
             throw new PladipusProcessingException(ex);
         }
         return true;
     }
 
+    private void initialiseInputFilesFromPrideAsap() throws Exception {
+        String fastaPath = parameters.get("fasta_file");
+        String inputPath = parameters.get("prideasap_file");
+        File inputFile = new File(inputPath);
+        PrideAsapOutputExtractor extractor = new PrideAsapOutputExtractor(inputFile, tempResources);
+        parameters.put("spectrum_files", extractor.getMgfFile().getAbsolutePath());
+        parameters.put("id_params", extractor.getParameterFile().getAbsolutePath());
+        LOGGER.debug("Got input files " + parameters.get("spectrum_files"));
+        LoadFasta(fastaPath);
+    }
+
     private void initialiseInputFiles() throws Exception {
         //original
         String inputPath = parameters.get("spectrum_files");
-        String paramPath = parameters.get("id_params");
         String fastaPath = parameters.get("fasta_file");
 
         //fix for older files that lack identification parameters
@@ -89,6 +104,11 @@ public class SearchSetupStep extends ProcessingStep {
             }
         }
         LOGGER.debug("Got input files " + parameters.get("spectrum_files"));
+        LoadFasta(fastaPath);
+    }
+
+    private void LoadFasta(String fastaPath) throws Exception {
+        String paramPath = parameters.get("id_params");
         //generate a repo folder for fasta files...
         //clear the repository save for the current fasta (temporary solution)
         //TODO refactor that it deletes complete runs only

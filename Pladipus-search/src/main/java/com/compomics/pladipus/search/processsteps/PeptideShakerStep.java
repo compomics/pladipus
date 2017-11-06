@@ -71,7 +71,7 @@ public class PeptideShakerStep extends ProcessingStep {
             }
         }
         //check if spectra need to be exported
-        if(parameters.containsKey("spectrum_folder")){
+        if (parameters.containsKey("spectrum_folder")) {
             File exportFolder = new File(parameters.get("spectrum_folder"));
             exportFolder.mkdirs();
         }
@@ -82,12 +82,20 @@ public class PeptideShakerStep extends ProcessingStep {
                 cmdArgs.add(parameters.get(aParameter.getId()));
             }
         }
-
+        //temp solution
+       // if (parameters.containsKey("out_reports") && parameters.containsKey("reports")) {
+            System.out.println("Adding reports to command line...");
+            cmdArgs.add("-out_reports");
+            cmdArgs.add(parameters.get("out_reports"));
+            cmdArgs.add("-reports");
+            cmdArgs.add(parameters.get("reports"));
+     //   }
+        /*
         for (Map.Entry<String,String> aParameter:parameters.entrySet()){
             cmdArgs.add("-" + aParameter.getKey());
             cmdArgs.add(parameters.get(aParameter.getValue()));
 
-        }
+        }*/
 
         return cmdArgs;
     }
@@ -114,16 +122,16 @@ public class PeptideShakerStep extends ProcessingStep {
             }
             temporaryOutput.mkdirs();
             String experiment = "output";
-            
+
             if (parameters.containsKey("experiment")) {
                 experiment = parameters.get("experiment");
             }
-            
+
             String sample = "respin";
             if (parameters.containsKey("sample")) {
                 sample = parameters.get("sample");
             }
-            
+
             String replicate = "0";
             if (parameters.containsKey("replicate")) {
                 replicate = parameters.get("replicate");
@@ -144,15 +152,15 @@ public class PeptideShakerStep extends ProcessingStep {
             startProcess(peptideShakerJar, constructArguments);
             return true;
         } catch (IOException | XMLStreamException | URISyntaxException ex) {
-           throw new PladipusProcessingException(ex);
+            throw new PladipusProcessingException(ex);
         } catch (Exception ex) {
-            
-             throw new UnspecifiedPladipusException(ex);
+
+            throw new UnspecifiedPladipusException(ex);
         }
     }
 
     public File getJar() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
-        File temp = new File(parameters.getOrDefault("ps_folder",System.getProperty("user.home") + "/pladipus/tools/PeptideShaker"));
+        File temp = new File(parameters.getOrDefault("ps_folder", System.getProperty("user.home") + "/pladipus/tools/PeptideShaker"));
         if (!temp.exists()) {
             LOGGER.info("Downloading latest PeptideShaker version...");
             URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
@@ -170,8 +178,8 @@ public class PeptideShakerStep extends ProcessingStep {
     public String getDescription() {
         return "Running PeptideShaker";
     }
-    
-        public static void main(String[] args) {
+
+    public static void main(String[] args) {
         ProcessingStep.main(args);
     }
 }
