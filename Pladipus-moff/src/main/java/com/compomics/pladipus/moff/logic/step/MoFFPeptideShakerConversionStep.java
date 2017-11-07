@@ -24,23 +24,40 @@ import org.apache.log4j.Logger;
  */
 public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
 
-     /**
+    /**
      * Logging instance
      */
     private static final Logger LOGGER = Logger.getLogger(MoFFPeptideShakerConversionStep.class);
-    
+
     private static final String REPORT_SUFFIX = "Default_PSM_Report.txt";
 
     /**
-     * The output file
+     * The report file.
      */
-    private File moffFile;
+    private File reportFile;
+    private File fastaFile;
+    private File mgfFile;
 
     public MoFFPeptideShakerConversionStep() {
 
     }
 
-    private void createReportFile(File inputFile) throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {       
+    private void createReportFile(File cpsxFile) throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
+        //check if the FASTA and MGF file are in the same directory as the cpsx file
+        File cpsxParentDirectory = cpsxFile.getParentFile();
+        File originalFastaFile = new File(parameters.get("fasta"));
+        if(!originalFastaFile.getParentFile().getAbsolutePath().equals(cpsxParentDirectory.getAbsolutePath())){
+            //copy it to the same directory as the cpsx file
+            fastaFile = new File(cpsxParentDirectory, originalFastaFile.getName());
+            Files.copy(originalFastaFile, fastaFile);
+        }
+        File originalMgfFile = new File(parameters.get("mgf"));
+        if(!originalMgfFile.getParentFile().getAbsolutePath().equals(cpsxParentDirectory.getAbsolutePath())){
+            //copy it to the same directory as the cpsx file
+            mgfFile = new File(cpsxParentDirectory, originalMgfFile.getName());
+            Files.copy(originalMgfFile, mgfFile);
+        }
+                
         File peptideShakerJar = getJar();
 
         ArrayList<String> cmdArgs = new ArrayList<>();
@@ -49,9 +66,9 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
         cmdArgs.add(peptideShakerJar.getAbsolutePath());
         cmdArgs.add("eu.isas.peptideshaker.cmd.ReportCLI");
         cmdArgs.add("-in");
-        cmdArgs.add(inputFile.getAbsolutePath());
+        cmdArgs.add(cpsxFile.getAbsolutePath());
         cmdArgs.add("-out_reports");
-        cmdArgs.add(inputFile.getParentFile().getAbsolutePath());
+        cmdArgs.add(cpsxFile.getParentFile().getAbsolutePath());
         cmdArgs.add("-reports");
         cmdArgs.add("3");
 
@@ -66,18 +83,30 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
     @Override
     public boolean doAction() throws UnspecifiedPladipusException, PladipusProcessingException {
         try {
-            File inputFile = new File(parameters.get("ps_output"));
+            File cpsxFile = new File(parameters.get("ps_output"));
 
-            createReportFile(inputFile);
+            createReportFile(cpsxFile);
 
-            File[] files = inputFile.getParentFile().listFiles((File dir, String name) -> name.endsWith(REPORT_SUFFIX));
+            //remove the temporary FASTA and MGF files and inedex files if necessary
+            if(fastaFile != null){
+                File fastaIndexFile = new File(fastaFile.getAbsoluteFile() + ".cui");
+                fastaIndexFile.delete();
+                fastaFile.delete();                
+            }
+            if(mgfFile != null){
+                File mgfIndexFile = new File(mgfFile.getAbsoluteFile() + ".cui");
+                mgfIndexFile.delete();
+                mgfFile.delete();
+            }
+                        
+            File[] files = cpsxFile.getParentFile().listFiles((File dir, String name) -> name.endsWith(REPORT_SUFFIX));
             if (files.length != 0) {
                 //get the first file and rename it
-                moffFile = new File(inputFile.getParentFile(), inputFile.getName() + ".report.tsv");
-                Files.move(files[0], moffFile);
+                reportFile = new File(cpsxFile.getParentFile(), cpsxFile.getName() + ".report.tsv");
+                Files.move(files[0], reportFile);
             } else {
                 throw new FileNotFoundException("The report file was not found.");
-            }
+            }            
 
             LOGGER.info("Conversion completed");
             return true;
@@ -92,7 +121,7 @@ public class MoFFPeptideShakerConversionStep extends PeptideShakerStep {
     }
 
     public File getMoffFile() {
-        return moffFile;
+        return reportFile;
     }
 
     public static void main(String[] args) {

@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>Pladipus-moff</artifactId>
+    <version>1.2.2</version>
     <packaging>jar</packaging>
     <build>
         <plugins>
