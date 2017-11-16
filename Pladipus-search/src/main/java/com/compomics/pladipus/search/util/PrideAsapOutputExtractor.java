@@ -25,21 +25,22 @@ import org.apache.log4j.Logger;
  * @author Kenneth Verheggen <kenneth.verheggen@gmail.com>
  */
 public class PrideAsapOutputExtractor {
-    
+
     private static final Logger LOGGER = Logger.getLogger(PrideAsapOutputExtractor.class);
-    
+
     private final File prideasapZip;
     private final File outputFolder;
     private File parameterFile;
     private File mgfFile;
-    
+
     public PrideAsapOutputExtractor(File prideasapZip, File outputFolder) {
         this.prideasapZip = prideasapZip;
         this.outputFolder = outputFolder;
         extract();
     }
-    
+
     private void extract() {
+        LOGGER.info("Extracting " + prideasapZip.getAbsolutePath() + " to " + outputFolder.getAbsolutePath());
         try (ZipFile input = new ZipFile(prideasapZip)) {
             Enumeration<? extends ZipEntry> entries = input.entries();
             ZipEntry mgfEntry = null;
@@ -48,60 +49,71 @@ public class PrideAsapOutputExtractor {
                 ZipEntry entry = entries.nextElement();
                 if (entry.getName().endsWith(".par")) {
                     paramEntry = entry;
-                } else if (entry.getName().endsWith(".mgf.zip")) {
+                } else if (entry.getName().endsWith(".spectra.zip") | entry.getName().endsWith(".mgf.zip") | entry.getName().endsWith(".mgf")) {
                     mgfEntry = entry;
                 }
             }
             if (paramEntry != null && mgfEntry != null) {
-                
-                extractParameters(input, paramEntry);
-                extractMGF(input, mgfEntry);
+                File param = new File(outputFolder, new File(input.getName().replace(".pzip", ".par")).getName());
+                extractParameters(param, input, paramEntry);
+                File mgf = new File(outputFolder, new File(input.getName().replace(".pzip", ".mgf")).getName());
+                extractMGF(mgf, input, mgfEntry);
             }
         } catch (IOException ex) {
             LOGGER.error(ex);
         }
-        
+
     }
-    
-    private void extractParameters(ZipFile input, ZipEntry paramEntry) throws IOException {
-        File outputFile = new File(outputFolder, new File(input.getName().replace(".pzip", ".par")).getName());
-        try (BufferedReader stream = new BufferedReader(new InputStreamReader(input.getInputStream(paramEntry)));
+
+    private File extractFile(File outputFile, ZipFile input, ZipEntry entry) throws IOException {
+
+        try (BufferedReader stream = new BufferedReader(new InputStreamReader(input.getInputStream(entry)));
                 FileWriter out = new FileWriter(outputFile);) {
             String line;
             while ((line = stream.readLine()) != null) {
                 out.append(line + System.lineSeparator()).flush();
             }
             out.flush();
-            parameterFile = outputFile;
+
         }
-        
+        return outputFile;
     }
-    
-    private void extractMGF(ZipFile input, ZipEntry mgfEntry) throws IOException {
-        try (ZipInputStream innerZip = new ZipInputStream(input.getInputStream(mgfEntry))) {
-            File outputFile = new File(outputFolder, new File(input.getName().replace(".pzip", ".mgf")).getName());
-            ZipEntry mgfZipEntry = null;
-            byte[] buffer = new byte[2048];
-            while ((mgfZipEntry = innerZip.getNextEntry()) != null) {
-                if (mgfZipEntry.getName().endsWith(".mgf")) {
-                    try (FileOutputStream output = new FileOutputStream(outputFile)) {
-                        int len;
-                        while ((len = innerZip.read(buffer)) > 0) {
-                            output.write(buffer, 0, len);
+
+    private void extractParameters(File outputFile, ZipFile input, ZipEntry paramEntry) throws IOException {
+
+        parameterFile = extractFile(outputFile, input, paramEntry);
+    }
+
+    private void extractMGF(File outputFile, ZipFile input, ZipEntry mgfEntry) throws IOException {
+        if (mgfEntry.getName().endsWith(".mgf")) {
+            mgfFile = extractFile(outputFile, input, mgfEntry);
+        } else {
+            try (ZipInputStream innerZip = new ZipInputStream(input.getInputStream(mgfEntry))) {
+                ZipEntry mgfZipEntry = null;
+                byte[] buffer = new byte[2048];
+                while ((mgfZipEntry = innerZip.getNextEntry()) != null) {
+                    if (mgfZipEntry.getName().endsWith(".mgf") | mgfZipEntry.getName().endsWith(".mgf.zip")) {
+                        try (FileOutputStream output = new FileOutputStream(outputFile)) {
+                            int len;
+                            while ((len = innerZip.read(buffer)) > 0) {
+                                output.write(buffer, 0, len);
+                            }
                         }
                     }
                 }
+                mgfFile = outputFile;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            mgfFile = outputFile;
         }
     }
-    
+
     public File getParameterFile() {
         return parameterFile;
     }
-    
+
     public File getMgfFile() {
         return mgfFile;
     }
-    
+
 }

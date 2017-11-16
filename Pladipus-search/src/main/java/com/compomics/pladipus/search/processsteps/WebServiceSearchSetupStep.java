@@ -1,11 +1,11 @@
 package com.compomics.pladipus.search.processsteps;
 
 import com.compomics.pladipus.core.control.util.PladipusFileDownloadingService;
-import com.compomics.pladipus.core.control.util.ZipUtils;
 import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
-import com.compomics.pladipus.search.util.PrideAsapOutputExtractor;
+import com.compomics.pride_asa_pipeline.core.bypass.WebServiceMGFInference;
+import com.compomics.pride_asa_pipeline.core.bypass.WebServiceParameterInference;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.preferences.IdentificationParameters;
@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.io.FileUtils;
@@ -22,16 +23,16 @@ import org.apache.log4j.Logger;
  *
  * @author Kenneth Verheggen
  */
-public class SearchSetupStep extends ProcessingStep {
+public class WebServiceSearchSetupStep extends ProcessingStep {
 
     /**
      * the temp folder for the entire processing
      */
     private final File tempResources;
     private final File fasta_repo;
-    private static final Logger LOGGER = Logger.getLogger(SearchSetupStep.class);
+    private static final Logger LOGGER = Logger.getLogger(WebServiceSearchSetupStep.class);
 
-    public SearchSetupStep() {
+    public WebServiceSearchSetupStep() {
         tempResources = new File(System.getProperty("user.home") + "/pladipus/temp/search/resources");
         tempResources.getParentFile().mkdirs();
         fasta_repo = new File(System.getProperty("user.home") + "/pladipus/fasta");
@@ -60,52 +61,45 @@ public class SearchSetupStep extends ProcessingStep {
             tempResources.mkdirs();
         }
         try {
-            if (parameters.containsKey("prideasap_file")) {
-                initialiseInputFilesFromPrideAsap();
-            } else {
-                initialiseInputFiles();
-            }
+            initialiseInputFiles();
         } catch (Exception ex) {
             throw new PladipusProcessingException(ex);
         }
         return true;
     }
 
-    private void initialiseInputFilesFromPrideAsap() throws Exception {
-        String fastaPath = parameters.get("fasta_file");
-        String inputPath = parameters.get("prideasap_file");
-        File inputFile = new File(inputPath);
-        PrideAsapOutputExtractor extractor = new PrideAsapOutputExtractor(inputFile, tempResources);
-        parameters.put("spectrum_files", extractor.getMgfFile().getAbsolutePath());
-        parameters.put("id_params", extractor.getParameterFile().getAbsolutePath());
-        LOGGER.info("Got input files from a pzip " + parameters.get("spectrum_files") +" -  File exists : "+ new File(parameters.get("spectrum_files")).exists());
-        LoadFasta(fastaPath);
+    private String loadSpectra() {
+        WebServiceMGFInference mgfInference = new WebServiceMGFInference(parameters.get("assay"));
+        String spectrumPath = "";
+        try {
+            List<File> prideMGFFile = mgfInference.getPrideMGFFile(tempResources);
+            spectrumPath = prideMGFFile.get(0).getAbsolutePath();
+            parameters.put("spectrum_files", spectrumPath);
+        } catch (Exception ex) {
+            LOGGER.error("Could not retrieve MGF " + ex);
+        }
+        return spectrumPath;
+    }
+
+    private String loadParameters() {
+        WebServiceParameterInference paramInference = new WebServiceParameterInference(parameters.get("assay"));
+        String parameterPath = "";
+        try {
+            File parameterFile = new File(tempResources, parameters.get("assay") + ".par");
+            paramInference.InferParameters(parameterFile);
+            parameterPath = parameterFile.getAbsolutePath();
+
+        } catch (Exception ex) {
+            LOGGER.error("Could not retrieve parameters " + ex);
+        }
+        return parameterPath;
     }
 
     private void initialiseInputFiles() throws Exception {
         //original
-        String inputPath = parameters.get("spectrum_files");
+        parameters.put("spectrum_files", loadSpectra());
+        parameters.put("id_params", loadParameters());
         String fastaPath = parameters.get("fasta_file");
-
-        //fix for older files that lack identification parameters
-        if (!inputPath.equalsIgnoreCase(tempResources.getAbsolutePath())) {
-            if (inputPath.toLowerCase().endsWith("raw.zip") || inputPath.toLowerCase().endsWith(".raw") || inputPath.toLowerCase().endsWith(".mgf") || inputPath.toLowerCase().endsWith(".mgf.zip")) {
-                System.out.println("RAW file or mgf was identified");
-                File downloadFile = PladipusFileDownloadingService.downloadFile(inputPath, tempResources);
-                downloadFile.deleteOnExit();
-                String inputFile = downloadFile.getAbsolutePath();
-
-                if (inputPath.toLowerCase().endsWith(".zip")) {
-                    LOGGER.debug("Unzipping input");
-                    ZipUtils.unzipArchive(new File(inputFile), tempResources);
-                    LOGGER.debug("Done unzipping...");
-                }
-                parameters.put("spectrum_files", inputFile.replace(".zip", ""));
-            } else {
-                parameters.put("spectrum_files", PladipusFileDownloadingService.downloadFolder(inputPath, tempResources).getAbsolutePath());
-            }
-        }
-        LOGGER.info("Got input files " + parameters.get("spectrum_files"));
         LoadFasta(fastaPath);
     }
 

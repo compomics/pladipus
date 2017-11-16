@@ -72,5 +72,11 @@
             <!--<version>4.5.19</version>-->
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.compomics.pride-asa-pipeline</groupId>
+            <artifactId>pride-asa-pipeline-core</artifactId>
+            <version>1.7.4.faster</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>

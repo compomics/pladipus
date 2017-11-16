@@ -17,9 +17,12 @@ import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downl
 import com.compomics.software.autoupdater.HeadlessFileDAO;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -83,13 +86,13 @@ public class PeptideShakerStep extends ProcessingStep {
             }
         }
         //temp solution
-       // if (parameters.containsKey("out_reports") && parameters.containsKey("reports")) {
-            System.out.println("Adding reports to command line...");
-            cmdArgs.add("-out_reports");
-            cmdArgs.add(parameters.get("out_reports"));
-            cmdArgs.add("-reports");
-            cmdArgs.add(parameters.get("reports"));
-     //   }
+        // if (parameters.containsKey("out_reports") && parameters.containsKey("reports")) {
+        System.out.println("Adding reports to command line...");
+        cmdArgs.add("-out_reports");
+        cmdArgs.add(parameters.get("out_reports"));
+        cmdArgs.add("-reports");
+        cmdArgs.add(parameters.get("reports"));
+        //   }
         /*
         for (Map.Entry<String,String> aParameter:parameters.entrySet()){
             cmdArgs.add("-" + aParameter.getKey());
@@ -150,6 +153,12 @@ public class PeptideShakerStep extends ProcessingStep {
                 callbackNotifier.addCheckpoint(new Checkpoint(aCheckPoint.getLine(), aCheckPoint.getFeedback()));
             }
             startProcess(peptideShakerJar, constructArguments);
+
+            //copy the cps file if done?
+            if (parameters.containsKey("save_cps")) {
+
+                copyFile(temp_peptideshaker_cps, new File(realOutput, temp_peptideshaker_cps.getName()));
+            }
             return true;
         } catch (IOException | XMLStreamException | URISyntaxException ex) {
             throw new PladipusProcessingException(ex);
@@ -159,6 +168,17 @@ public class PeptideShakerStep extends ProcessingStep {
         }
     }
 
+    private static void copyFile(File source, File dest) throws IOException {
+        try (FileChannel sourceChannel = new FileInputStream(source).getChannel();
+                FileChannel destChannel = new FileOutputStream(dest).getChannel();) {
+            LOGGER.info("Storing " + source.getName() + " to " + dest.getAbsolutePath());
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    
     public File getJar() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File temp = new File(parameters.getOrDefault("ps_folder", System.getProperty("user.home") + "/pladipus/tools/PeptideShaker"));
         if (!temp.exists()) {
