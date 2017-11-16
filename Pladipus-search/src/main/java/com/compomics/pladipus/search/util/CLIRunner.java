@@ -103,11 +103,11 @@ public class CLIRunner {
     }
 
     public static void main(String[] args) {
-        args = new String[]{
+        /*     args = new String[]{
             "-assay", "11954",
             "-out", "C:/Users/compomics/.compomics/pladipus/search/results",
             "-fasta", "C:/Users/compomics/Documents//out/human_proteome_tincr_crap_concatenated_target_decoy.fasta"};
-       //     "-peptideshaker"};
+       //     "-peptideshaker"};*/
         BuildIntegrationCommandLine(args);
     }
 
