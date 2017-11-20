@@ -109,7 +109,7 @@ public class SearchSetupStep extends ProcessingStep {
         LoadFasta(fastaPath);
     }
 
-    private void LoadFasta(String fastaPath) throws Exception {
+    public void LoadFasta(String fastaPath) throws Exception {
         String paramPath = parameters.get("id_params");
         //generate a repo folder for fasta files...
         //clear the repository save for the current fasta (temporary solution)

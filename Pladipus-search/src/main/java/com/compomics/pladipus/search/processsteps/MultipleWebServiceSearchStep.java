@@ -43,6 +43,8 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
 
     @Override
     public boolean doAction() throws PladipusProcessingException {
+        //make sure nothing else clears the temp folder !
+        parameters.put("skip_cleaning", "true");
         //initialize the temp folders
         prepareTempFolder();
         //prepare the output
@@ -60,16 +62,20 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
         parameters.put("id_params", parameterPath);
         String inputFastas = parameters.get("fasta_file");
         String[] fastaPaths = inputFastas.split(",");
+        boolean initialized = false;
         for (String fastaPath : fastaPaths) {
             try {
                 //set the output folder...
                 File fastaFile = new File(fastaPath);
-                File tmpOutputFolder = new File(outputFolder, fastaFile.getName().substring(0, 15));
+                File tmpOutputFolder = new File(outputFolder, fastaFile.getName().substring(0, 20));
                 tmpOutputFolder.mkdirs();
                 //Load the fasta into the parameters
                 LoadFasta(fastaPath);
                 //execute a search from file
-                IntegrationFromFile.run(spectra, parameterPath, fastaPath, tmpOutputFolder, true);
+                //make sure nothing gets deleted now...
+                IntegrationFromFile.cleanTempDirectory = false;
+                IntegrationFromFile.experimentFastaName = true;
+                IntegrationFromFile.runNext(spectra, parameterPath, fastaPath, tmpOutputFolder, true);
             } catch (Exception ex) {
                 throw new PladipusProcessingException(ex);
             }
@@ -97,6 +103,7 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
         } else {
             tempResources.mkdirs();
         }
+
     }
 
     private String loadSpectra() {

@@ -18,7 +18,7 @@ public class MultipleFastaSearchRunner {
 
     public static String output_folder = "F:\\work\\compomics\\Fasta\\Search\\results";
 
-    public static String assay = "11954";
+    public static String assay = "3";
 
     public static void main(String[] args) throws PladipusProcessingException {
         HashMap<String, String> parameters = SearchProperties.getInstance().getParameters();

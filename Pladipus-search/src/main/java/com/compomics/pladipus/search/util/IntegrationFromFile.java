@@ -27,10 +27,27 @@ public class IntegrationFromFile {
 
     public static final Logger LOGGER = Logger.getLogger(IntegrationFromFile.class);
 
+    public static boolean cleanTempDirectory = true;
+    public static boolean experimentFastaName = false;
+
     public static void run(String spectrum_files, String id_params, String fasta, File outputFolder, boolean peptideShaker) {
+        run(spectrum_files, id_params, fasta, outputFolder, peptideShaker, true);
+    }
+
+    public static void runNext(String spectrum_files, String id_params, String fasta, File outputFolder, boolean peptideShaker) {
+        run(spectrum_files, id_params, fasta, outputFolder, peptideShaker, false);
+    }
+
+    public static void run(String spectrum_files, String id_params, String fasta, File outputFolder, boolean peptideShaker, boolean performSetupStep) {
 
         HashMap<String, String> parameters = SearchProperties.getInstance().getParameters();
         try {
+            if (!cleanTempDirectory) {
+                parameters.put("skip_cleaning", "true");
+            }
+            if (experimentFastaName) {
+                parameters.put("experiment", fasta.substring(0, 20));
+            }
             parameters.put("spectrum_files", spectrum_files);
             parameters.put("id_params", id_params);
             parameters.put("fasta_file", fasta);
@@ -40,22 +57,23 @@ public class IntegrationFromFile {
             parameters.put("out_reports", reports.getAbsolutePath());
 
             //setup
-            SearchSetupStep setupStep = new SearchSetupStep();
-            setupStep.setParameters(parameters);
+            if (performSetupStep) {
+                SearchSetupStep setupStep = new SearchSetupStep();
+                setupStep.setParameters(parameters);
+                setupStep.doAction();
+            }
             //search
             SearchGUIStep searchStep = new SearchGUIStep();
             searchStep.setParameters(parameters);
-            //peptideShaker
-
-            PeptideShakerStep pepStep = new PeptideShakerStep();
-            pepStep.setParameters(parameters);
-
-            //do the steps in tandem?
-            setupStep.doAction();
             searchStep.doAction();
+            //peptideShaker
             if (peptideShaker) {
+                PeptideShakerStep pepStep = new PeptideShakerStep();
+                pepStep.setParameters(parameters);
                 pepStep.doAction();
             }
+            //do the steps in tandem?
+
         } catch (PladipusProcessingException | UnspecifiedPladipusException ex) {
             ex.printStackTrace();
         } finally {
