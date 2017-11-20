@@ -124,6 +124,7 @@
     </build>
 
     <repositories>
+
         <repository>
             <id>genesis-maven2-repository</id>
             <name>Genesis maven2 repository</name>
@@ -141,12 +142,20 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+   
         <repository>
             <id>genesis-maven-repo</id>
             <name>Genesis maven repository</name>
             <url>http://genesis.UGent.be/maven</url>
             <layout>default</layout>
         </repository>
+          <!-- UGent Genesis archiva snapshot repository -->
+        <repository>
+            <id>archiva.snapshots</id>
+            <name>Internal Snapshot Repository</name>
+            <url>http://genesis.ugent.be/archiva/repository/snapshots</url>
+        </repository>
+
     </repositories>
     <dependencyManagement>
         <dependencies>
@@ -190,7 +199,7 @@
             <dependency>
                 <groupId>com.compomics</groupId>
                 <artifactId>utilities</artifactId>
-                <version>4.8.3</version>
+                <version>4.11.17</version>
                 <type>jar</type>
             </dependency>
         </dependencies>

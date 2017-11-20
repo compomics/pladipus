@@ -56,6 +56,7 @@ public class PladipusFileDownloadingService {
         URL fileURL = new URL(getCorrectFilePath(pathToFile));
         String fileName = fileURL.getFile().substring(fileURL.getFile().lastIndexOf("/"));
         File destFile = new File(destFolder, fileName);
+        System.out.println("Saving to "+destFile.getAbsolutePath());
         copy(fileURL, destFile);
         return destFile;
     }
