@@ -67,13 +67,15 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
         parameters.put("id_params", parameterPath);
         String inputFastas = parameters.get("fasta_file");
         String[] fastaPaths = inputFastas.split(",");
-        boolean initialized = false;
+
         for (String fastaPath : fastaPaths) {
             try {
                 //set the output folder...
                 File fastaFile = new File(fastaPath);
-                File tmpOutputFolder = new File(outputFolder, fastaFile.getName().substring(0, 20));
+                String identifier = fastaFile.getName().substring(0, 20);
+                File tmpOutputFolder = new File(outputFolder, identifier);
                 tmpOutputFolder.mkdirs();
+                //     parameters.put("output_folder",tmpOutputFolder.getAbsolutePath());
                 //Load the fasta into the parameters
                 LoadFasta(fastaPath);
                 //execute a search from file
@@ -81,48 +83,58 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
                 IntegrationFromFile.cleanTempDirectory = false;
                 IntegrationFromFile.experimentFastaName = true;
                 IntegrationFromFile.runNext(spectra, parameterPath, fastaPath, tmpOutputFolder, true);
+                if (SaveOnGoogleDrive) {
+                    StoreOnGoogleDrive(identifier,new File(tmpOutputFolder, "reports"));
+
+                }
             } catch (Exception ex) {
                 throw new PladipusProcessingException(ex);
             }
         }
-        if (SaveOnGoogleDrive) {
-            LOGGER.info("Storing results into Google Drive");
-            //store the reports into the google drive folder (experimental)
-            boolean savedOnline = false;
 
-            File reportFolder = new File(parameters.get("out_reports"));
-            if (reportFolder.exists()) {
-                try {
-                    File[] filesToUpload = reportFolder.listFiles(new FilenameExtensionFilter("txt"));
-                    DriveOperations instance = new DriveOperations();
-                    new DriveInitializer().init();
-                    if (filesToUpload.length > 0) {
-                        for (File aReport : filesToUpload) {
-                            instance.UploadReport(parameters.get("experiment"),aReport);
-                        }
+        return true;
+    }
+
+    private void StoreOnGoogleDrive(String identifier,File results) {
+
+        //store the reports into the google drive folder (experimental)
+        boolean savedOnline = false;
+
+        if (results.exists()) {
+            try {
+                File[] filesToUpload = results.listFiles();
+                DriveOperations instance = new DriveOperations();
+                new DriveInitializer().init();
+                String assay = parameters.get("assay");
+                if(assay.isEmpty()){
+                    assay = parameters.get("spectrum_files").substring(0,20);
+                }
+                if (filesToUpload.length > 0) {
+                    LOGGER.info("Storing results into Google Drive");
+                    for (File aReport : filesToUpload) {
+                        instance.UploadReport(assay,identifier, aReport);
                     }
-                    savedOnline = true;
+                }
+                savedOnline = true;
+            } catch (IOException ex) {
+                LOGGER.error(ex);
+            }
+            if (!savedOnline) {
+                try {
+                    LOGGER.error("Could not store results on google drive, storing locally...");
+                    //save the files locally instead for now?
+                    new File(results, "upload_to_drive_failed").createNewFile();
                 } catch (IOException ex) {
                     LOGGER.error(ex);
                 }
-                if (!savedOnline) {
-                    try {
-                        LOGGER.error("Could not store results on google drive, storing locally...");
-                        //save the files locally instead for now?
-                        new File(reportFolder, "upload_to_drive_failed").createNewFile();
-                    } catch (IOException ex) {
-                        LOGGER.error(ex);
-                    }
-                } else {
-                    try {
-                        FileUtils.deleteDirectory(reportFolder);
-                    } catch (IOException ex) {
-                        LOGGER.error(ex);
-                    }
+            } else {
+                try {
+                    FileUtils.deleteDirectory(results);
+                } catch (IOException ex) {
+                    LOGGER.error(ex);
                 }
             }
         }
-        return true;
     }
 
     private void prepareTempFolder() throws PladipusProcessingException {

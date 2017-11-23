@@ -12,12 +12,12 @@ public class MultipleFastaSearchRunner {
 
     //need 2 fasta files...
     public static String[] fastaPaths = new String[]{
-        "F:\\work\\compomics\\Fasta\\Search\\SwissProt_Canonical_Human_cRAP_05_2017_concatenated_target_decoy.fasta",
-        "F:\\work\\compomics\\Fasta\\Search\\BSwissProt_Canonical_Human_cRAP_05_2017_concatenated_target_decoy.fasta"
+        "F:/work/compomics/Fasta/Search/SwissProt_Canonical_Human_cRAP_05_2017_concatenated_target_decoy.fasta",
+        "F:/work/compomics/Fasta/Search/BSwissProt_Canonical_Human_cRAP_05_2017_concatenated_target_decoy.fasta"
     //  "F:\\work\\compomics\\Fasta\\Search\\lncipedia_4_1_6RF5-30_concatenated_target_decoy.fasta"
     };
 
-    public static String output_folder = "F:\\work\\compomics\\Fasta\\Search\\results";
+    public static String output_folder = "F:/work/compomics/Fasta/Search/results";
 
     public static String assay = "3";
 

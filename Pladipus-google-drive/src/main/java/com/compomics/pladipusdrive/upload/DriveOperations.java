@@ -44,6 +44,21 @@ public class DriveOperations {
         return file;
     }
 
+    public File UploadReport(String assay, String identifier, java.io.File report) throws IOException {
+        //find the assay folder on the drive
+        String assayID = getFolderId(assay);
+        if (assayID.isEmpty()) {
+            assayID = CreateFolder(assay, DriveProperties.getInstance().GetDriveStorageFolderId());
+        }
+        //find the result folder on the drive...
+        String resultFolderID = getFolderId(identifier);
+        if (resultFolderID.isEmpty()) {
+            resultFolderID = CreateFolder(identifier, assayID);
+        }
+        
+        return UploadReport(report, resultFolderID);
+    }
+
     public String CreateFolder(String folderName) throws IOException {
         File fileMetadata = new File();
         fileMetadata.setName(folderName);
@@ -87,5 +102,5 @@ public class DriveOperations {
         }
         return "";
     }
-
+    
 }

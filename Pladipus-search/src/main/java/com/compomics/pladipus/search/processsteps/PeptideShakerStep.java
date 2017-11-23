@@ -60,9 +60,9 @@ public class PeptideShakerStep extends ProcessingStep {
 //check if reports are requested
         if (parameters.containsKey("reports")) {
             File outputReportFolder = new File(outputFolder, "reports");
-            if (outputReportFolder.mkdirs()) {
-                parameters.put("out_reports", outputReportFolder.getAbsolutePath());
-            }
+            outputReportFolder.mkdirs();
+            parameters.put("out_reports", outputReportFolder.getAbsolutePath());
+
         }
 
         for (AllowedPeptideShakerParams aParameter : AllowedPeptideShakerParams.values()) {
@@ -178,7 +178,6 @@ public class PeptideShakerStep extends ProcessingStep {
         }
     }
 
-    
     public File getJar() throws IOException, XMLStreamException, URISyntaxException, UnspecifiedPladipusException {
         File temp = new File(parameters.getOrDefault("ps_folder", System.getProperty("user.home") + "/pladipus/tools/PeptideShaker"));
         if (!temp.exists()) {

@@ -46,7 +46,7 @@ public class IntegrationFromFile {
                 parameters.put("skip_cleaning", "true");
             }
             if (experimentFastaName) {
-                parameters.put("experiment", fasta.substring(0, 20));
+                parameters.put("experiment", new File(fasta).getName().substring(0, 20));
             }
             parameters.put("spectrum_files", spectrum_files);
             parameters.put("id_params", id_params);
@@ -69,6 +69,7 @@ public class IntegrationFromFile {
             //peptideShaker
             if (peptideShaker) {
                 PeptideShakerStep pepStep = new PeptideShakerStep();
+                parameters.put("output_folder", outputFolder.getAbsolutePath());
                 pepStep.setParameters(parameters);
                 pepStep.doAction();
             }
