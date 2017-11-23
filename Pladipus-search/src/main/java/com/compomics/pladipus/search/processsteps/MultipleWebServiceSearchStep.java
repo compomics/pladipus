@@ -5,10 +5,13 @@ import com.compomics.pladipus.core.model.exception.PladipusProcessingException;
 import com.compomics.pladipus.core.model.exception.UnspecifiedPladipusException;
 import com.compomics.pladipus.core.model.processing.ProcessingStep;
 import com.compomics.pladipus.search.util.IntegrationFromFile;
+import com.compomics.pladipusdrive.upload.DriveInitializer;
+import com.compomics.pladipusdrive.upload.DriveOperations;
 import com.compomics.pride_asa_pipeline.core.bypass.WebServiceMGFInference;
 import com.compomics.pride_asa_pipeline.core.bypass.WebServiceParameterInference;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
+import com.compomics.util.io.FilenameExtensionFilter;
 import com.compomics.util.preferences.IdentificationParameters;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,6 +36,8 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
     private final File tempResources;
     private final File fasta_repo;
     private static final Logger LOGGER = Logger.getLogger(MultipleWebServiceSearchStep.class);
+
+    public static boolean SaveOnGoogleDrive = false;
 
     public MultipleWebServiceSearchStep() {
         tempResources = new File(System.getProperty("user.home") + "/pladipus/temp/search/resources");
@@ -78,6 +83,43 @@ public class MultipleWebServiceSearchStep extends ProcessingStep {
                 IntegrationFromFile.runNext(spectra, parameterPath, fastaPath, tmpOutputFolder, true);
             } catch (Exception ex) {
                 throw new PladipusProcessingException(ex);
+            }
+        }
+        if (SaveOnGoogleDrive) {
+            LOGGER.info("Storing results into Google Drive");
+            //store the reports into the google drive folder (experimental)
+            boolean savedOnline = false;
+
+            File reportFolder = new File(parameters.get("out_reports"));
+            if (reportFolder.exists()) {
+                try {
+                    File[] filesToUpload = reportFolder.listFiles(new FilenameExtensionFilter("txt"));
+                    DriveOperations instance = new DriveOperations();
+                    new DriveInitializer().init();
+                    if (filesToUpload.length > 0) {
+                        for (File aReport : filesToUpload) {
+                            instance.UploadReport(parameters.get("experiment"),aReport);
+                        }
+                    }
+                    savedOnline = true;
+                } catch (IOException ex) {
+                    LOGGER.error(ex);
+                }
+                if (!savedOnline) {
+                    try {
+                        LOGGER.error("Could not store results on google drive, storing locally...");
+                        //save the files locally instead for now?
+                        new File(reportFolder, "upload_to_drive_failed").createNewFile();
+                    } catch (IOException ex) {
+                        LOGGER.error(ex);
+                    }
+                } else {
+                    try {
+                        FileUtils.deleteDirectory(reportFolder);
+                    } catch (IOException ex) {
+                        LOGGER.error(ex);
+                    }
+                }
             }
         }
         return true;
