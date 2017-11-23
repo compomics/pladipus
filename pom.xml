@@ -18,6 +18,7 @@
         <module>Pladipus-msconvert</module>
         <module>Pladipus-moff</module>
         <module>Pladipus-standalone</module>
+        <module>../../../work/compomics/Visualisation/PladipusDrive</module>
     </modules>
 
     <properties>
